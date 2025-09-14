@@ -1,38 +1,131 @@
+:root {
+  --eldorado-green: #2e8b57;
+  --eldorado-orange: #ff8c00;
+  --eldorado-light-green: #90ee90;
+  --eldorado-light-orange: #ffb347;
+  --text-dark: #333333;
+  --bg-light: #ffffff;
+  --bg-gray: #f8f9fa;
+}
+
 .App {
-  text-align: center;
+  text-align: left;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
+.sidebar {
+  background-color: var(--bg-light);
+  border-right: 2px solid var(--eldorado-green);
   min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
+  position: fixed;
+  width: 280px;
+  z-index: 1000;
+}
+
+.main-content {
+  margin-left: 280px;
+  padding: 20px;
+  background-color: var(--bg-gray);
+  min-height: 100vh;
+}
+
+.nav-item {
+  border-bottom: 1px solid #e9ecef;
+}
+
+.nav-link {
+  color: var(--text-dark) !important;
+  padding: 15px 20px !important;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.nav-link:hover {
+  background-color: var(--eldorado-light-orange);
+  color: var(--text-dark) !important;
+}
+
+.nav-link.active {
+  background-color: var(--eldorado-orange);
+  color: white !important;
+  border-left: 4px solid var(--eldorado-green);
+}
+
+.page-header {
+  background-color: var(--bg-light);
+  padding: 20px;
+  margin-bottom: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.page-title {
+  color: var(--text-dark);
+  font-size: 2rem;
+  font-weight: 600;
+  margin-bottom: 10px;
+  border-bottom: 3px solid var(--eldorado-orange);
+  display: inline-block;
+  padding-bottom: 5px;
+}
+
+.filter-btn {
+  background-color: var(--eldorado-green);
+  border: none;
+  color: white;
+  padding: 10px 15px;
+  border-radius: 5px;
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1001;
+}
+
+.filter-btn:hover {
+  background-color: var(--eldorado-light-green);
+  color: var(--text-dark);
+}
+
+.offcanvas-header {
+  background-color: var(--eldorado-green);
   color: white;
 }
 
-.App-link {
-  color: #61dafb;
+.brand-logos {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  border-bottom: 2px solid var(--eldorado-green);
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.brand-logos img {
+  max-height: 40px;
+}
+
+.methodology-content {
+  background-color: var(--bg-light);
+  padding: 30px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  line-height: 1.6;
+}
+
+.methodology-content h3 {
+  color: var(--eldorado-green);
+  margin-bottom: 20px;
+  font-weight: 600;
+}
+
+.methodology-content p {
+  color: var(--text-dark);
+  margin-bottom: 15px;
+  text-align: justify;
+}
+
+.eldorado-illustration {
+  width: 100%;
+  max-width: 600px;
+  margin: 20px auto;
+  display: block;
 }
