@@ -1,3 +1,5 @@
+// src/components/PerfilAmostra.js
+
 import { useState, useEffect } from "react"
 import { Container, Row, Col, Card, Table } from "react-bootstrap"
 import { ResponsiveBar } from "@nivo/bar"
@@ -25,7 +27,12 @@ const PerfilAmostra = () => {
 
         setTotalRespondentes(filteredData.length)
 
-        // Função para calcular percentuais
+        // **ALTERAÇÃO AQUI: Simplificando a função getFieldValue**
+        const getFieldValue = (row, fieldName) => {
+            // Agora 'row' é um objeto, então podemos acessar a propriedade diretamente.
+            return row ? row[fieldName] || "" : ""
+        }
+
         const calculatePercentages = (data, fieldName) => {
           const counts = {}
           
@@ -53,19 +60,8 @@ const PerfilAmostra = () => {
             }))
             .sort((a, b) => b.percentage - a.percentage)
         }
-
-        // Função para obter valor do campo
-        const getFieldValue = (row, fieldName) => {
-          if (!row) return ""
-          
-          if (typeof row === 'object' && !Array.isArray(row)) {
-            return row[fieldName] || ""
-          }
-          
-          return ""
-        }
-
-        // Processar dados
+        
+        // As colunas agora correspondem exatamente aos cabeçalhos do seu JSON
         setChartData({
           genero: calculatePercentages(filteredData, 'GENERO'),
           orientacaoSexual: calculatePercentages(filteredData, 'PF8 - Qual a sua orientação sexual?'),
@@ -86,8 +82,8 @@ const PerfilAmostra = () => {
       processData()
     }
   }, [getFilteredData, loading])
-
-  // Configuração dos gráficos
+  
+  // O restante do seu componente continua igual...
   const commonBarConfig = {
     margin: { top: 10, right: 60, bottom: 20, left: 120 },
     padding: 0.2,
@@ -124,7 +120,7 @@ const PerfilAmostra = () => {
         keys={['percentage']}
         indexBy="categoria"
         {...commonBarConfig}
-        label={d => `${d.value}%`}
+        label={d => `${d.data.percentage}%`} // Correção: Acessar 'percentage' via d.data
       />
     </div>
   )

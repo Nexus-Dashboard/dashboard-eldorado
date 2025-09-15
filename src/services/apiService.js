@@ -1,3 +1,5 @@
+// src/services/apiService.js
+
 import axios from "axios"
 
 const API_BASE_URL = "https://api-phi-one-99.vercel.app/api/google/file/10hEQUBRdf8YCWfx-HulMkAcOyjSY55XgfFQBSL2TOZU"
@@ -11,7 +13,7 @@ class ApiService {
 
   async fetchData() {
     if (this.data) {
-      return this.data // Return cached data if available
+      return this.data
     }
 
     this.loading = true
@@ -41,7 +43,7 @@ class ApiService {
     return this.error
   }
 
-  // Filter data based on selected filters
+  // Filter data and transform to array of objects
   filterData(filters) {
     if (!this.data || !this.data.fileData || !this.data.fileData.sheets || !this.data.fileData.sheets.base_tratada) {
       return []
@@ -51,24 +53,31 @@ class ApiService {
     const headers = rawData[0]
     const rows = rawData.slice(1)
 
-    if (!filters || Object.keys(filters).length === 0) {
-      return rows
-    }
+    let filteredRows = rows
+    if (filters && Object.keys(filters).length > 0) {
+      filteredRows = rows.filter((row) => {
+        return Object.entries(filters).every(([filterKey, filterValues]) => {
+          if (!filterValues || filterValues.length === 0) return true
 
-    return rows.filter((row) => {
-      return Object.entries(filters).every(([filterKey, filterValues]) => {
-        if (!filterValues || filterValues.length === 0) return true
+          const columnIndex = headers.indexOf(filterKey)
+          if (columnIndex === -1) return true
 
-        const columnIndex = headers.indexOf(filterKey)
-        if (columnIndex === -1) return true
-
-        const cellValue = row[columnIndex]
-        return filterValues.includes(cellValue)
+          const cellValue = row[columnIndex]
+          return filterValues.includes(cellValue)
+        })
       })
+    }
+    
+    // **PRINCIPAL ALTERAÇÃO AQUI: Transformar array de arrays em array de objetos**
+    return filteredRows.map(row => {
+      const rowObject = {}
+      headers.forEach((header, index) => {
+        rowObject[header] = row[index]
+      })
+      return rowObject
     })
   }
 
-  // Get unique values for a specific column (for filter options)
   getUniqueValues(columnName) {
     if (!this.data || !this.data.fileData || !this.data.fileData.sheets || !this.data.fileData.sheets.base_tratada) {
       return []
