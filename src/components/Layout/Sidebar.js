@@ -6,22 +6,22 @@ const Sidebar = () => {
   const location = useLocation()
 
   const menuItems = [
-    { path: "/metodologia", label: "01 Metodologia", id: 1 },
-    { path: "/perfil-amostra", label: "02 Perfil da amostra", id: 2 },
-    { path: "/grau-felicidade", label: "03 Grau de felicidade e perspectivas de futuro", id: 3 },
-    { path: "/fatores-motivam", label: "04 Fatores que Motivam Nossa Gente", id: 4 },
-    { path: "/saude-emocional", label: "05 Saúde emocional e trabalho", id: 5 },
-    { path: "/ambiente-trabalho", label: "06 Ambiente de trabalho", id: 6 },
-    { path: "/cultura-eldorado", label: "07 Cultura Eldorado", id: 7 },
-    { path: "/lideranca-eldorado", label: "08 Liderança Eldorado", id: 8 },
-    { path: "/opiniao-beneficios", label: "09 Opinião sobre benefícios da Eldorado", id: 9 },
-    { path: "/diversidade", label: "10 Diversidade, igualdade e inclusão", id: 10 },
-    { path: "/comunicacao-eldorado", label: "11 Comunicação Eldorado", id: 11 },
-    { path: "/pilares-esg", label: "12 Pilares ESG & percepções sobre a atuação da Eldorado", id: 12 },
-    { path: "/indicador-satisfacao", label: "13 Indicador de Satisfação & Bem-Estar Eldorado", id: 13 },
-    { path: "/nps-eldorado", label: "14 NPS Eldorado", id: 14 },
-    { path: "/comentarios-sugestoes", label: "15 Comentários e sugestões", id: 15 },
-    { path: "/consideracoes-finais", label: "16 Considerações finais", id: 16 },
+    { path: "/metodologia", label: "Metodologia", id: 1 },
+    { path: "/perfil-amostra", label: "Perfil da amostra", id: 2 },
+    { path: "/grau-felicidade", label: "Grau de felicidade", id: 3 },
+    { path: "/fatores-motivam", label: "Fatores que Motivam", id: 4 },
+    { path: "/saude-emocional", label: "Saúde emocional", id: 5 },
+    { path: "/ambiente-trabalho", label: "Ambiente de trabalho", id: 6 },
+    { path: "/cultura-eldorado", label: "Cultura Eldorado", id: 7 },
+    { path: "/lideranca-eldorado", label: "Liderança Eldorado", id: 8 },
+    { path: "/opiniao-beneficios", label: "Benefícios da Eldorado", id: 9 },
+    { path: "/diversidade", label: "Diversidade & Inclusão", id: 10 },
+    { path: "/comunicacao-eldorado", label: "Comunicação", id: 11 },
+    { path: "/pilares-esg", label: "Pilares ESG", id: 12 },
+    { path: "/indicador-satisfacao", label: "Satisfação & Bem-Estar", id: 13 },
+    { path: "/nps-eldorado", label: "NPS Eldorado", id: 14 },
+    { path: "/comentarios-sugestoes", label: "Comentários", id: 15 },
+    { path: "/consideracoes-finais", label: "Considerações finais", id: 16 },
   ]
 
   return (
@@ -33,17 +33,32 @@ const Sidebar = () => {
         />        
       </div>
 
-      <div className="px-3 py-2">
-        <h6 className="text-muted mb-3">Pesquisa Nossa Gente Eldorado</h6>
+      <div className="sidebar-title">
+        <h6>Pesquisa Nossa Gente</h6>
       </div>
 
-      <Nav className="flex-column">
-        {menuItems.map((item) => (
-          <LinkContainer key={item.id} to={item.path}>
-            <Nav.Link className={location.pathname === item.path ? "active" : ""}>{item.label}</Nav.Link>
-          </LinkContainer>
-        ))}
-      </Nav>
+      <div className="sidebar-nav">
+        <Nav className="flex-column">
+          {menuItems.map((item, index) => (
+            <LinkContainer key={item.id} to={item.path}>
+              <Nav.Link 
+                className={location.pathname === item.path ? "active" : ""}
+                style={{ borderBottom: index === menuItems.length - 1 ? 'none' : undefined }}
+              >
+                <span style={{ 
+                  fontSize: '0.7rem', 
+                  opacity: 0.7, 
+                  marginRight: '6px',
+                  fontWeight: '600'
+                }}>
+                  {String(item.id).padStart(2, '0')}
+                </span>
+                {item.label}
+              </Nav.Link>
+            </LinkContainer>
+          ))}
+        </Nav>
+      </div>
     </div>
   )
 }

@@ -5,7 +5,7 @@ const Metodologia = () => {
     <Container fluid>
       <div className="page-header">
         <h1 className="page-title">O que foi realizado</h1>
-        <p className="text-muted mb-0">Pesquisa Nossa Gente Eldorado | 4</p>
+        <p className="text-muted mb-0">Pesquisa Nossa Gente Eldorado</p>
       </div>
 
       <Row>
@@ -59,7 +59,7 @@ const Metodologia = () => {
                 style={{ maxHeight: "50px" }}
               />
               <img
-                src="nexus-logo-preta.png"
+                src="nexus-logo-preta-2.png.jpg"
                 alt="Nexus"
                 style={{ maxHeight: "50px" }}
               />
