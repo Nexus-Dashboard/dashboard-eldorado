@@ -43,22 +43,23 @@ const Metodologia = () => {
               </p>
             </div>
 
-            <div className="text-center mt-4">
+            <div>
               <img
-                src="/eldorado-forest-illustration-with-trees-and-indust.jpg"
+                src="eldorado-forest-illustration-with-trees-and-indust.jpg"
                 alt="Ilustração da Eldorado com floresta e indústria"
                 className="eldorado-illustration"
+                style={{ maxWidth: "100%", height: "auto" }}
               />
-            </div>
+            </div>            
 
             <div className="d-flex justify-content-between align-items-center mt-4">
               <img
-                src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/eldorado_logo-bB4IvqCxEMXmOomzOqD6WQ9v7fIPTC.png"
+                src="eldorado_logo.png"
                 alt="Eldorado Brasil"
                 style={{ maxHeight: "50px" }}
               />
               <img
-                src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/nexus-logo-3Lm6A9xw5mHs01qJpT7F2MdGeSNxXY.png"
+                src="nexus-logo-preta.png"
                 alt="Nexus"
                 style={{ maxHeight: "50px" }}
               />

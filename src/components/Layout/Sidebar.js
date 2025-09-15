@@ -28,13 +28,9 @@ const Sidebar = () => {
     <div className="sidebar">
       <div className="brand-logos">
         <img
-          src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/eldorado_logo-bB4IvqCxEMXmOomzOqD6WQ9v7fIPTC.png"
+          src="eldorado_logo.png"
           alt="Eldorado Brasil"
-        />
-        <img
-          src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/nexus-logo-3Lm6A9xw5mHs01qJpT7F2MdGeSNxXY.png"
-          alt="Nexus"
-        />
+        />        
       </div>
 
       <div className="px-3 py-2">

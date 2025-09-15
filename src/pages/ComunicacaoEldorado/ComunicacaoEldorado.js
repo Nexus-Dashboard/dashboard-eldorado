@@ -1,18 +1,18 @@
 import { Container, Row, Col } from "react-bootstrap"
 
-const SaudeEmocional = () => {
+const ComunicacaoEldorado = () => {
   return (
     <Container fluid>
       <div className="page-header">
-        <h1 className="page-title">Saúde emocional e trabalho</h1>
+        <h1 className="page-title">Comunicação Eldorado</h1>
         <p className="text-muted mb-0">Pesquisa Nossa Gente Eldorado</p>
       </div>
 
       <Row>
         <Col lg={12}>
           <div className="methodology-content">
-            <h3>Saúde emocional e trabalho</h3>
-            <p>Esta seção explorará a relação entre saúde emocional e trabalho na percepção dos colaboradores.</p>
+            <h3>Comunicação Eldorado</h3>
+            <p>Esta seção analisará a efetividade da comunicação interna da Eldorado.</p>
             <p>
               <em>Conteúdo em desenvolvimento...</em>
             </p>
@@ -23,4 +23,4 @@ const SaudeEmocional = () => {
   )
 }
 
-export default SaudeEmocional
+export default ComunicacaoEldorado
