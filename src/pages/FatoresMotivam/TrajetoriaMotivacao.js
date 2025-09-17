@@ -1,30 +1,11 @@
 import { useState, useEffect } from "react"
-import { Container, Row, Col, Card, Button } from "react-bootstrap"
+import { Row, Col, Card } from "react-bootstrap"
 import { ResponsiveBar } from "@nivo/bar"
 import { useData } from "../../context/DataContext"
 
-const TrajetoriaEldorado = () => {
+const TrajetoriaMotivacao = () => {
   const { getFilteredData, loading } = useData()
-  const [showComparison, setShowComparison] = useState(false)
   const [data2025, setData2025] = useState(null)
-
-  // ========================================================================
-  // DADOS ESTÁTICOS DE 2023 - Para comparação futura
-  // ========================================================================
-  const dados2023 = {
-    altaIntencao: 85,
-    trajetoriaAnalise: 12,
-    intencaoSaida: 3,
-    distribuicao: [
-      { categoria: "Vejo como um lugar para construir uma carreira de longo prazo", categoriaCompleta: "Vejo como um lugar para construir uma carreira de longo prazo", percentage: 42 },
-      { categoria: "Tenho vontade de crescer e evoluir profissionalmente", categoriaCompleta: "Tenho vontade de crescer e evoluir profissionalmente", percentage: 41 },
-      { categoria: "Quero continuar na empresa, mas sem grandes expectativas no momento", categoriaCompleta: "Quero continuar na empresa, mas sem grandes expectativas no momento", percentage: 8 },
-      { categoria: "Ainda estou refletindo sobre o meu futuro", categoriaCompleta: "Ainda estou refletindo sobre o meu futuro", percentage: 5 },
-      { categoria: "Não me vejo na Eldorado no futuro", categoriaCompleta: "Não me vejo na Eldorado no futuro", percentage: 3 },
-      { categoria: "Não sei dizer", categoriaCompleta: "Não sei dizer", percentage: 1 }
-    ],
-    total: 3000
-  }
 
   useEffect(() => {
     const processData = () => {
@@ -62,7 +43,7 @@ const TrajetoriaEldorado = () => {
           }))
           .sort((a, b) => b.percentage - a.percentage)
 
-        // Classificar em categorias principais baseado na análise da imagem
+        // Classificar em categorias principais
         const altaIntencaoKeywords = [
           "lugar para construir uma carreira de longo prazo",
           "vontade de crescer e evoluir profissionalmente"
@@ -136,7 +117,7 @@ const TrajetoriaEldorado = () => {
     )
   }
 
-  const ChartComponent = ({ data, year }) => {
+  const ChartComponent = ({ data }) => {
     const chartData = data.distribuicao.map(item => ({
       categoria: item.categoria,
       percentage: item.percentage,
@@ -150,7 +131,7 @@ const TrajetoriaEldorado = () => {
           keys={['percentage']}
           indexBy="categoria"
           layout="horizontal"
-          margin={{ top: 20, right: 80, bottom: 20, left: 200 }}
+          margin={{ top: 20, right: 80, bottom: 20, left: 280 }}
           padding={0.3}
           valueScale={{ type: 'linear', min: 0, max: 50 }}
           colors={(bar) => {
@@ -177,7 +158,7 @@ const TrajetoriaEldorado = () => {
           }}
           axisLeft={{
             tickSize: 0,
-            tickPadding: 8,
+            tickPadding: 12,
             tickRotation: 0
           }}
           enableLabel={true}
@@ -194,12 +175,6 @@ const TrajetoriaEldorado = () => {
             },
             axis: {
               ticks: {
-                text: {
-                  fontSize: 11,
-                  fill: "#666"
-                }
-              },
-              legend: {
                 text: {
                   fontSize: 12,
                   fill: "#666"
@@ -221,10 +196,6 @@ const TrajetoriaEldorado = () => {
           width: 100%;
         }
         
-        .trajetoria-container * {
-          box-sizing: border-box;
-        }
-        
         .question-text {
           font-style: italic;
           color: #6c757d;
@@ -235,9 +206,6 @@ const TrajetoriaEldorado = () => {
           margin-bottom: 30px;
           font-size: 15px;
           line-height: 1.5;
-          border-bottom: none !important;
-          border-top: none !important;
-          border-right: none !important;
         }
 
         .categories-summary {
@@ -330,35 +298,6 @@ const TrajetoriaEldorado = () => {
           text-align: center;
         }
 
-        .main-title {
-          font-size: 1.75rem;
-          color: #333;
-          font-weight: 600;
-          text-align: center;
-          margin: 30px 0;
-          line-height: 1.4;
-        }
-
-        .comparison-toggle {
-          text-align: center;
-          margin: 30px 0;
-        }
-
-        .comparison-toggle button {
-          background: #2e8b57;
-          border: none;
-          color: white;
-          padding: 10px 25px;
-          border-radius: 6px;
-          font-weight: 500;
-          transition: all 0.3s;
-        }
-
-        .comparison-toggle button:hover {
-          background: #246a43;
-          transform: translateY(-1px);
-        }
-
         .insights-card {
           background: #f8f9fa;
           padding: 30px;
@@ -431,17 +370,8 @@ const TrajetoriaEldorado = () => {
         {/* Gráfico detalhado */}
         <div className="detailed-chart">
           <h5 className="chart-title">Distribuição detalhada das respostas</h5>
-          <ChartComponent data={data2025} year={2025} />
+          <ChartComponent data={data2025} />
         </div>
-
-
-        {/* Comparação com 2023 (se habilitado) */}
-        {showComparison && (
-          <div className="detailed-chart">
-            <h5 className="chart-title">Comparação com 2023</h5>
-            <ChartComponent data={dados2023} year={2023} />
-          </div>
-        )}
 
         {/* Insights e Análises */}
         <Row>
@@ -490,4 +420,4 @@ const TrajetoriaEldorado = () => {
   )
 }
 
-export default TrajetoriaEldorado
+export default TrajetoriaMotivacao
