@@ -2,11 +2,13 @@ import { useState, useEffect } from "react"
 import { Container, Row, Col, Card, Button } from "react-bootstrap"
 import { ResponsiveBar } from "@nivo/bar"
 import { useData } from "../../context/DataContext"
+import TrajetoriaEldorado from "./TrajetoriaEldorado"
 
 const GrauFelicidade = () => {
   const { getFilteredData, loading } = useData()
   const [showComparison, setShowComparison] = useState(false)
   const [data2025, setData2025] = useState(null)
+  const [activeSection, setActiveSection] = useState("felicidade") // Para controlar qual seção mostrar
 
   // ========================================================================
   // DADOS ESTÁTICOS DE 2023 - Atualize aqui com base no relatório anterior
@@ -414,67 +416,152 @@ const GrauFelicidade = () => {
           color: #666;
           line-height: 1.6;
         }
+
+        .section-navigation {
+          background: white;
+          padding: 20px;
+          border-radius: 12px;
+          margin-bottom: 30px;
+          box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+          text-align: center;
+        }
+
+        .nav-buttons {
+          display: flex;
+          gap: 15px;
+          justify-content: center;
+          flex-wrap: wrap;
+        }
+
+        .nav-button {
+          background: #f8f9fa;
+          border: 2px solid #e9ecef;
+          color: #495057;
+          padding: 12px 20px;
+          border-radius: 8px;
+          font-weight: 500;
+          cursor: pointer;
+          transition: all 0.3s;
+          min-width: 200px;
+        }
+
+        .nav-button.active {
+          background: #2e8b57;
+          border-color: #2e8b57;
+          color: white;
+        }
+
+        .nav-button:hover:not(.active) {
+          background: #e9ecef;
+          border-color: #dee2e6;
+        }
+
+        .section-divider {
+          height: 2px;
+          background: linear-gradient(90deg, #ff8c00 0%, #2e8b57 100%);
+          border: none;
+          margin: 50px 0;
+          border-radius: 1px;
+        }
+
+        @media (max-width: 768px) {
+          .nav-buttons {
+            flex-direction: column;
+            align-items: center;
+          }
+          
+          .nav-button {
+            width: 100%;
+            max-width: 300px;
+          }
+        }
       `}</style>
 
       <Container fluid>
         <div className="page-header">
           <h1 className="page-title">Grau de felicidade no ambiente de trabalho</h1>
           <p className="text-muted mb-0">Pesquisa Nossa Gente Eldorado</p>
-        </div>      
+        </div>
 
-        <div className="question-text">
-          Pensando em uma escala de 0 a 10, em que 0 é nada e 10 é muito, o quanto você se considera feliz no ambiente de trabalho?
-        </div>    
-
-        {/* Gráfico de 2025 */}
-        <ChartComponent data={data2025} year={2025} />
-
-        {/* Botão para mostrar comparação */}
-        {!showComparison && (
-          <div className="comparison-toggle">
-            <button onClick={() => setShowComparison(true)}>
-              Ver comparação com 2023
+        {/* Navegação entre seções */}
+        <div className="section-navigation">
+          <div className="nav-buttons">
+            <button 
+              className={`nav-button ${activeSection === "felicidade" ? "active" : ""}`}
+              onClick={() => setActiveSection("felicidade")}
+            >
+              📊 Grau de Felicidade
+            </button>
+            <button 
+              className={`nav-button ${activeSection === "trajetoria" ? "active" : ""}`}
+              onClick={() => setActiveSection("trajetoria")}
+            >
+              🚀 Trajetória na Eldorado
             </button>
           </div>
-        )}
+        </div>
 
-        {/* Gráfico de 2023 (se habilitado) */}
-        {showComparison && (
+        {/* Seção de Grau de Felicidade */}
+        {activeSection === "felicidade" && (
           <>
-            <div className="text-center mb-3">
-              <h4 style={{ color: "#666" }}>Comparação com 2023</h4>
-            </div>
-            <ChartComponent data={dados2023} year={2023} />
+            <div className="question-text">
+              Pensando em uma escala de 0 a 10, em que 0 é nada e 10 é muito, o quanto você se considera feliz no ambiente de trabalho?
+            </div>    
+
+            {/* Gráfico de 2025 */}
+            <ChartComponent data={data2025} year={2025} />
+
+            {/* Botão para mostrar comparação */}
+            {!showComparison && (
+              <div className="comparison-toggle">
+                <button onClick={() => setShowComparison(true)}>
+                  Ver comparação com 2023
+                </button>
+              </div>
+            )}
+
+            {/* Gráfico de 2023 (se habilitado) */}
+            {showComparison && (
+              <>
+                <div className="text-center mb-3">
+                  <h4 style={{ color: "#666" }}>Comparação com 2023</h4>
+                </div>
+                <ChartComponent data={dados2023} year={2023} />
+              </>
+            )}
+
+            {/* Descrições das categorias */}
+            <Row>
+              <Col lg={12}>
+                <Card className="description-card">
+                  <Row>
+                    <Col lg={4} className="description-section">
+                      <h5 className="alta">Alta felicidade (81%)</h5>
+                      <p>
+                        O grupo com alta felicidade é composto majoritariamente por colaboradores que estão nos extremos do tempo de casa — especialmente aqueles com menos de 1 ano de Eldorado (86%) e os que estão há 10 anos ou mais (81%), indicando entusiasmo inicial e vínculo consolidado como fatores positivos.
+                      </p>
+                    </Col>
+                    <Col lg={4} className="description-section">
+                      <h5 className="media">Média felicidade (13%)</h5>
+                      <p>
+                        O perfil de felicidade média concentra-se entre colaboradores que estão em fase intermediária de jornada na empresa, especialmente entre 1 a 9 anos de Eldorado (com médias variando de 13% a 15%). É mais comum entre aqueles que avaliam sua trajetória profissional como "em análise" (22%) ou com "intenção de saída" (21%).
+                      </p>
+                    </Col>
+                    <Col lg={4} className="description-section">
+                      <h5 className="baixa">Baixa felicidade (7%)</h5>
+                      <p>
+                        O grupo com baixa felicidade representa a maior preocupação estratégica, com maior incidência entre colaboradores com 4 a 6 anos de casa (10%), e com pós-graduação (33%). Apresenta forte correlação com percepções negativas sobre o impacto do trabalho na saúde emocional (33%), intenção de saída da empresa (52%), e baixo grau de informação sobre a Eldorado (38%).
+                      </p>
+                    </Col>
+                  </Row>
+                </Card>
+              </Col>
+            </Row>
           </>
         )}
 
-        {/* Descrições das categorias */}
-        <Row>
-          <Col lg={12}>
-            <Card className="description-card">
-              <Row>
-                <Col lg={4} className="description-section">
-                  <h5 className="alta">Alta felicidade (81%)</h5>
-                  <p>
-                    O grupo com alta felicidade é composto majoritariamente por colaboradores que estão nos extremos do tempo de casa — especialmente aqueles com menos de 1 ano de Eldorado (86%) e os que estão há 10 anos ou mais (81%), indicando entusiasmo inicial e vínculo consolidado como fatores positivos.
-                  </p>
-                </Col>
-                <Col lg={4} className="description-section">
-                  <h5 className="media">Média felicidade (13%)</h5>
-                  <p>
-                    O perfil de felicidade média concentra-se entre colaboradores que estão em fase intermediária de jornada na empresa, especialmente entre 1 a 9 anos de Eldorado (com médias variando de 13% a 15%). É mais comum entre aqueles que avaliam sua trajetória profissional como "em análise" (22%) ou com "intenção de saída" (21%).
-                  </p>
-                </Col>
-                <Col lg={4} className="description-section">
-                  <h5 className="baixa">Baixa felicidade (7%)</h5>
-                  <p>
-                    O grupo com baixa felicidade representa a maior preocupação estratégica, com maior incidência entre colaboradores com 4 a 6 anos de casa (10%), e com pós-graduação (33%). Apresenta forte correlação com percepções negativas sobre o impacto do trabalho na saúde emocional (33%), intenção de saída da empresa (52%), e baixo grau de informação sobre a Eldorado (38%).
-                  </p>
-                </Col>
-              </Row>
-            </Card>
-          </Col>
-        </Row>
+        {/* Seção de Trajetória na Eldorado */}
+        {activeSection === "trajetoria" && <TrajetoriaEldorado />}
       </Container>
     </>
   )
