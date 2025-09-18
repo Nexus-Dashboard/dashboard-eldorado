@@ -1,6 +1,12 @@
-import { Container, Row, Col } from "react-bootstrap"
+import { useState } from "react"
+import { Container } from "react-bootstrap"
+import TrabalhoSaudeEmocional from "./TrabalhoSaudeEmocional"
+import ImpactoEmocional from "./ImpactoEmocional"
+import QuestionNavigationSaude from "./QuestionNavigationSaude"
 
 const SaudeEmocional = () => {
+  const [activeQuestion, setActiveQuestion] = useState("trabalho-saude")
+
   return (
     <Container fluid>
       <div className="page-header">
@@ -8,17 +14,17 @@ const SaudeEmocional = () => {
         <p className="text-muted mb-0">Pesquisa Nossa Gente Eldorado</p>
       </div>
 
-      <Row>
-        <Col lg={12}>
-          <div className="methodology-content">
-            <h3>Saúde emocional e trabalho</h3>
-            <p>Esta seção explorará a relação entre saúde emocional e trabalho na percepção dos colaboradores.</p>
-            <p>
-              <em>Conteúdo em desenvolvimento...</em>
-            </p>
-          </div>
-        </Col>
-      </Row>
+      {/* Navegação entre perguntas */}
+      <QuestionNavigationSaude 
+        activeQuestion={activeQuestion} 
+        setActiveQuestion={setActiveQuestion} 
+      />
+
+      {/* Seção de Trabalho e Saúde Emocional */}
+      {activeQuestion === "trabalho-saude" && <TrabalhoSaudeEmocional />}
+
+      {/* Seção de Impacto Emocional */}
+      {activeQuestion === "impacto-emocional" && <ImpactoEmocional />}
     </Container>
   )
 }
