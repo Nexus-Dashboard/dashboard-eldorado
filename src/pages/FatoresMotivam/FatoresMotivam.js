@@ -6,6 +6,8 @@ import TrajetoriaMotivacao from "./TrajetoriaMotivacao"
 import ReconhecimentoMotivacao from "./ReconhecimentoMotivacao"
 import TrajetoriaLongaEldorado from "./TrajetoriaLongaEldorado"
 import QuestionNavigation from "./QuestionNavigation"
+import InfluenciaFamilia from "./InfluenciaFamilia"
+
 
 const FatoresMotivam = () => {
   const { getFilteredData, loading } = useData()
@@ -606,6 +608,9 @@ const FatoresMotivam = () => {
 
         {/* Seção de Trajetória na Eldorado */}
         {activeQuestion === "trajetoria" && <TrajetoriaMotivacao />}
+
+        {/* Seção de Influência da Família */}
+        {activeQuestion === "influencia-familia" && <InfluenciaFamilia />}
       </Container>
     </>
   )

@@ -349,6 +349,14 @@ const TrajetoriaMotivacao = () => {
           Pensando no seu momento atual e no seu futuro profissional, como você enxerga a sua trajetória na Eldorado?
         </div>
 
+        
+
+        {/* Gráfico detalhado */}
+        <div className="detailed-chart">
+          <h5 className="chart-title">Distribuição detalhada das respostas</h5>
+          <ChartComponent data={data2025} />
+        </div>
+
         {/* Cards com percentuais principais */}
         <div className="categories-summary">
           <div className="category-badge alta">
@@ -365,12 +373,6 @@ const TrajetoriaMotivacao = () => {
             <span className="category-title">Intenção de saída</span>
             <span className="category-value">{data2025.intencaoSaida}%</span>
           </div>
-        </div>
-
-        {/* Gráfico detalhado */}
-        <div className="detailed-chart">
-          <h5 className="chart-title">Distribuição detalhada das respostas</h5>
-          <ChartComponent data={data2025} />
         </div>
 
         {/* Insights e Análises */}
