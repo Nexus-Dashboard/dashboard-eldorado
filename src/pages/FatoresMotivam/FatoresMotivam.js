@@ -3,11 +3,14 @@ import { Container, Row, Col, Card } from "react-bootstrap"
 import { ResponsiveBar } from "@nivo/bar"
 import { useData } from "../../context/DataContext"
 import TrajetoriaMotivacao from "./TrajetoriaMotivacao"
+import ReconhecimentoMotivacao from "./ReconhecimentoMotivacao"
+import TrajetoriaLongaEldorado from "./TrajetoriaLongaEldorado"
+import QuestionNavigation from "./QuestionNavigation"
 
 const FatoresMotivam = () => {
   const { getFilteredData, loading } = useData()
   const [motivationData, setMotivationData] = useState(null)
-  const [activeSection, setActiveSection] = useState("motivacao") // Para controlar qual seção mostrar
+  const [activeQuestion, setActiveQuestion] = useState("motivacao") // Para controlar qual pergunta mostrar
 
   useEffect(() => {
     const processData = () => {
@@ -319,45 +322,6 @@ const FatoresMotivam = () => {
           margin-bottom: 15px;
         }
 
-        .section-navigation {
-          background: white;
-          padding: 20px;
-          border-radius: 12px;
-          margin-bottom: 30px;
-          box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-          text-align: center;
-        }
-
-        .nav-buttons {
-          display: flex;
-          gap: 15px;
-          justify-content: center;
-          flex-wrap: wrap;
-        }
-
-        .nav-button {
-          background: #f8f9fa;
-          border: 2px solid #e9ecef;
-          color: #495057;
-          padding: 12px 20px;
-          border-radius: 8px;
-          font-weight: 500;
-          cursor: pointer;
-          transition: all 0.3s;
-          min-width: 200px;
-        }
-
-        .nav-button.active {
-          background: #2e8b57;
-          border-color: #2e8b57;
-          color: white;
-        }
-
-        .nav-button:hover:not(.active) {
-          background: #e9ecef;
-          border-color: #dee2e6;
-        }
-
         @media (max-width: 992px) {
           .chart-content {
             flex-direction: column;
@@ -409,17 +373,6 @@ const FatoresMotivam = () => {
             height: 500px !important;
           }
         }
-
-        @media (max-width: 768px) {
-          .nav-buttons {
-            flex-direction: column;
-            align-items: center;
-          }
-          
-          .nav-button {
-            width: 100%;
-            max-width: 300px;
-          }
       `}</style>
 
       <Container fluid>
@@ -428,26 +381,14 @@ const FatoresMotivam = () => {
           <p className="text-muted mb-0">Pesquisa Nossa Gente Eldorado</p>
         </div>
 
-        {/* Navegação entre seções */}
-        <div className="section-navigation">
-          <div className="nav-buttons">
-            <button 
-              className={`nav-button ${activeSection === "motivacao" ? "active" : ""}`}
-              onClick={() => setActiveSection("motivacao")}
-            >
-              💼 Fatores de Motivação
-            </button>
-            <button 
-              className={`nav-button ${activeSection === "trajetoria" ? "active" : ""}`}
-              onClick={() => setActiveSection("trajetoria")}
-            >
-              🚀 Trajetória na Eldorado
-            </button>
-          </div>
-        </div>
+        {/* Navegação entre perguntas */}
+        <QuestionNavigation 
+          activeQuestion={activeQuestion} 
+          setActiveQuestion={setActiveQuestion} 
+        />
 
         {/* Seção de Fatores de Motivação */}
-        {activeSection === "motivacao" && (
+        {activeQuestion === "motivacao" && (
           <div className="motivation-container">
             {/* Pergunta */}
             <div className="question-text">
@@ -657,8 +598,14 @@ const FatoresMotivam = () => {
           </div>
         )}
 
+        {/* Seção de Reconhecimento e Motivação */}
+        {activeQuestion === "reconhecimento" && <ReconhecimentoMotivacao />}
+
+        {/* Seção de Construção de Trajetória Longa */}
+        {activeQuestion === "trajetoria-longa" && <TrajetoriaLongaEldorado />}
+
         {/* Seção de Trajetória na Eldorado */}
-        {activeSection === "trajetoria" && <TrajetoriaMotivacao />}
+        {activeQuestion === "trajetoria" && <TrajetoriaMotivacao />}
       </Container>
     </>
   )
