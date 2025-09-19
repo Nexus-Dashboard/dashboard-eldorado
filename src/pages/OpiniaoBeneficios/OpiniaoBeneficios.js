@@ -1,6 +1,12 @@
-import { Container, Row, Col } from "react-bootstrap"
+import { useState } from "react"
+import { Container } from "react-bootstrap"
+import UtilizacaoAvaliacaoBeneficios from "./UtilizacaoAvaliacaoBeneficios"
+import ConcordanciaBeneficios from "./ConcordanciaBeneficios"
+import QuestionNavigationBeneficios from "./QuestionNavigationBeneficios"
 
 const OpiniaoBeneficios = () => {
+  const [activeQuestion, setActiveQuestion] = useState("utilizacao-avaliacao")
+
   return (
     <Container fluid>
       <div className="page-header">
@@ -8,17 +14,17 @@ const OpiniaoBeneficios = () => {
         <p className="text-muted mb-0">Pesquisa Nossa Gente Eldorado</p>
       </div>
 
-      <Row>
-        <Col lg={12}>
-          <div className="methodology-content">
-            <h3>Opinião sobre benefícios da Eldorado</h3>
-            <p>Esta seção apresentará a avaliação dos colaboradores sobre os benefícios oferecidos pela empresa.</p>
-            <p>
-              <em>Conteúdo em desenvolvimento...</em>
-            </p>
-          </div>
-        </Col>
-      </Row>
+      {/* Navegação entre perguntas */}
+      <QuestionNavigationBeneficios 
+        activeQuestion={activeQuestion} 
+        setActiveQuestion={setActiveQuestion} 
+      />
+
+      {/* Seção de Utilização e Avaliação dos Benefícios */}
+      {activeQuestion === "utilizacao-avaliacao" && <UtilizacaoAvaliacaoBeneficios />}
+
+      {/* Seção de Concordância sobre Benefícios */}
+      {activeQuestion === "concordancia-beneficios" && <ConcordanciaBeneficios />}
     </Container>
   )
 }
