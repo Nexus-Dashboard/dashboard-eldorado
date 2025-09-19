@@ -1,6 +1,12 @@
-import { Container, Row, Col } from "react-bootstrap"
+import { useState } from "react"
+import { Container } from "react-bootstrap"
+import ConcordanciaComunicacao from "./ConcordanciaComunicacao"
+import MeiosBuscarInformacoes from "./MeiosBuscarInformacoes"
+import QuestionNavigationComunicacao from "./QuestionNavigationComunicacao"
 
 const ComunicacaoEldorado = () => {
+  const [activeQuestion, setActiveQuestion] = useState("concordancia-comunicacao")
+
   return (
     <Container fluid>
       <div className="page-header">
@@ -8,17 +14,17 @@ const ComunicacaoEldorado = () => {
         <p className="text-muted mb-0">Pesquisa Nossa Gente Eldorado</p>
       </div>
 
-      <Row>
-        <Col lg={12}>
-          <div className="methodology-content">
-            <h3>Comunicação Eldorado</h3>
-            <p>Esta seção analisará a efetividade da comunicação interna da Eldorado.</p>
-            <p>
-              <em>Conteúdo em desenvolvimento...</em>
-            </p>
-          </div>
-        </Col>
-      </Row>
+      {/* Navegação entre perguntas */}
+      <QuestionNavigationComunicacao 
+        activeQuestion={activeQuestion} 
+        setActiveQuestion={setActiveQuestion} 
+      />
+
+      {/* Seção de Concordância sobre Comunicação */}
+      {activeQuestion === "concordancia-comunicacao" && <ConcordanciaComunicacao />}
+
+      {/* Seção de Meios para Buscar Informações */}
+      {activeQuestion === "meios-buscar-informacoes" && <MeiosBuscarInformacoes />}
     </Container>
   )
 }
