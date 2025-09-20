@@ -215,14 +215,16 @@ const NivelComprometimento = () => {
           Percepção sobre o nível de comprometimento da Eldorado com práticas ESG - 2025
         </h5>
         
+        
+
+        <ChartComponent data={chartData2025} />
+
         <div className="highlight-box">
           <div className="highlight-percentage">{percentualAltoMuito2025}%</div>
           <div className="highlight-text">
             dos colaboradores avaliam o comprometimento como "Muito alto" ou "Alto" em 2025
           </div>
         </div>
-
-        <ChartComponent data={chartData2025} />
       </div>
 
       {!showComparison && (

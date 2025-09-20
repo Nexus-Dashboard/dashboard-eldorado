@@ -221,21 +221,6 @@ const ConhecimentoAcoesESG = () => {
         Gostaria de saber quais delas você já tinha tomado conhecimento anteriormente.
       </div>
 
-      <div className="category-badges">
-        <div className="category-badge ambiental">
-          <div className="badge-percentage">{categorias.ambiental || 50}%</div>
-          <div className="badge-label">Ações Ambientais</div>
-        </div>
-        <div className="category-badge social">
-          <div className="badge-percentage">{categorias.social || 87}%</div>
-          <div className="badge-label">Ações Sociais</div>
-        </div>
-        <div className="category-badge governanca">
-          <div className="badge-percentage">{categorias.governanca || 90}%</div>
-          <div className="badge-label">Ações de Governança</div>
-        </div>
-      </div>
-
       <div className="chart-section">
         <h5 style={{ color: "#333", fontSize: "1.3rem", marginBottom: "30px", textAlign: "center" }}>
           Conhecimento sobre as ações ESG da Eldorado
@@ -307,6 +292,21 @@ const ConhecimentoAcoesESG = () => {
               )
             ]}
           />
+        </div>
+
+        <div className="category-badges">
+            <div className="category-badge ambiental">
+            <div className="badge-percentage">{categorias.ambiental || 50}%</div>
+            <div className="badge-label">Ações Ambientais</div>
+            </div>
+            <div className="category-badge social">
+            <div className="badge-percentage">{categorias.social || 87}%</div>
+            <div className="badge-label">Ações Sociais</div>
+            </div>
+            <div className="category-badge governanca">
+            <div className="badge-percentage">{categorias.governanca || 90}%</div>
+            <div className="badge-label">Ações de Governança</div>
+            </div>
         </div>
       </div>
 
