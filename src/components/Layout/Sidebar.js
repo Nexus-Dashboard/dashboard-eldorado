@@ -1,9 +1,12 @@
-import { Nav } from "react-bootstrap"
+import { Nav, Button } from "react-bootstrap"
 import { LinkContainer } from "react-router-bootstrap"
-import { useLocation } from "react-router-dom"
+import { useLocation, useNavigate } from "react-router-dom"
+import { useAuth } from "../../context/AuthContext"
 
 const Sidebar = () => {
   const location = useLocation()
+  const navigate = useNavigate()
+  const { logout } = useAuth()
 
   const menuItems = [
     { path: "/metodologia", label: "Metodologia", id: 1 },
@@ -26,11 +29,12 @@ const Sidebar = () => {
 
   return (
     <div className="sidebar">
-      <div className="brand-logos">
+      <div className="brand-logos" onClick={() => navigate("/")}>
         <img
           src="eldorado_logo.png"
           alt="Eldorado Brasil"
-        />        
+          style={{ cursor: "pointer" }}
+        />
       </div>
 
       <div className="sidebar-title">
@@ -58,6 +62,18 @@ const Sidebar = () => {
             </LinkContainer>
           ))}
         </Nav>
+      </div>
+
+      <div className="sidebar-footer mt-auto p-3">
+        <Button
+          variant="outline-danger"
+          size="sm"
+          className="w-100"
+          onClick={logout}
+        >
+          <i className="bi bi-box-arrow-right me-2"></i>
+          Sair do Sistema
+        </Button>
       </div>
     </div>
   )

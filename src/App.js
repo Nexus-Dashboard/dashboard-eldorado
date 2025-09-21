@@ -3,16 +3,22 @@ import "bootstrap/dist/css/bootstrap.min.css"
 import "./App.css"
 import Layout from "./components/Layout/Layout"
 import { DataProvider } from "./context/DataContext"
+import { AuthProvider } from "./context/AuthContext"
+import ProtectedRoute from "./components/Auth/ProtectedRoute"
 
 function App() {
   return (
-    <DataProvider>
-      <Router>
-        <div className="App">
-          <Layout />
-        </div>
-      </Router>
-    </DataProvider>
+    <AuthProvider>
+      <DataProvider>
+        <Router>
+          <div className="App">
+            <ProtectedRoute>
+              <Layout />
+            </ProtectedRoute>
+          </div>
+        </Router>
+      </DataProvider>
+    </AuthProvider>
   )
 }
 

@@ -1,4 +1,5 @@
 import { Routes, Route } from "react-router-dom"
+import Home from "../pages/Home/Home"
 import Metodologia from "../pages/Metodologia/Metodologia"
 import PerfilAmostra from "../pages/PerfilAmostra/PerfilAmostra"
 import GrauFelicidade from "../pages/GrauFelicidade/GrauFelicidade"
@@ -19,7 +20,7 @@ import ConsideracoesFinais from "../pages/ConsideracoesFinais/ConsideracoesFinai
 const AppRouter = () => {
   return (
     <Routes>
-      <Route path="/" element={<Metodologia />} />
+      <Route path="/" element={<Home />} />
       <Route path="/metodologia" element={<Metodologia />} />
       <Route path="/perfil-amostra" element={<PerfilAmostra />} />
       <Route path="/grau-felicidade" element={<GrauFelicidade />} />
