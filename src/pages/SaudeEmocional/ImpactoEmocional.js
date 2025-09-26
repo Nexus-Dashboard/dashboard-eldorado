@@ -19,16 +19,64 @@ const ImpactoEmocional = () => {
         const filteredData = getFilteredData()
         if (!filteredData || filteredData.length === 0) return
 
+        console.log("=== DEBUG IMPACTO EMOCIONAL ===")
+        console.log("Total de registros filtrados:", filteredData.length)
+
         // Campo da pergunta P14
         const questionField = "P14 - De que forma o seu trabalho tem impactado sua saúde emocional?"
         const impactoField = "P14_IMPACTO_EMOCIONAL"
 
         // Verificar se os campos existem
         const availableFields = filteredData.length > 0 ? Object.keys(filteredData[0]) : []
+        console.log("Campos disponíveis que contêm 'P14':", availableFields.filter(f => f.includes('P14')))
+        
         const hasP14 = availableFields.includes(questionField)
         const hasImpacto = availableFields.includes(impactoField)
+        
+        console.log("Campo P14 encontrado:", hasP14)
+        console.log("Campo P14_IMPACTO_EMOCIONAL encontrado:", hasImpacto)
 
-        if (!hasP14 && !hasImpacto) {
+        // Buscar campo P14 de forma mais flexível
+        let actualP14Field = questionField
+        if (!hasP14) {
+          actualP14Field = availableFields.find(f => 
+            f.includes("P14") && f.includes("trabalho") && f.includes("impactado")
+          ) || questionField
+          console.log("Campo P14 alternativo encontrado:", actualP14Field)
+        }
+
+        // Buscar campo de impacto de forma mais flexível
+        let actualImpactoField = impactoField
+        if (!hasImpacto) {
+          actualImpactoField = availableFields.find(f => 
+            f.includes("P14") && f.includes("IMPACTO")
+          ) || impactoField
+          console.log("Campo impacto alternativo encontrado:", actualImpactoField)
+        }
+
+        // Processar P14 (pergunta detalhada)
+        const p14Responses = filteredData
+          .map(row => row[actualP14Field])
+          .filter(response => response && response.trim() !== "" && !response.includes("#NULL!"))
+
+        console.log("Respostas P14 válidas:", p14Responses.length)
+        if (p14Responses.length > 0) {
+          console.log("Primeiras 5 respostas P14:", p14Responses.slice(0, 5))
+        }
+
+        // Processar P14_IMPACTO_EMOCIONAL (categorias agrupadas)
+        const impactoResponses = filteredData
+          .map(row => row[actualImpactoField])
+          .filter(response => response && response.trim() !== "" && !response.includes("#NULL!"))
+
+        console.log("Respostas IMPACTO válidas:", impactoResponses.length)
+        if (impactoResponses.length > 0) {
+          console.log("Primeiras 5 respostas IMPACTO:", impactoResponses.slice(0, 5))
+          console.log("Valores únicos IMPACTO:", [...new Set(impactoResponses)])
+        }
+
+        if (p14Responses.length === 0 && impactoResponses.length === 0) {
+          console.log("Nenhum dado encontrado, usando dados de exemplo")
           // Usar dados de exemplo baseados na imagem
           const exampleData = [
             { categoria: "Afeta muito positivamente", percentage: 7, color: "#2e7d32" },
@@ -49,23 +97,15 @@ const ImpactoEmocional = () => {
           return
         }
 
-        // Processar P14 (pergunta detalhada)
-        const p14Responses = filteredData
-          .map(row => row[questionField])
-          .filter(response => response && response.trim() !== "" && !response.includes("#NULL!"))
-
-        // Processar P14_IMPACTO_EMOCIONAL (categorias agrupadas)
-        const impactoResponses = filteredData
-          .map(row => row[impactoField])
-          .filter(response => response && response.trim() !== "" && !response.includes("#NULL!"))
-
         // Contar respostas de P14
         const p14Counts = {}
         p14Responses.forEach(response => {
           p14Counts[response] = (p14Counts[response] || 0) + 1
         })
 
-        // Mapear e calcular percentuais
+        console.log("Contagem P14:", p14Counts)
+
+        // Mapear e calcular percentuais para o gráfico
         const categorias = [
           { label: "Afeta muito positivamente", color: "#2e7d32" },
           { label: "Afeta positivamente", color: "#4caf50" },
@@ -85,36 +125,35 @@ const ImpactoEmocional = () => {
           }
         })
 
-        // Calcular dados agregados do P14_IMPACTO_EMOCIONAL
-        let impactoPositivo = 0
-        let naoAfeta = 0
-        let impactoNegativo = 0
+        // Calcular dados agregados para os cards SEMPRE a partir dos dados do gráfico
+        console.log("Dados processados para o gráfico:", processedData)
+        
+        // Calcular impacto positivo (Afeta muito positivamente + Afeta positivamente)
+        const impactoPositivo = processedData
+          .filter(item => 
+            item.categoria.toLowerCase().includes('muito positivamente') || 
+            item.categoria.toLowerCase().includes('afeta positivamente')
+          )
+          .reduce((sum, item) => sum + item.percentage, 0)
+        
+        // Calcular não afeta
+        const naoAfeta = processedData
+          .filter(item => item.categoria.toLowerCase().includes('não afeta'))
+          .reduce((sum, item) => sum + item.percentage, 0)
+        
+        // Calcular impacto negativo (Afeta negativamente + Afeta muito negativamente)
+        const impactoNegativo = processedData
+          .filter(item => 
+            item.categoria.toLowerCase().includes('muito negativamente') || 
+            item.categoria.toLowerCase().includes('afeta negativamente')
+          )
+          .reduce((sum, item) => sum + item.percentage, 0)
 
-        if (hasImpacto && impactoResponses.length > 0) {
-          // Contar respostas do campo agregado
-          const impactoCounts = {}
-          impactoResponses.forEach(response => {
-            impactoCounts[response] = (impactoCounts[response] || 0) + 1
-          })
-
-          // Calcular percentuais
-          const total = impactoResponses.length
-          impactoPositivo = Math.round(((impactoCounts["Impacto positivo"] || 0) / total) * 100)
-          naoAfeta = Math.round(((impactoCounts["Não afeta"] || 0) / total) * 100)
-          impactoNegativo = Math.round(((impactoCounts["Impacto negativo"] || 0) / total) * 100)
-        } else {
-          // Se não tiver o campo agregado, calcular baseado no P14
-          const positivo = (p14Counts["Afeta muito positivamente"] || 0) + (p14Counts["Afeta positivamente"] || 0)
-          const neutro = p14Counts["Não afeta"] || 0
-          const negativo = (p14Counts["Afeta negativamente"] || 0) + (p14Counts["Afeta muito negativamente"] || 0)
-          const total = p14Responses.length
-
-          if (total > 0) {
-            impactoPositivo = Math.round((positivo / total) * 100)
-            naoAfeta = Math.round((neutro / total) * 100)
-            impactoNegativo = Math.round((negativo / total) * 100)
-          }
-        }
+        console.log("=== CÁLCULO DOS CARDS ===")
+        console.log("Impacto Positivo:", impactoPositivo, "%")
+        console.log("Não Afeta:", naoAfeta, "%")
+        console.log("Impacto Negativo:", impactoNegativo, "%")
+        console.log("Total:", impactoPositivo + naoAfeta + impactoNegativo, "%")
 
         setChartData(processedData)
         setSummaryData({
@@ -123,6 +162,10 @@ const ImpactoEmocional = () => {
           impactoNegativo
         })
         setTotalRespondentes(p14Responses.length || filteredData.length)
+
+        console.log("=== RESULTADO FINAL ===")
+        console.log("Chart data:", processedData)
+        console.log("Summary data:", { impactoPositivo, naoAfeta, impactoNegativo })
 
       } catch (error) {
         console.error("Erro ao processar dados P14:", error)
@@ -475,7 +518,7 @@ const ImpactoEmocional = () => {
             <Card className="insights-card">
               <Row>
                 <Col lg={4} className="insights-section">
-                  <h6>Impacto Positivo (39%)</h6>
+                  <h6>Impacto Positivo ({summaryData.impactoPositivo}%)</h6>
                   <div className="metric-highlight">
                     <strong>7%</strong> afeta muito positivamente<br />
                     <strong>32%</strong> afeta positivamente
@@ -487,7 +530,7 @@ const ImpactoEmocional = () => {
                   </p>
                 </Col>
                 <Col lg={4} className="insights-section">
-                  <h6>Neutro (43%)</h6>
+                  <h6>Neutro ({summaryData.naoAfeta}%)</h6>
                   <div className="metric-highlight">
                     <strong>43%</strong> relatam que não afeta<br />
                     <strong>8%</strong> não sabem dizer
@@ -499,7 +542,7 @@ const ImpactoEmocional = () => {
                   </p>
                 </Col>
                 <Col lg={4} className="insights-section">
-                  <h6>Impacto Negativo (10%)</h6>
+                  <h6>Impacto Negativo ({summaryData.impactoNegativo}%)</h6>
                   <div className="metric-highlight">
                     <strong>9%</strong> afeta negativamente<br />
                     <strong>1%</strong> afeta muito negativamente
