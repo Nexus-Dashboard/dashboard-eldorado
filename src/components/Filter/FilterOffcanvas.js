@@ -11,13 +11,12 @@ const FilterOffcanvas = ({ show, handleClose }) => {
   const filterConfig = [
     { key: "TEMPO_ELDORADO", label: "Tempo de Eldorado" },
     { key: "LOCALIDADE2", label: "Localidade" },
-    { key: "RECORTE_PERFIL_FINAL", label: "Diretorias" },
-    { key: "PF3_FINAL", label: "Áreas" },
+    { key: "PF2_FINAL", label: "Diretorias" },
+    { key: "RECORTE_PERFIL_FINAL", label: "Diretorias e Segmentações" },
     { key: "FAIXA_ETARIA", label: "Faixa Etária" },
     { key: "GENERO", label: "Gênero" },
     { key: "RACA_COR", label: "Raça/Cor" },
-    { key: "ESCOLARIDADE_0", label: "Escolaridade" },
-    { key: "PF8 - Qual a sua orientação sexual?", label: "Orientação Sexual" },
+    { key: "ESCOLARIDADE_0", label: "Escolaridade" }
   ]
 
   // Definir ordem específica para cada filtro
@@ -40,9 +39,9 @@ const FilterOffcanvas = ({ show, handleClose }) => {
     "GENERO": [
       "Homem cisgênero",
       "Mulher cisgênero",
+      "Outros",
       "Transgênero",
-      "Prefiro não declarar",
-      "Outros"
+      "Prefiro não declarar"
     ],
     "RACA_COR": [
       "Branco",
@@ -50,15 +49,6 @@ const FilterOffcanvas = ({ show, handleClose }) => {
       "Pardo",
       "Prefiro não declarar",
       "Outros"
-    ],
-    "PF8 - Qual a sua orientação sexual?": [
-      "Heterossexual: atração por pessoas do sexo oposto.",
-      "Homossexual: atração por pessoas do mesmo sexo.", 
-      "Bissexual: atração por ambos os sexos.",
-      "Assexual: atração por nenhum sexo. Embora a pessoa não sinta desejo sexual, é capaz de manter um relacionamento amor",
-      "Pansexual: atração por pessoas, independentemente do sexo.",
-      "Não se identificou",
-      "Outra"
     ]
   }
 
