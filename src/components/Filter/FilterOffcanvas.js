@@ -40,7 +40,6 @@ const FilterOffcanvas = ({ show, handleClose }) => {
       "Homem cisgênero",
       "Mulher cisgênero",
       "Outros",
-      "Transgênero",
       "Prefiro não declarar"
     ],
     "RACA_COR": [
@@ -50,6 +49,13 @@ const FilterOffcanvas = ({ show, handleClose }) => {
       "Prefiro não declarar",
       "Outros"
     ]
+  }
+
+  // Configuração de agregações - mapeia valores para serem agrupados
+  const aggregations = {
+    "GENERO": {
+      "Outros": ["Outros", "Transgênero"] // "Outros" inclui tanto "Outros" quanto "Transgênero"
+    }
   }
 
   // Função para filtrar valores inválidos
@@ -63,9 +69,39 @@ const FilterOffcanvas = ({ show, handleClose }) => {
     )
   }
 
+  // Função para agregar valores conforme configuração
+  const aggregateValues = (values, filterKey) => {
+    if (!aggregations[filterKey]) {
+      return values
+    }
+
+    const aggregationConfig = aggregations[filterKey]
+    const aggregatedSet = new Set()
+    
+    values.forEach(value => {
+      let wasAggregated = false
+      
+      // Verificar se este valor deve ser agregado em algum grupo
+      Object.entries(aggregationConfig).forEach(([groupName, groupValues]) => {
+        if (groupValues.includes(value)) {
+          aggregatedSet.add(groupName)
+          wasAggregated = true
+        }
+      })
+      
+      // Se não foi agregado, manter o valor original
+      if (!wasAggregated) {
+        aggregatedSet.add(value)
+      }
+    })
+    
+    return Array.from(aggregatedSet)
+  }
+
   // Função para ordenar valores conforme configuração
   const sortValues = (values, filterKey) => {
     const validValues = filterValidValues(values)
+    const aggregatedValues = aggregateValues(validValues, filterKey)
     
     if (customOrders[filterKey]) {
       const order = customOrders[filterKey]
@@ -73,7 +109,7 @@ const FilterOffcanvas = ({ show, handleClose }) => {
       
       // Primeiro, adicionar valores na ordem específica
       order.forEach(orderItem => {
-        const foundValue = validValues.find(value => 
+        const foundValue = aggregatedValues.find(value => 
           value.toLowerCase().trim() === orderItem.toLowerCase().trim()
         )
         if (foundValue) {
@@ -82,7 +118,7 @@ const FilterOffcanvas = ({ show, handleClose }) => {
       })
       
       // Depois, adicionar valores que não estão na ordem específica (alfabeticamente)
-      const remainingValues = validValues.filter(value => 
+      const remainingValues = aggregatedValues.filter(value => 
         !order.some(orderItem => 
           value.toLowerCase().trim() === orderItem.toLowerCase().trim()
         )
@@ -92,7 +128,7 @@ const FilterOffcanvas = ({ show, handleClose }) => {
     }
     
     // Para filtros sem ordem específica, ordenar alfabeticamente
-    return validValues.sort()
+    return aggregatedValues.sort()
   }
 
   useEffect(() => {
@@ -116,8 +152,35 @@ const FilterOffcanvas = ({ show, handleClose }) => {
     })
   }
 
+  // Função para expandir filtros agregados na aplicação
+  const expandAggregatedFilters = (filters) => {
+    const expandedFilters = { ...filters }
+    
+    Object.entries(filters).forEach(([filterKey, selectedValues]) => {
+      if (aggregations[filterKey] && selectedValues && selectedValues.length > 0) {
+        const expandedValues = []
+        
+        selectedValues.forEach(selectedValue => {
+          const aggregationConfig = aggregations[filterKey]
+          if (aggregationConfig[selectedValue]) {
+            // Se o valor selecionado é um grupo agregado, adicionar todos os valores do grupo
+            expandedValues.push(...aggregationConfig[selectedValue])
+          } else {
+            // Se não é um grupo agregado, manter o valor original
+            expandedValues.push(selectedValue)
+          }
+        })
+        
+        expandedFilters[filterKey] = [...new Set(expandedValues)] // Remove duplicatas
+      }
+    })
+    
+    return expandedFilters
+  }
+
   const applyFilters = () => {
-    updateFilters(localFilters)
+    const expandedFilters = expandAggregatedFilters(localFilters)
+    updateFilters(expandedFilters)
     handleClose()
   }
 

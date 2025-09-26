@@ -20,7 +20,7 @@ const ImpactoEmocional = () => {
         if (!filteredData || filteredData.length === 0) return
 
         // Campo da pergunta P14
-        const questionField = "P14 - De que forma o seu trabalho tem impactado sua saúde emocional"
+        const questionField = "P14 - De que forma o seu trabalho tem impactado sua saúde emocional?"
         const impactoField = "P14_IMPACTO_EMOCIONAL"
 
         // Verificar se os campos existem
