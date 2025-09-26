@@ -382,38 +382,7 @@ const ImpactoEmocional = () => {
           De que forma o seu trabalho tem impactado sua saúde emocional?
         </div>
 
-        {/* Boxes de resumo */}
-        <div className="summary-boxes">
-          <div className="summary-box positivo">
-            <div className="box-title">Impacto positivo</div>
-            <div className="box-percentage">{summaryData.impactoPositivo}%</div>
-            <div className="box-description">
-              Principalmente entre os mais escolarizados e quem possui mais tempo de casa (10 anos ou mais)
-            </div>
-          </div>
-
-          <div className="summary-box neutro">
-            <div className="box-title">Não afeta</div>
-            <div className="box-percentage">{summaryData.naoAfeta}%</div>
-            <div className="box-description">
-              Mais entre homens cis do que mulheres cis, entre 55 e 64 anos com escolaridade mais baixa e "recém chegados" na Eldorado
-            </div>
-          </div>
-
-          <div className="summary-box negativo">
-            <div className="box-title">Impacto negativo</div>
-            <div className="box-percentage">{summaryData.impactoNegativo}%</div>
-            <div className="box-description">
-              Mais entre mulheres cis, da localidade de Santos, de escolaridade mais alta e com 4 a 6 anos de atuação na Eldorado
-            </div>
-          </div>
-        </div>
-
-        {/* Destaque principal */}
-        <div className="highlight-text">
-          <h4>4 em cada 10 colaboradores avaliam que o trabalho contribui positivamente para sua saúde emocional</h4>
-          <p>Este é um indicador importante do ambiente organizacional saudável da Eldorado</p>
-        </div>
+        
 
         {/* Gráfico detalhado */}
         <div className="chart-section">
@@ -510,6 +479,39 @@ const ImpactoEmocional = () => {
               ]}
             />
           </div>
+        </div>
+
+        {/* Boxes de resumo */}
+        <div className="summary-boxes">
+          <div className="summary-box positivo">
+            <div className="box-title">Impacto positivo</div>
+            <div className="box-percentage">{summaryData.impactoPositivo}%</div>
+            <div className="box-description">
+              Principalmente entre os mais escolarizados e quem possui mais tempo de casa (10 anos ou mais)
+            </div>
+          </div>
+
+          <div className="summary-box neutro">
+            <div className="box-title">Não afeta</div>
+            <div className="box-percentage">{summaryData.naoAfeta}%</div>
+            <div className="box-description">
+              Mais entre homens cis do que mulheres cis, entre 55 e 64 anos com escolaridade mais baixa e "recém chegados" na Eldorado
+            </div>
+          </div>
+
+          <div className="summary-box negativo">
+            <div className="box-title">Impacto negativo</div>
+            <div className="box-percentage">{summaryData.impactoNegativo}%</div>
+            <div className="box-description">
+              Mais entre mulheres cis, da localidade de Santos, de escolaridade mais alta e com 4 a 6 anos de atuação na Eldorado
+            </div>
+          </div>
+        </div>
+
+        {/* Destaque principal */}
+        <div className="highlight-text">
+          <h4>4 em cada 10 colaboradores avaliam que o trabalho contribui positivamente para sua saúde emocional</h4>
+          <p>Este é um indicador importante do ambiente organizacional saudável da Eldorado</p>
         </div>
 
         {/* Insights e Análises */}

@@ -1,7 +1,5 @@
-// src/components/PerfilAmostra.js
-
 import { useState, useEffect } from "react"
-import { Container, Row, Col, Card, Table } from "react-bootstrap"
+import { Container, Row, Col, Card } from "react-bootstrap"
 import { ResponsiveBar } from "@nivo/bar"
 import { useData } from "../../context/DataContext"
 
@@ -27,9 +25,7 @@ const PerfilAmostra = () => {
 
         setTotalRespondentes(filteredData.length)
 
-        // **ALTERAÇÃO AQUI: Simplificando a função getFieldValue**
         const getFieldValue = (row, fieldName) => {
-            // Agora 'row' é um objeto, então podemos acessar a propriedade diretamente.
             return row ? row[fieldName] || "" : ""
         }
 
@@ -61,7 +57,6 @@ const PerfilAmostra = () => {
             .sort((a, b) => b.percentage - a.percentage)
         }
         
-        // As colunas agora correspondem exatamente aos cabeçalhos do seu JSON
         setChartData({
           genero: calculatePercentages(filteredData, 'GENERO'),
           orientacaoSexual: calculatePercentages(filteredData, 'PF8 - Qual a sua orientação sexual?'),
@@ -83,75 +78,103 @@ const PerfilAmostra = () => {
     }
   }, [getFilteredData, loading])
   
-  // O restante do seu componente continua igual...
-  const commonBarConfig = {
-    margin: { top: 10, right: 60, bottom: 20, left: 120 },
-    padding: 0.2,
-    layout: 'horizontal',
-    valueScale: { type: 'linear' },
-    indexScale: { type: 'band', round: true },
-    colors: ['#2e8b57'],
-    borderColor: { from: 'color', modifiers: [['darker', 1.6]] },
-    axisTop: null,
-    axisRight: null,
-    axisBottom: {
-      tickSize: 5,
-      tickPadding: 5,
-      tickRotation: 0,
-      format: value => `${value}%`
-    },
-    axisLeft: {
-      tickSize: 5,
-      tickPadding: 5,
-      tickRotation: 0
-    },
-    labelSkipWidth: 12,
-    labelSkipHeight: 12,
-    labelTextColor: { from: 'color', modifiers: [['darker', 1.6]] },
-    animate: true,
-    motionStiffness: 90,
-    motionDamping: 15
+  const HorizontalBarChart = ({ data, height = 400, maxValue = null, leftMargin = 180 }) => {
+    const maxVal = maxValue || Math.max(...data.map(d => d.percentage))
+    const roundedMax = Math.ceil(maxVal / 25) * 25 // Arredonda para múltiplo de 25
+    
+    return (
+      <div style={{ height }}>
+        <ResponsiveBar
+          data={data}
+          keys={['percentage']}
+          indexBy="categoria"
+          layout="horizontal"
+          margin={{ top: 20, right: 80, bottom: 40, left: leftMargin }}
+          padding={0.3}
+          valueScale={{ type: 'linear', min: 0, max: roundedMax }}
+          colors="#2e8b57"
+          borderRadius={3}
+          axisTop={null}
+          axisRight={null}
+          axisBottom={{
+            tickSize: 0,
+            tickPadding: 8,
+            tickRotation: 0,
+            tickValues: [0, 25, 50, 75, 100].filter(val => val <= roundedMax),
+            format: v => `${v}%`
+          }}
+          axisLeft={{
+            tickSize: 0,
+            tickPadding: 12,
+            tickRotation: 0
+          }}
+          enableLabel={false}
+          enableGridY={true}
+          gridYValues={[0, 25, 50, 75, 100].filter(val => val <= roundedMax)}
+          tooltip={({ value, data }) => (
+            <div
+              style={{
+                background: 'white',
+                padding: '9px 12px',
+                border: '1px solid #ccc',
+                borderRadius: '4px',
+                fontSize: '12px',
+                boxShadow: '0 2px 8px rgba(0,0,0,0.15)'
+              }}
+            >
+              <div style={{ fontWeight: '600', marginBottom: '4px' }}>
+                {data.categoria}
+              </div>
+              <div style={{ color: '#666' }}>
+                <strong>{value}%</strong> ({data.valor.toLocaleString()} respondentes)
+              </div>
+            </div>
+          )}
+          theme={{
+            grid: {
+              line: {
+                stroke: "#e0e0e0",
+                strokeWidth: 1
+              }
+            },
+            axis: {
+              ticks: {
+                text: {
+                  fontSize: 12,
+                  fill: "#666"
+                }
+              }
+            }
+          }}
+          animate={true}
+          motionConfig="gentle"
+          layers={[
+            'grid',
+            'axes',
+            'bars',
+            ({ bars }) => (
+              <g>
+                {bars.map((bar, index) => (
+                  <text
+                    key={`label-${index}`}
+                    x={bar.x + bar.width + 15}
+                    y={bar.y + (bar.height / 2)}
+                    textAnchor="start"
+                    dominantBaseline="central"
+                    fontSize="14"
+                    fontWeight="600"
+                    fill="#333"
+                  >
+                    {bar.data.data.percentage}%
+                  </text>
+                ))}
+              </g>
+            )
+          ]}
+        />
+      </div>
+    )
   }
-
-  const HorizontalBarChart = ({ data, height = 300 }) => (
-    <div style={{ height }}>
-      <ResponsiveBar
-        data={data}
-        keys={['percentage']}
-        indexBy="categoria"
-        {...commonBarConfig}
-        label={d => `${d.data.percentage}%`} // Correção: Acessar 'percentage' via d.data
-      />
-    </div>
-  )
-
-  const DataTable = ({ data, title }) => (
-    <Card className="chart-card h-100">
-      <Card.Header>
-        <h6 className="mb-0">{title}</h6>
-      </Card.Header>
-      <Card.Body className="p-0">
-        <Table striped bordered hover className="mb-0 data-table" size="sm">
-          <thead>
-            <tr>
-              <th>{title}</th>
-              <th>Entrevistas</th>
-              <th>%</th>
-            </tr>
-          </thead>
-          <tbody>
-            {data.slice(0, 10).map((item, index) => (
-              <tr key={index}>
-                <td>{item.categoria}</td>
-                <td>{item.valor.toLocaleString()}</td>
-                <td>{item.percentage}%</td>
-              </tr>
-            ))}
-          </tbody>
-        </Table>
-      </Card.Body>
-    </Card>
-  )
 
   if (loading) {
     return (
@@ -172,81 +195,168 @@ const PerfilAmostra = () => {
   return (
     <>
       <style jsx>{`
-        .chart-card {
+        .perfil-container {
+          width: 100%;
+        }
+
+        .question-text {
+          font-style: italic;
+          color: #6c757d;
+          padding: 15px 20px;
+          background: #fff;
+          border-left: 4px solid #ff8c00;
+          border-radius: 4px;
+          margin-bottom: 30px;
+          font-size: 15px;
+          line-height: 1.5;
+        }
+
+        .section-divider {
+          height: 2px;
+          background: linear-gradient(90deg, #ff8c00 0%, #2e8b57 100%);
           border: none;
-          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-          border-radius: 8px;
-          overflow: hidden;
+          margin: 50px 0 30px 0;
+          border-radius: 1px;
         }
 
-        .chart-card .card-header {
-          background-color: #2e8b57 !important;
-          color: white !important;
+        .section-title {
+          color: #2e8b57;
+          font-size: 1.5rem;
           font-weight: 600;
-          padding: 12px 20px;
-          border-bottom: none;
-        }
-
-        .chart-card .card-body {
-          padding: 20px;
-        }
-
-        .data-table {
-          font-size: 0.9rem;
-        }
-
-        .data-table th {
-          background-color: #f8f9fa;
-          font-weight: 600;
-          color: #333333;
-          border-color: #dee2e6;
-        }
-
-        .data-table td {
-          border-color: #dee2e6;
-          vertical-align: middle;
-        }
-
-        .ilustracao-placeholder {
-          background: linear-gradient(135deg, #e8f5e8 0%, #d4edda 100%);
-          border-radius: 15px;
-          padding: 30px;
           text-align: center;
-          height: 100%;
-          display: flex;
-          flex-direction: column;
-          justify-content: center;
-          align-items: center;
-          min-height: 200px;
+          margin-bottom: 30px;
+          position: relative;
         }
 
-        .media-badge {
-          background-color: #2e8b57;
+        .section-title::after {
+          content: '';
+          position: absolute;
+          bottom: -8px;
+          left: 50%;
+          transform: translateX(-50%);
+          width: 60px;
+          height: 3px;
+          background: #ff8c00;
+          border-radius: 2px;
+        }
+
+        .chart-section {
+          background: white;
+          border-radius: 12px;
+          padding: 30px;
+          margin-bottom: 30px;
+          box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .chart-title {
+          color: #333;
+          font-size: 1.2rem;
+          font-weight: 600;
+          margin-bottom: 25px;
+          text-align: center;
+        }
+
+        .stats-summary {
+          display: flex;
+          justify-content: center;
+          gap: 30px;
+          margin: 40px 0;
+          flex-wrap: wrap;
+        }
+
+        .stat-item {
+          background: white;
+          border: 2px solid #2e8b57;
+          border-radius: 10px;
+          padding: 20px;
+          text-align: center;
+          min-width: 150px;
+          box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .stat-number {
+          font-size: 2rem;
+          font-weight: bold;
+          color: #2e8b57;
+          margin-bottom: 5px;
+        }
+
+        .stat-label {
+          font-size: 0.9rem;
+          color: #666;
+          font-weight: 500;
+        }
+
+        .tempo-badge {
+          background: #2e8b57;
           color: white;
           padding: 15px 20px;
           border-radius: 10px;
-          display: inline-block;
-          font-weight: 600;
           text-align: center;
-          min-width: 100px;
+          margin: 20px auto;
+          max-width: 200px;
         }
 
-        .base-info {
+        .tempo-label {
           font-size: 0.9rem;
-          color: #6c757d;
-          border-top: 2px solid #ff8c00;
-          padding-top: 10px;
-          margin-top: 20px;
+          margin-bottom: 5px;
+          opacity: 0.9;
+        }
+
+        .tempo-value {
+          font-size: 1.5rem;
+          font-weight: bold;
+        }
+
+        .insights-card {
+          background: #f8f9fa;
+          padding: 30px;
+          border-radius: 12px;
+          margin-top: 30px;
+        }
+
+        .insights-section {
+          margin-bottom: 20px;
+        }
+
+        .insights-section h6 {
+          font-weight: 600;
+          margin-bottom: 10px;
+          color: #2e8b57;
+        }
+
+        .insights-section p {
+          color: #666;
+          line-height: 1.6;
+          margin-bottom: 15px;
+        }
+
+        .metric-highlight {
+          background: #fff;
+          border-left: 4px solid #ff8c00;
+          padding: 10px 15px;
+          margin: 10px 0;
+          border-radius: 0 4px 4px 0;
         }
 
         @media (max-width: 768px) {
-          .chart-card .card-body {
-            padding: 15px;
+          .chart-section {
+            padding: 20px;
           }
           
-          .ilustracao-placeholder {
-            min-height: 150px;
-            padding: 20px;
+          .stats-summary {
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+          }
+          
+          .stat-item {
+            width: 100%;
+            max-width: 200px;
+          }
+
+          .section-title {
+            font-size: 1.3rem;
           }
         }
       `}</style>
@@ -257,133 +367,157 @@ const PerfilAmostra = () => {
           <p className="text-muted mb-0">Pesquisa Nossa Gente Eldorado</p>
         </div>
 
-        {/* Primeira linha - Perfil Demográfico */}
-        <Row className="mb-4">
-          <Col lg={4}>
-            <Card className="chart-card h-100">
-              <Card.Header>
-                <h6 className="mb-0">Gênero</h6>
-              </Card.Header>
-              <Card.Body>
-                <HorizontalBarChart data={chartData.genero} height={250} />
-              </Card.Body>
-            </Card>
-          </Col>
+        <div className="perfil-container">
+          <div className="question-text">
+            Conheça o perfil sociodemográfico e profissional dos {totalRespondentes.toLocaleString()} colaboradores que participaram da Pesquisa Nossa Gente Eldorado 2025, representando 63% do total de pessoas empregadas na empresa.
+          </div>
 
-          <Col lg={4}>
-            <Card className="chart-card h-100">
-              <Card.Header>
-                <h6 className="mb-0">Orientação Sexual</h6>
-              </Card.Header>
-              <Card.Body>
-                <HorizontalBarChart data={chartData.orientacaoSexual} height={250} />
-              </Card.Body>
-            </Card>
-          </Col>
+          {/* Seção 1: Perfil Demográfico */}
+          <h2 className="section-title">Perfil Demográfico</h2>
 
-          <Col lg={4}>
-            <Card className="chart-card h-100">
-              <Card.Header>
-                <h6 className="mb-0">Faixa etária</h6>
-              </Card.Header>
-              <Card.Body>
-                <HorizontalBarChart data={chartData.faixaEtaria} height={200} />
-                <div className="ilustracao-placeholder mt-3" style={{ minHeight: '100px' }}>
-                  <small className="text-muted">Ilustração representativa</small>
+          {/* Gênero */}
+          <div className="chart-section">
+            <h5 className="chart-title">Gênero</h5>
+            <HorizontalBarChart data={chartData.genero} height={250} />
+          </div>
+
+          {/* Orientação Sexual e Faixa Etária */}
+          <Row className="mb-4">
+            <Col lg={6}>
+              <div className="chart-section">
+                <h5 className="chart-title">Orientação Sexual</h5>
+                <HorizontalBarChart data={chartData.orientacaoSexual} height={300} leftMargin={300} />
+              </div>
+            </Col>
+
+            <Col lg={6}>
+              <div className="chart-section">
+                <h5 className="chart-title">Faixa Etária</h5>
+                <HorizontalBarChart data={chartData.faixaEtaria} height={300} />
+              </div>
+            </Col>
+          </Row>
+
+          {/* Escolaridade e Cor/Raça */}
+          <Row className="mb-4">
+            <Col lg={6}>
+              <div className="chart-section">
+                <h5 className="chart-title">Escolaridade</h5>
+                <HorizontalBarChart data={chartData.escolaridade} height={350} />
+              </div>
+            </Col>
+
+            <Col lg={6}>
+              <div className="chart-section">
+                <h5 className="chart-title">Cor/Raça</h5>
+                <HorizontalBarChart data={chartData.racaCor} height={350} />
+              </div>
+            </Col>
+          </Row>
+
+          {/* Divisor */}
+          <hr className="section-divider" />
+
+          {/* Seção 2: Perfil Profissional */}
+          <h2 className="section-title">Perfil Profissional</h2>
+
+          {/* Tempo de Eldorado */}
+          <div className="chart-section">
+            <h5 className="chart-title">Tempo de Eldorado</h5>
+            <HorizontalBarChart data={chartData.tempoEldorado} height={300} />
+            
+            <div className="tempo-badge">
+              <div className="tempo-label">Tempo médio na empresa</div>
+              <div className="tempo-value">5 anos</div>
+            </div>
+          </div>
+
+          {/* Diretoria */}
+          <div className="chart-section">
+            <h5 className="chart-title">Diretorias</h5>
+            <HorizontalBarChart data={chartData.diretoria} height={500} leftMargin={250} />
+          </div>
+
+          {/* Localidade */}
+          <div className="chart-section">
+            <h5 className="chart-title">Localidade</h5>
+            <HorizontalBarChart data={chartData.localidade} height={400} leftMargin={200} />
+          </div>
+
+          {/* Resumo Estatístico */}
+          <div className="stats-summary">
+            <div className="stat-item">
+              <div className="stat-number">{totalRespondentes.toLocaleString()}</div>
+              <div className="stat-label">Participantes</div>
+            </div>
+            
+            <div className="stat-item">
+              <div className="stat-number">63%</div>
+              <div className="stat-label">Taxa de Participação</div>
+            </div>
+            
+            <div className="stat-item">
+              <div className="stat-number">{chartData.genero.length}</div>
+              <div className="stat-label">Categorias de Gênero</div>
+            </div>
+            
+            <div className="stat-item">
+              <div className="stat-number">{chartData.localidade.length}</div>
+              <div className="stat-label">Localidades</div>
+            </div>
+          </div>
+
+          {/* Insights */}
+          <Row>
+            <Col lg={12}>
+              <Card className="insights-card">
+                <Row>
+                  <Col lg={4} className="insights-section">
+                    <h6>Diversidade de Gênero</h6>
+                    <div className="metric-highlight">
+                      <strong>Homens cisgênero:</strong> {chartData.genero.find(g => g.categoria.toLowerCase().includes('homem'))?.percentage || 0}%<br />
+                      <strong>Mulheres cisgênero:</strong> {chartData.genero.find(g => g.categoria.toLowerCase().includes('mulher'))?.percentage || 0}%
+                    </div>
+                    <p>
+                      A amostra reflete a composição da força de trabalho da Eldorado, com representação 
+                      equilibrada entre gêneros e abertura para diferentes identidades de gênero.
+                    </p>
+                  </Col>
+                  <Col lg={4} className="insights-section">
+                    <h6>Perfil Etário</h6>
+                    <div className="metric-highlight">
+                      <strong>Faixa predominante:</strong> {chartData.faixaEtaria[0]?.categoria || "N/A"} ({chartData.faixaEtaria[0]?.percentage || 0}%)
+                    </div>
+                    <p>
+                      O perfil etário demonstra uma força de trabalho madura e experiente, com boa 
+                      distribuição entre diferentes gerações, favorecendo a troca de conhecimentos.
+                    </p>
+                  </Col>
+                  <Col lg={4} className="insights-section">
+                    <h6>Experiência na Empresa</h6>
+                    <div className="metric-highlight">
+                      <strong>Tempo médio:</strong> 5 anos<br />
+                      <strong>Maior grupo:</strong> {chartData.tempoEldorado[0]?.categoria || "N/A"} ({chartData.tempoEldorado[0]?.percentage || 0}%)
+                    </div>
+                    <p>
+                      A combinação entre colaboradores experientes e novos talentos cria um ambiente 
+                      propício para inovação e continuidade organizacional.
+                    </p>
+                  </Col>
+                </Row>
+                
+                <div className="text-muted mt-3" style={{ fontSize: "0.9rem", borderTop: "2px solid #ff8c00", paddingTop: "10px" }}>
+                  <strong>Base | {totalRespondentes.toLocaleString()} respondentes</strong>
+                  <br />
+                  <small>
+                    Pesquisa realizada entre 20 de maio e 20 de junho de 2025, com participação de 63% 
+                    dos colaboradores da Eldorado Brasil.
+                  </small>
                 </div>
-              </Card.Body>
-            </Card>
-          </Col>
-        </Row>
-
-        {/* Segunda linha - Escolaridade e Raça/Cor */}
-        <Row className="mb-4">
-          <Col lg={6}>
-            <Card className="chart-card h-100">
-              <Card.Header>
-                <h6 className="mb-0">Escolaridade</h6>
-              </Card.Header>
-              <Card.Body>
-                <HorizontalBarChart data={chartData.escolaridade} height={300} />
-              </Card.Body>
-            </Card>
-          </Col>
-
-          <Col lg={6}>
-            <Card className="chart-card h-100">
-              <Card.Header>
-                <h6 className="mb-0">Cor/raça</h6>
-              </Card.Header>
-              <Card.Body>
-                <HorizontalBarChart data={chartData.racaCor} height={300} />
-              </Card.Body>
-            </Card>
-          </Col>
-        </Row>
-
-        {/* Terceira linha - Perfil Profissional */}
-        <div className="page-header mt-5">
-          <h2 className="page-title">Perfil profissional</h2>
-          <p className="text-muted mb-0">Pesquisa Nossa Gente Eldorado</p>
+              </Card>
+            </Col>
+          </Row>
         </div>
-
-        <Row className="mb-4">
-          <Col lg={4}>
-            <DataTable data={chartData.diretoria} title="Diretoria" />
-          </Col>
-
-          <Col lg={4}>
-            <Card className="chart-card h-100">
-              <Card.Header>
-                <h6 className="mb-0">Tempo de Eldorado</h6>
-              </Card.Header>
-              <Card.Body>
-                <HorizontalBarChart data={chartData.tempoEldorado} height={250} />
-                <div className="text-center mt-3">
-                  <div className="media-badge">
-                    <div>Média</div>
-                    <div><strong>5 anos</strong></div>
-                  </div>
-                </div>
-              </Card.Body>
-            </Card>
-          </Col>
-
-          <Col lg={4}>
-            <div className="ilustracao-placeholder h-100">
-              <div>
-                <i className="bi bi-people-fill" style={{ fontSize: '3rem', color: '#2e8b57', marginBottom: '10px' }}></i>
-                <p className="text-muted mb-0">Ilustração representativa</p>
-                <p className="text-muted">dos colaboradores</p>
-              </div>
-            </div>
-          </Col>
-        </Row>
-
-        {/* Localidade */}
-        <Row className="mb-4">
-          <Col lg={6}>
-            <DataTable data={chartData.localidade} title="Localidade" />
-          </Col>
-          <Col lg={6}>
-            <div className="ilustracao-placeholder h-100">
-              <div>
-                <i className="bi bi-geo-alt-fill" style={{ fontSize: '3rem', color: '#2e8b57', marginBottom: '10px' }}></i>
-                <p className="text-muted mb-0">Representação das</p>
-                <p className="text-muted">localidades da Eldorado</p>
-              </div>
-            </div>
-          </Col>
-        </Row>
-
-        {/* Footer */}
-        <Row className="mt-4">
-          <Col>
-            <div className="base-info">
-              <strong>Base | {totalRespondentes.toLocaleString()} respondentes</strong>
-            </div>
-          </Col>
-        </Row>
       </Container>
     </>
   )
