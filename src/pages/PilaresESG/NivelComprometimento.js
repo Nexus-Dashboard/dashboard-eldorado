@@ -6,17 +6,7 @@ import { useData } from "../../context/DataContext"
 const NivelComprometimento = () => {
   const { getFilteredData, loading } = useData()
   const [chartData2025, setChartData2025] = useState([])
-  const [showComparison, setShowComparison] = useState(false)
   const [totalRespondentes, setTotalRespondentes] = useState(0)
-
-  const dados2023 = [
-    { nivel: "Muito alto", percentage: 28, color: "#2e7d32" },
-    { nivel: "Alto", percentage: 48, color: "#4caf50" },
-    { nivel: "Médio", percentage: 17, color: "#ff9800" },
-    { nivel: "Baixo", percentage: 2, color: "#f44336" },
-    { nivel: "Muito baixo", percentage: 1, color: "#d32f2f" },
-    { nivel: "Não sei dizer", percentage: 4, color: "#9e9e9e" }
-  ]
 
   const dados2025Exemplo = [
     { nivel: "Muito alto", percentage: 39, color: "#2e7d32" },
@@ -144,7 +134,6 @@ const NivelComprometimento = () => {
   }
 
   const percentualAltoMuito2025 = chartData2025[0]?.percentage + chartData2025[1]?.percentage || 82
-  const percentualAltoMuito2023 = dados2023[0].percentage + dados2023[1].percentage
 
   return (
     <>
@@ -186,79 +175,35 @@ const NivelComprometimento = () => {
           color: #666;
           margin-top: 10px;
         }
-
-        .comparison-toggle {
-          text-align: center;
-          margin: 30px 0;
-        }
-
-        .comparison-toggle button {
-          background: #2e8b57;
-          border: none;
-          color: white;
-          padding: 10px 25px;
-          border-radius: 6px;
-        }
-
-        .comparison-toggle button:hover {
-          background: #246a43;
-        }
       `}</style>
 
       <div className="question-text">
-        Qual é, na sua avaliação, o nível de comprometimento da Eldorado em relação às práticas ambientais, 
+        Qual é, na sua avaliação, o nível de comprometimento da Eldorado em relação às práticas ambientais,
         sociais e de governança em seus negócios? Você diria que é muito alto, alto, médio, baixo ou muito baixo?
       </div>
 
       <div className="chart-section">
         <h5 style={{ color: "#333", fontSize: "1.3rem", marginBottom: "30px", textAlign: "center" }}>
-          Percepção sobre o nível de comprometimento da Eldorado com práticas ESG - 2025
+          Percepção sobre o nível de comprometimento da Eldorado com práticas ESG
         </h5>
-        
-        
 
         <ChartComponent data={chartData2025} />
 
         <div className="highlight-box">
           <div className="highlight-percentage">{percentualAltoMuito2025}%</div>
           <div className="highlight-text">
-            dos colaboradores avaliam o comprometimento como "Muito alto" ou "Alto" em 2025
+            dos colaboradores avaliam o comprometimento como "Muito alto" ou "Alto"
           </div>
         </div>
       </div>
-
-      {!showComparison && (
-        <div className="comparison-toggle">
-          <button onClick={() => setShowComparison(true)}>
-            Ver comparação com 2023
-          </button>
-        </div>
-      )}
-
-      {showComparison && (
-        <div className="chart-section">
-          <h5 style={{ color: "#333", fontSize: "1.3rem", marginBottom: "30px", textAlign: "center" }}>
-            Percepção sobre o nível de comprometimento - 2023
-          </h5>
-          
-          <div className="highlight-box">
-            <div className="highlight-percentage">{percentualAltoMuito2023}%</div>
-            <div className="highlight-text">
-              dos colaboradores avaliaram como "Muito alto" ou "Alto" em 2023
-            </div>
-          </div>
-
-          <ChartComponent data={dados2023} />
-        </div>
-      )}
 
       <Row>
         <Col lg={12}>
           <Card style={{ background: "#f8f9fa", padding: "30px", borderRadius: "12px", marginTop: "30px" }}>
             <p style={{ color: "#666", lineHeight: 1.6 }}>
-              A percepção positiva geral subiu de {percentualAltoMuito2023}% em 2023 para {percentualAltoMuito2025}% em 2025, 
-              com aumento significativo na categoria "Muito alto" (+11pp). Isso demonstra evolução positiva no 
-              reconhecimento das práticas ESG da Eldorado.
+              {percentualAltoMuito2025}% dos colaboradores avaliam o comprometimento da Eldorado com práticas
+              ambientais, sociais e de governança como "Muito alto" ou "Alto", demonstrando forte reconhecimento
+              das iniciativas ESG da empresa.
             </p>
             <div className="text-muted" style={{ fontSize: "0.9rem", borderTop: "2px solid #ff8c00", paddingTop: "10px", marginTop: "20px" }}>
               <strong>Base | {totalRespondentes.toLocaleString()} respondentes</strong>

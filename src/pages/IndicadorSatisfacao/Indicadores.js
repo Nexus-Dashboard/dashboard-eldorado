@@ -119,7 +119,7 @@ const Indicadores = () => {
           // Calcular pontuação final (0-100)
           const pontuacaoMaxima = respostasValidas * 10
           const indicador = pontuacaoMaxima > 0 ? (pontuacaoTotal / pontuacaoMaxima) * 100 : 0
-          resultados[key] = Math.round(indicador * 10) / 10 // Arredondar para 1 casa decimal
+          resultados[key] = Math.round(indicador * 100) / 100 // Arredondar para 2 casas decimais
         })
 
         // Se não encontrou dados suficientes, usar exemplo
@@ -139,11 +139,11 @@ const Indicadores = () => {
         } else {
           // Calcular indicador geral (média dos outros)
           const valoresIndicadores = Object.values(resultados)
-          const indicadorGeral = valoresIndicadores.length > 0 
-            ? valoresIndicadores.reduce((a, b) => a + b, 0) / valoresIndicadores.length 
+          const indicadorGeral = valoresIndicadores.length > 0
+            ? valoresIndicadores.reduce((a, b) => a + b, 0) / valoresIndicadores.length
             : 0
-          
-          resultados.GERAL = Math.round(indicadorGeral * 10) / 10
+
+          resultados.GERAL = Math.round(indicadorGeral * 100) / 100 // Arredondar para 2 casas decimais
           setIndicadores(resultados)
         }
 
@@ -204,11 +204,11 @@ const Indicadores = () => {
             </div>
             
             <div className="valor-container">
-              <div 
-                className="valor-principal" 
+              <div
+                className="valor-principal"
                 style={{ color: classificacao.cor }}
               >
-                {valor}
+                {typeof valor === 'number' ? valor.toFixed(2) : valor}
               </div>
               <div 
                 className="classificacao"

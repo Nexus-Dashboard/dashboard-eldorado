@@ -37,8 +37,45 @@ export const DataProvider = ({ children }) => {
     loadData()
   }, [])
 
+  // Função para reverter máscara de transformação (para comparação com dados originais)
+  const revertDisplayMask = (columnName, values) => {
+    if (columnName === "RECORTE_PERFIL_FINAL") {
+      return values.map(value => {
+        if (typeof value !== 'string') return value
+
+        // Reverter "Graduação acima" para "Administrativo/Gestão"
+        let reverted = value.replace(/Graduação acima/g, "Administrativo/Gestão")
+
+        // Reverter "Ensino médio abaixo" para "Operacional"
+        reverted = reverted.replace(/Ensino médio abaixo/g, "Operacional")
+
+        return reverted
+      })
+    }
+
+    if (columnName === "RACA_COR") {
+      return values.map(value => {
+        if (typeof value !== 'string') return value
+
+        // Reverter para versão original nos dados (se houver)
+        return value.replace(/Prefiro não declarar/g, "Prefiro não declaras")
+      })
+    }
+
+    return values
+  }
+
   const updateFilters = (newFilters) => {
-    setFilters(newFilters)
+    // Reverter máscaras antes de aplicar filtros
+    const revertedFilters = {}
+    Object.entries(newFilters).forEach(([key, values]) => {
+      if (values && values.length > 0) {
+        revertedFilters[key] = revertDisplayMask(key, values)
+      } else {
+        revertedFilters[key] = values
+      }
+    })
+    setFilters(revertedFilters)
   }
 
   // Função para calcular indicador de satisfação para um registro
@@ -106,8 +143,8 @@ export const DataProvider = ({ children }) => {
     const rawData = apiService.filterData(filters)
     
     // Se não há filtros analíticos, retorna dados normais
-    const hasAnalyticFilters = Object.keys(filters).some(key => 
-      ['P17_TRAJETORIA', 'P12_FELICIDADE', 'SATISFACAO_CATEGORIA'].includes(key)
+    const hasAnalyticFilters = Object.keys(filters).some(key =>
+      ['P17_FUTURO_PROFISSIONAL', 'P12_FELICIDADE', 'SATISFACAO_CATEGORIA', 'T_P23_1_GRAU_INFO_ELDORADO'].includes(key)
     )
     
     if (!hasAnalyticFilters) {
@@ -119,11 +156,11 @@ export const DataProvider = ({ children }) => {
       let passesFilter = true
 
       // Filtro de Futuro Profissional (P17)
-      if (filters.P17_TRAJETORIA && filters.P17_TRAJETORIA.length > 0) {
-        const p17Field = "P17 - Pensando no seu momento atual e no seu futuro profissional, como você enxerga a sua trajetória na Eldorado?"
-        const trajetoria = row[p17Field]
-        
-        if (!trajetoria || !filters.P17_TRAJETORIA.includes(trajetoria)) {
+      if (filters.P17_FUTURO_PROFISSIONAL && filters.P17_FUTURO_PROFISSIONAL.length > 0) {
+        const p17Field = "P17_FUTURO_PROFISSIONAL"
+        const futuroProfissional = row[p17Field]
+
+        if (!futuroProfissional || !filters.P17_FUTURO_PROFISSIONAL.includes(futuroProfissional)) {
           passesFilter = false
         }
       }
@@ -143,8 +180,18 @@ export const DataProvider = ({ children }) => {
       if (filters.SATISFACAO_CATEGORIA && filters.SATISFACAO_CATEGORIA.length > 0) {
         const satisfactionScore = calculateSatisfactionIndicator(row)
         const categoriaSatisfacao = categorizeSatisfaction(satisfactionScore)
-        
+
         if (!filters.SATISFACAO_CATEGORIA.includes(categoriaSatisfacao)) {
+          passesFilter = false
+        }
+      }
+
+      // Filtro de Grau de Informação sobre a Eldorado
+      if (filters.T_P23_1_GRAU_INFO_ELDORADO && filters.T_P23_1_GRAU_INFO_ELDORADO.length > 0) {
+        const grauInfoField = "T_P23_1_GRAU_INFO_ELDORADO"
+        const grauInfo = row[grauInfoField]
+
+        if (!grauInfo || !filters.T_P23_1_GRAU_INFO_ELDORADO.includes(grauInfo)) {
           passesFilter = false
         }
       }
@@ -153,8 +200,37 @@ export const DataProvider = ({ children }) => {
     })
   }
 
+  // Função para aplicar máscara de transformação nos valores
+  const applyDisplayMask = (columnName, values) => {
+    if (columnName === "RECORTE_PERFIL_FINAL") {
+      return values.map(value => {
+        if (typeof value !== 'string') return value
+
+        // Substituir "Administrativo/Gestão" por "Graduação acima"
+        let transformed = value.replace(/Administrativo\/Gestão/g, "Graduação acima")
+
+        // Substituir "Operacional" por "Ensino médio abaixo"
+        transformed = transformed.replace(/Operacional/g, "Ensino médio abaixo")
+
+        return transformed
+      })
+    }
+
+    if (columnName === "RACA_COR") {
+      return values.map(value => {
+        if (typeof value !== 'string') return value
+
+        // Corrigir "Prefiro não declaras" para "Prefiro não declarar"
+        return value.replace(/Prefiro não declaras/g, "Prefiro não declarar")
+      })
+    }
+
+    return values
+  }
+
   const getUniqueValues = (columnName) => {
-    return apiService.getUniqueValues(columnName)
+    const values = apiService.getUniqueValues(columnName)
+    return applyDisplayMask(columnName, values)
   }
 
   // Função para obter estatísticas dos filtros aplicados
@@ -172,13 +248,13 @@ export const DataProvider = ({ children }) => {
   // Função para obter valores únicos dos filtros analíticos
   const getAnalyticFilterValues = (filterKey) => {
     const allData = apiService.filterData({})
-    
-    if (filterKey === "P17_TRAJETORIA") {
-      const p17Field = "P17 - Pensando no seu momento atual e no seu futuro profissional, como você enxerga a sua trajetória na Eldorado?"
+
+    if (filterKey === "P17_FUTURO_PROFISSIONAL") {
+      const p17Field = "P17_FUTURO_PROFISSIONAL"
       const values = allData
         .map(row => row[p17Field])
         .filter(value => value && value.trim() !== "" && !value.includes("#NULL!"))
-      
+
       return [...new Set(values)].sort()
     }
     
@@ -198,7 +274,16 @@ export const DataProvider = ({ children }) => {
         "Excelente (90-100)"
       ]
     }
-    
+
+    if (filterKey === "T_P23_1_GRAU_INFO_ELDORADO") {
+      const field = "T_P23_1_GRAU_INFO_ELDORADO"
+      const values = allData
+        .map(row => row[field])
+        .filter(value => value && value.trim() !== "" && !value.includes("#NULL!"))
+
+      return [...new Set(values)].sort()
+    }
+
     return []
   }
 

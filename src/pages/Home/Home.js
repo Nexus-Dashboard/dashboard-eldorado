@@ -5,7 +5,7 @@ const Home = () => {
   const menuItems = [
     { path: "/metodologia", label: "Metodologia", id: 1, icon: "bi-clipboard-data", description: "Entenda como foi realizada a pesquisa" },
     { path: "/perfil-amostra", label: "Perfil da amostra", id: 2, icon: "bi-people", description: "Conheça o perfil dos participantes" },
-    { path: "/grau-felicidade", label: "Grau de felicidade", id: 3, icon: "bi-emoji-smile", description: "Índices de satisfação e felicidade" },
+    { path: "/grau-felicidade", label: "Grau de felicidade e Futuro", id: 3, icon: "bi-emoji-smile", description: "Índices de satisfação e felicidade" },
     { path: "/fatores-motivam", label: "Fatores que Motivam", id: 4, icon: "bi-lightning", description: "O que motiva nossos colaboradores" },
     { path: "/saude-emocional", label: "Saúde emocional", id: 5, icon: "bi-heart-pulse", description: "Bem-estar e saúde mental" },
     { path: "/ambiente-trabalho", label: "Ambiente de trabalho", id: 6, icon: "bi-building", description: "Avaliação do ambiente corporativo" },

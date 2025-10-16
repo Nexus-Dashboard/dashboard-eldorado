@@ -11,7 +11,7 @@ const Sidebar = () => {
   const menuItems = [
     { path: "/metodologia", label: "Metodologia", id: 1 },
     { path: "/perfil-amostra", label: "Perfil da amostra", id: 2 },
-    { path: "/grau-felicidade", label: "Grau de felicidade", id: 3 },
+    { path: "/grau-felicidade", label: "Grau de felicidade e Futuro", id: 3 },
     { path: "/fatores-motivam", label: "Fatores que Motivam", id: 4 },
     { path: "/saude-emocional", label: "Saúde emocional", id: 5 },
     { path: "/ambiente-trabalho", label: "Ambiente de trabalho", id: 6 },

@@ -16,7 +16,7 @@ const MobileMenu = () => {
     { path: "/", label: "Página Inicial", id: 0, icon: "bi-house" },
     { path: "/metodologia", label: "Metodologia", id: 1, icon: "bi-clipboard-data" },
     { path: "/perfil-amostra", label: "Perfil da amostra", id: 2, icon: "bi-people" },
-    { path: "/grau-felicidade", label: "Grau de felicidade", id: 3, icon: "bi-emoji-smile" },
+    { path: "/grau-felicidade", label: "Grau de felicidade e Futuro", id: 3, icon: "bi-emoji-smile" },
     { path: "/fatores-motivam", label: "Fatores que Motivam", id: 4, icon: "bi-lightning" },
     { path: "/saude-emocional", label: "Saúde emocional", id: 5, icon: "bi-heart-pulse" },
     { path: "/ambiente-trabalho", label: "Ambiente de trabalho", id: 6, icon: "bi-building" },

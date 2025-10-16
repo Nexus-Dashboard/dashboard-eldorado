@@ -6,34 +6,8 @@ import TrajetoriaEldorado from "./TrajetoriaEldorado"
 
 const GrauFelicidade = () => {
   const { getFilteredData, loading } = useData()
-  const [showComparison, setShowComparison] = useState(false)
   const [data2025, setData2025] = useState(null)
   const [activeSection, setActiveSection] = useState("felicidade") // Para controlar qual seção mostrar
-
-  // ========================================================================
-  // DADOS ESTÁTICOS DE 2023 - Atualize aqui com base no relatório anterior
-  // ========================================================================
-  const dados2023 = {
-    media: 8.6,
-    distribuicao: [
-      { score: "0", percentage: 0 },
-      { score: "1", percentage: 0 },
-      { score: "2", percentage: 1 },
-      { score: "3", percentage: 1 },
-      { score: "4", percentage: 1 },
-      { score: "5", percentage: 4 },
-      { score: "6", percentage: 3 },
-      { score: "7", percentage: 8 },
-      { score: "8", percentage: 22 },
-      { score: "9", percentage: 20 },
-      { score: "10", percentage: 40 }
-    ],
-    categorias: {
-      baixa: 7,
-      media: 11,
-      alta: 82
-    }
-  }
 
   useEffect(() => {
     const processData = () => {
@@ -92,7 +66,7 @@ const GrauFelicidade = () => {
     return (
       <Container fluid>
         <div className="page-header">
-          <h1 className="page-title">Grau de felicidade no ambiente de trabalho</h1>
+          <h1 className="page-title">Grau de felicidade e Futuro</h1>
           <p className="text-muted mb-0">Pesquisa Nossa Gente Eldorado</p>
         </div>
         <div className="text-center mt-5">
@@ -104,7 +78,7 @@ const GrauFelicidade = () => {
     )
   }
 
-  const ChartComponent = ({ data, year }) => {
+  const ChartComponent = ({ data }) => {
     const chartData = data.distribuicao.map(item => ({
       score: item.score,
       percentage: item.percentage
@@ -376,26 +350,6 @@ const GrauFelicidade = () => {
           margin-bottom: 25px;
         }
 
-        .comparison-toggle {
-          text-align: center;
-          margin: 30px 0;
-        }
-
-        .comparison-toggle button {
-          background: #2e8b57;
-          border: none;
-          color: white;
-          padding: 10px 25px;
-          border-radius: 6px;
-          font-weight: 500;
-          transition: all 0.3s;
-        }
-
-        .comparison-toggle button:hover {
-          background: #246a43;
-          transform: translateY(-1px);
-        }
-
         .description-card {
           background: #f8f9fa;
           padding: 30px;
@@ -479,7 +433,7 @@ const GrauFelicidade = () => {
 
       <Container fluid>
         <div className="page-header">
-          <h1 className="page-title">Grau de felicidade no ambiente de trabalho</h1>
+          <h1 className="page-title">Grau de felicidade e Futuro</h1>
           <p className="text-muted mb-0">Pesquisa Nossa Gente Eldorado</p>
         </div>
 
@@ -506,29 +460,10 @@ const GrauFelicidade = () => {
           <>
             <div className="question-text">
               Pensando em uma escala de 0 a 10, em que 0 é nada e 10 é muito, o quanto você se considera feliz no ambiente de trabalho?
-            </div>    
+            </div>
 
-            {/* Gráfico de 2025 */}
-            <ChartComponent data={data2025} year={2025} />
-
-            {/* Botão para mostrar comparação */}
-            {!showComparison && (
-              <div className="comparison-toggle">
-                <button onClick={() => setShowComparison(true)}>
-                  Ver comparação com 2023
-                </button>
-              </div>
-            )}
-
-            {/* Gráfico de 2023 (se habilitado) */}
-            {showComparison && (
-              <>
-                <div className="text-center mb-3">
-                  <h4 style={{ color: "#666" }}>Comparação com 2023</h4>
-                </div>
-                <ChartComponent data={dados2023} year={2023} />
-              </>
-            )}
+            {/* Gráfico */}
+            <ChartComponent data={data2025} />
 
             {/* Descrições das categorias */}
             <Row>

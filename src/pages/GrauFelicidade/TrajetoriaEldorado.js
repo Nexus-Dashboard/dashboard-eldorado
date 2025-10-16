@@ -5,26 +5,7 @@ import { useData } from "../../context/DataContext"
 
 const TrajetoriaEldorado = () => {
   const { getFilteredData, loading } = useData()
-  const [showComparison, setShowComparison] = useState(false)
   const [data2025, setData2025] = useState(null)
-
-  // ========================================================================
-  // DADOS ESTÁTICOS DE 2023 - Para comparação futura
-  // ========================================================================
-  const dados2023 = {
-    altaIntencao: 85,
-    trajetoriaAnalise: 12,
-    intencaoSaida: 3,
-    distribuicao: [
-      { categoria: "Vejo como um lugar para construir uma carreira de longo prazo", categoriaCompleta: "Vejo como um lugar para construir uma carreira de longo prazo", percentage: 42 },
-      { categoria: "Tenho vontade de crescer e evoluir profissionalmente", categoriaCompleta: "Tenho vontade de crescer e evoluir profissionalmente", percentage: 41 },
-      { categoria: "Quero continuar na empresa, mas sem grandes expectativas no momento", categoriaCompleta: "Quero continuar na empresa, mas sem grandes expectativas no momento", percentage: 8 },
-      { categoria: "Ainda estou refletindo sobre o meu futuro", categoriaCompleta: "Ainda estou refletindo sobre o meu futuro", percentage: 5 },
-      { categoria: "Não me vejo na Eldorado no futuro", categoriaCompleta: "Não me vejo na Eldorado no futuro", percentage: 3 },
-      { categoria: "Não sei dizer", categoriaCompleta: "Não sei dizer", percentage: 1 }
-    ],
-    total: 3000
-  }
 
   useEffect(() => {
     const processData = () => {
@@ -136,7 +117,7 @@ const TrajetoriaEldorado = () => {
     )
   }
 
-  const ChartComponent = ({ data, year }) => {
+  const ChartComponent = ({ data }) => {
     const chartData = data.distribuicao.map(item => ({
       categoria: item.categoria,
       percentage: item.percentage,
@@ -339,26 +320,6 @@ const TrajetoriaEldorado = () => {
           line-height: 1.4;
         }
 
-        .comparison-toggle {
-          text-align: center;
-          margin: 30px 0;
-        }
-
-        .comparison-toggle button {
-          background: #2e8b57;
-          border: none;
-          color: white;
-          padding: 10px 25px;
-          border-radius: 6px;
-          font-weight: 500;
-          transition: all 0.3s;
-        }
-
-        .comparison-toggle button:hover {
-          background: #246a43;
-          transform: translateY(-1px);
-        }
-
         .insights-card {
           background: #f8f9fa;
           padding: 30px;
@@ -431,17 +392,8 @@ const TrajetoriaEldorado = () => {
         {/* Gráfico detalhado */}
         <div className="detailed-chart">
           <h5 className="chart-title">Distribuição detalhada das respostas</h5>
-          <ChartComponent data={data2025} year={2025} />
+          <ChartComponent data={data2025} />
         </div>
-
-
-        {/* Comparação com 2023 (se habilitado) */}
-        {showComparison && (
-          <div className="detailed-chart">
-            <h5 className="chart-title">Comparação com 2023</h5>
-            <ChartComponent data={dados2023} year={2023} />
-          </div>
-        )}
 
         {/* Insights e Análises */}
         <Row>

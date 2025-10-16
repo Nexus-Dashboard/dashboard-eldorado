@@ -24,14 +24,14 @@ const FilterOffcanvas = ({ show, handleClose }) => {
 
   // Configuração dos filtros analíticos (novos)
   const analyticFilters = [
-    { 
-      key: "P17_TRAJETORIA", 
+    {
+      key: "P17_FUTURO_PROFISSIONAL",
       label: "Futuro Profissional",
-      field: "P17 - Pensando no seu momento atual e no seu futuro profissional, como você enxerga a sua trajetória na Eldorado?",
+      field: "P17_FUTURO_PROFISSIONAL",
       type: "categorical"
     },
-    { 
-      key: "P12_FELICIDADE", 
+    {
+      key: "P12_FELICIDADE",
       label: "Grau de Felicidade no Trabalho",
       field: "P12 - Pensando em uma escala de 0 a 10, em que 0 é nada e 10 é muito, o quanto você se considera feliz no ambiente de trabalho?",
       type: "scale",
@@ -51,6 +51,12 @@ const FilterOffcanvas = ({ show, handleClose }) => {
         { label: "Alto (80-89)", min: 80, max: 89 },
         { label: "Excelente (90-100)", min: 90, max: 100 }
       ]
+    },
+    {
+      key: "T_P23_1_GRAU_INFO_ELDORADO",
+      label: "Grau de Informação sobre a Eldorado",
+      field: "T_P23_1_GRAU_INFO_ELDORADO",
+      type: "categorical"
     }
   ]
 
@@ -58,7 +64,7 @@ const FilterOffcanvas = ({ show, handleClose }) => {
   const customOrders = {
     "TEMPO_ELDORADO": [
       "Menos de 1 ano",
-      "De 1 a 3 anos", 
+      "De 1 a 3 anos",
       "De 4 a 6 anos",
       "De 7 a 9 anos",
       "10 anos ou mais"
@@ -66,7 +72,7 @@ const FilterOffcanvas = ({ show, handleClose }) => {
     "FAIXA_ETARIA": [
       "Até 24 anos",
       "De 25 a 34 anos",
-      "De 35 a 44 anos", 
+      "De 35 a 44 anos",
       "De 45 a 54 anos",
       "De 55 a 64 anos",
       "65 anos ou mais"
@@ -79,10 +85,15 @@ const FilterOffcanvas = ({ show, handleClose }) => {
     ],
     "RACA_COR": [
       "Branco",
-      "Preto", 
+      "Preto",
       "Pardo",
       "Prefiro não declarar",
       "Outros"
+    ],
+    "T_P23_1_GRAU_INFO_ELDORADO": [
+      "Alto grau de informação",
+      "Médio grau de informação",
+      "Baixo grau de informação"
     ]
   }
 
@@ -479,7 +490,7 @@ const FilterOffcanvas = ({ show, handleClose }) => {
               <Nav.Item>
                 <Nav.Link eventKey="analiticos">
                   <i className="bi bi-graph-up me-2" style={{ color: 'inherit' }}></i>
-                  <strong>Cruzamentos</strong>
+                  <strong>Indicador</strong>
                 </Nav.Link>
               </Nav.Item>
             </Nav>
