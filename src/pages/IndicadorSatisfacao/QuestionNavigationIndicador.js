@@ -9,16 +9,16 @@ const QuestionNavigationIndicador = ({ activeQuestion, setActiveQuestion }) => {
       icon: "speedometer2"
     },
     {
-      id: "media-atributos",
-      title: "Média de Atributos dos Benefícios",
-      subtitle: "Pontuação média dos atributos",
-      icon: "clipboard-check"
-    },
-    {
       id: "indicadores",
       title: "Indicadores de Satisfação",
       subtitle: "Indicadores de Satisfação & Bem-Estar Eldorado",
       icon: "hand-thumbs-up"
+    },
+    {
+      id: "media-atributos",
+      title: "Média de Atributos dos Benefícios",
+      subtitle: "Pontuação média dos atributos",
+      icon: "clipboard-check"
     }
   ]
 

@@ -606,9 +606,6 @@ const FatoresMotivam = () => {
         {/* Seção de Construção de Trajetória Longa */}
         {activeQuestion === "trajetoria-longa" && <TrajetoriaLongaEldorado />}
 
-        {/* Seção de Trajetória na Eldorado */}
-        {activeQuestion === "trajetoria" && <TrajetoriaMotivacao />}
-
         {/* Seção de Influência da Família */}
         {activeQuestion === "influencia-familia" && <InfluenciaFamilia />}
       </Container>

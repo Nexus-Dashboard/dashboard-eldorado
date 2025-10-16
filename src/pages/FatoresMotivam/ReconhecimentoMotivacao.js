@@ -248,50 +248,42 @@ const ReconhecimentoMotivacao = () => {
         .color-5 { background: #2e7d32; }
 
         .summary-cards {
-          display: flex;
-          justify-content: center;
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
           gap: 20px;
           margin: 30px 0;
-          flex-wrap: wrap;
+          padding: 0;
         }
 
         .summary-card {
           background: white;
-          border: 2px solid;
-          border-radius: 10px;
-          padding: 20px;
+          border: 3px solid #2e8b57;
+          border-radius: 12px;
+          padding: 25px 20px;
           text-align: center;
-          min-width: 200px;
-          flex: 1;
-          max-width: 300px;
+          transition: all 0.3s ease;
+          box-shadow: 0 2px 8px rgba(0,0,0,0.08);
         }
 
-        .summary-card.concordam {
-          border-color: #4caf50;
-          background: linear-gradient(135deg, #e8f5e9 0%, #f1f8e9 100%);
-        }
-
-        .summary-card.neutro {
-          border-color: #ff9800;
-          background: linear-gradient(135deg, #fff3e0 0%, #fef7ed 100%);
-        }
-
-        .summary-card.discordam {
-          border-color: #d32f2f;
-          background: linear-gradient(135deg, #ffebee 0%, #fce4ec 100%);
+        .summary-card:hover {
+          transform: translateY(-3px);
+          box-shadow: 0 4px 12px rgba(46, 139, 87, 0.2);
         }
 
         .card-title {
-          font-size: 14px;
+          font-size: 13px;
           font-weight: 600;
-          margin-bottom: 10px;
-          color: #333;
+          margin-bottom: 12px;
+          color: #2e8b57;
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
         }
 
         .card-value {
-          font-size: 28px;
-          font-weight: bold;
-          color: #333;
+          font-size: 36px;
+          font-weight: 700;
+          color: #2e8b57;
+          line-height: 1;
         }
 
         .insights-card {
@@ -353,6 +345,28 @@ const ReconhecimentoMotivacao = () => {
       <div className="reconhecimento-container">
         <div className="question-text">
           Em relação às frases abaixo, indique o quanto discorda ou concorda com cada uma delas. Escala de 1 a 5, onde 1 = "discorda totalmente" e 5 = "concorda totalmente".
+        </div>
+
+        {/* Cards de resumo - MOVIDOS PARA CIMA */}
+        <div className="summary-cards">
+          <div className="summary-card">
+            <div className="card-title">Média de Concordância</div>
+            <div className="card-value">
+              {Math.round(chartData.reduce((acc, item) => acc + item.concordam, 0) / chartData.length)}%
+            </div>
+          </div>
+          <div className="summary-card">
+            <div className="card-title">Posição Neutra</div>
+            <div className="card-value">
+              {Math.round(chartData.reduce((acc, item) => acc + item.neutro, 0) / chartData.length)}%
+            </div>
+          </div>
+          <div className="summary-card">
+            <div className="card-title">Média de Discordância</div>
+            <div className="card-value">
+              {Math.round(chartData.reduce((acc, item) => acc + item.discordam, 0) / chartData.length)}%
+            </div>
+          </div>
         </div>
 
         <div className="chart-section">
@@ -495,28 +509,6 @@ const ReconhecimentoMotivacao = () => {
                 )
                 ]}
             />
-          </div>
-        </div>
-
-        {/* Cards de resumo */}
-        <div className="summary-cards">
-          <div className="summary-card concordam">
-            <div className="card-title">Média de Concordância</div>
-            <div className="card-value">
-              {Math.round(chartData.reduce((acc, item) => acc + item.concordam, 0) / chartData.length)}%
-            </div>
-          </div>
-          <div className="summary-card neutro">
-            <div className="card-title">Posição Neutra</div>
-            <div className="card-value">
-              {Math.round(chartData.reduce((acc, item) => acc + item.neutro, 0) / chartData.length)}%
-            </div>
-          </div>
-          <div className="summary-card discordam">
-            <div className="card-title">Média de Discordância</div>
-            <div className="card-value">
-              {Math.round(chartData.reduce((acc, item) => acc + item.discordam, 0) / chartData.length)}%
-            </div>
           </div>
         </div>
 

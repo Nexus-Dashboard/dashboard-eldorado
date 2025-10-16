@@ -134,6 +134,18 @@ const ConhecimentoAcoesESG = () => {
   return (
     <>
       <style jsx>{`
+        .badge-amostra {
+          display: inline-block;
+          background: #ff8c00;
+          color: white;
+          padding: 8px 20px;
+          border-radius: 6px;
+          font-size: 14px;
+          font-weight: 600;
+          margin-bottom: 20px;
+          text-transform: lowercase;
+        }
+
         .question-text {
           font-style: italic;
           color: #6c757d;
@@ -148,165 +160,202 @@ const ConhecimentoAcoesESG = () => {
         .chart-section {
           background: white;
           border-radius: 12px;
-          padding: 30px;
+          padding: 0;
           margin-bottom: 30px;
           box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+          overflow: hidden;
         }
 
-        .category-badges {
+        .chart-content {
           display: flex;
+          min-height: 700px;
+        }
+
+        .chart-area {
+          flex: 3;
+          padding: 30px;
+          border-right: 1px solid #e9ecef;
+        }
+
+        .sidebar-area {
+          flex: 1;
+          background: #f8f9fa;
+          padding: 40px 20px;
+          display: flex;
+          flex-direction: column;
           justify-content: center;
-          gap: 20px;
-          margin: 30px 0;
-          flex-wrap: wrap;
+          align-items: center;
+          gap: 30px;
         }
 
         .category-badge {
-          background: white;
-          border: 2px solid;
+          background: #4caf50;
+          border: none;
           border-radius: 50%;
-          width: 140px;
-          height: 140px;
+          width: 160px;
+          height: 160px;
           display: flex;
           flex-direction: column;
           justify-content: center;
           align-items: center;
           text-align: center;
+          box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+          transition: transform 0.3s ease;
         }
 
-        .ambiental { border-color: #4caf50; }
-        .social { border-color: #2196f3; }
-        .governanca { border-color: #ff9800; }
+        .category-badge:hover {
+          transform: scale(1.05);
+        }
+
+        .category-badge.ambiental {
+          background: linear-gradient(135deg, #66bb6a 0%, #4caf50 100%);
+        }
+
+        .category-badge.social {
+          background: linear-gradient(135deg, #5cb85c 0%, #4caf50 100%);
+        }
+
+        .category-badge.governanca {
+          background: linear-gradient(135deg, #66bb6a 0%, #5cb85c 100%);
+        }
+
+        .badge-icon {
+          font-size: 42px;
+          color: white;
+          margin-bottom: 10px;
+        }
 
         .badge-percentage {
-          font-size: 32px;
-          font-weight: bold;
+          font-size: 36px;
+          font-weight: 700;
+          color: white;
           margin-bottom: 5px;
+          line-height: 1;
         }
-
-        .ambiental .badge-percentage { color: #4caf50; }
-        .social .badge-percentage { color: #2196f3; }
-        .governanca .badge-percentage { color: #ff9800; }
 
         .badge-label {
-          font-size: 12px;
+          font-size: 13px;
           font-weight: 600;
-          color: #666;
+          color: white;
+          line-height: 1.2;
         }
 
-        .legend {
-          display: flex;
-          justify-content: center;
-          gap: 30px;
-          margin: 20px 0;
-          flex-wrap: wrap;
+        @media (max-width: 992px) {
+          .chart-content {
+            flex-direction: column;
+          }
+
+          .chart-area {
+            border-right: none;
+            border-bottom: 1px solid #e9ecef;
+          }
+
+          .sidebar-area {
+            flex-direction: row;
+            justify-content: center;
+            gap: 20px;
+          }
+
+          .category-badge {
+            width: 140px;
+            height: 140px;
+          }
         }
 
-        .legend-item {
-          display: flex;
-          align-items: center;
-          gap: 8px;
-          font-size: 14px;
-        }
-
-        .legend-color {
-          width: 20px;
-          height: 20px;
-          border-radius: 3px;
+        @media (max-width: 768px) {
+          .sidebar-area {
+            flex-direction: column;
+          }
         }
       `}</style>
 
+      <div>
+        <span className="badge-amostra">amostra total</span>
+      </div>
+
       <div className="question-text">
-        Agora, vamos falar sobre as ações ambientais, sociais e de governança realizadas pela Eldorado nos últimos anos. 
+        Agora, vamos falar sobre as ações ambientais, sociais e de governança realizadas pela Eldorado nos últimos anos.
         Gostaria de saber quais delas você já tinha tomado conhecimento anteriormente.
       </div>
 
       <div className="chart-section">
-        <h5 style={{ color: "#333", fontSize: "1.3rem", marginBottom: "30px", textAlign: "center" }}>
-          Conhecimento sobre as ações ESG da Eldorado
-        </h5>
-        
-        <div className="legend">
-          <div className="legend-item">
-            <div className="legend-color" style={{ background: '#4caf50' }}></div>
-            <span>Ambiental</span>
+        <div className="chart-content">
+          {/* Área do Gráfico */}
+          <div className="chart-area">
+            <div style={{ height: "650px" }}>
+              <ResponsiveBar
+                data={chartData}
+                keys={['percentage']}
+                indexBy="acao"
+                layout="horizontal"
+                margin={{ top: 20, right: 80, bottom: 20, left: 320 }}
+                padding={0.25}
+                valueScale={{ type: 'linear', min: 0, max: 100 }}
+                colors={(bar) => getBarColor(bar.data.tipo)}
+                borderRadius={3}
+                axisTop={null}
+                axisRight={null}
+                axisBottom={{
+                  tickSize: 0,
+                  tickPadding: 8,
+                  tickRotation: 0,
+                  format: v => `${v}%`
+                }}
+                axisLeft={{
+                  tickSize: 0,
+                  tickPadding: 12,
+                  tickRotation: 0
+                }}
+                enableLabel={false}
+                enableGridY={true}
+                animate={true}
+                layers={[
+                  'grid',
+                  'axes',
+                  'bars',
+                  ({ bars }) => (
+                    <g>
+                      {bars.map((bar, index) => (
+                        <text
+                          key={index}
+                          x={bar.x + bar.width + 15}
+                          y={bar.y + (bar.height / 2)}
+                          textAnchor="start"
+                          dominantBaseline="central"
+                          fontSize="14"
+                          fontWeight="600"
+                          fill="#333"
+                        >
+                          {bar.data.data.percentage}%
+                        </text>
+                      ))}
+                    </g>
+                  )
+                ]}
+              />
+            </div>
           </div>
-          <div className="legend-item">
-            <div className="legend-color" style={{ background: '#2196f3' }}></div>
-            <span>Social</span>
-          </div>
-          <div className="legend-item">
-            <div className="legend-color" style={{ background: '#ff9800' }}></div>
-            <span>Governança</span>
-          </div>
-        </div>
 
-        <div style={{ height: "600px" }}>
-          <ResponsiveBar
-            data={chartData}
-            keys={['percentage']}
-            indexBy="acao"
-            layout="horizontal"
-            margin={{ top: 20, right: 80, bottom: 20, left: 280 }}
-            padding={0.3}
-            valueScale={{ type: 'linear', min: 0, max: 100 }}
-            colors={(bar) => getBarColor(bar.data.tipo)}
-            borderRadius={3}
-            axisTop={null}
-            axisRight={null}
-            axisBottom={{
-              tickSize: 0,
-              tickPadding: 8,
-              tickRotation: 0,
-              format: v => `${v}%`
-            }}
-            axisLeft={{
-              tickSize: 0,
-              tickPadding: 12,
-              tickRotation: 0
-            }}
-            enableLabel={false}
-            enableGridY={true}
-            animate={true}
-            layers={[
-              'grid',
-              'axes',
-              'bars',
-              ({ bars }) => (
-                <g>
-                  {bars.map((bar, index) => (
-                    <text
-                      key={index}
-                      x={bar.x + bar.width + 15}
-                      y={bar.y + (bar.height / 2)}
-                      textAnchor="start"
-                      dominantBaseline="central"
-                      fontSize="14"
-                      fontWeight="600"
-                      fill="#333"
-                    >
-                      {bar.data.data.percentage}%
-                    </text>
-                  ))}
-                </g>
-              )
-            ]}
-          />
-        </div>
-
-        <div className="category-badges">
+          {/* Sidebar com Círculos */}
+          <div className="sidebar-area">
             <div className="category-badge ambiental">
-            <div className="badge-percentage">{categorias.ambiental || 50}%</div>
-            <div className="badge-label">Ações Ambientais</div>
+              <i className="bi bi-leaf badge-icon"></i>
+              <div className="badge-percentage">{categorias.ambiental || 50}%</div>
+              <div className="badge-label">Ações Ambientais</div>
             </div>
+
             <div className="category-badge social">
-            <div className="badge-percentage">{categorias.social || 87}%</div>
-            <div className="badge-label">Ações Sociais</div>
+              <i className="bi bi-people-fill badge-icon"></i>
+              <div className="badge-percentage">{categorias.social || 87}%</div>
+              <div className="badge-label">Ações Sociais</div>
             </div>
+
             <div className="category-badge governanca">
-            <div className="badge-percentage">{categorias.governanca || 90}%</div>
-            <div className="badge-label">Ações de Governança</div>
+              <i className="bi bi-gear-fill badge-icon"></i>
+              <div className="badge-percentage">{categorias.governanca || 90}%</div>
+              <div className="badge-label">Ações de Governança</div>
             </div>
+          </div>
         </div>
       </div>
 

@@ -296,48 +296,41 @@ const AmbienteTrabalho = () => {
         }
 
         .summary-badges {
-          display: flex;
-          justify-content: center;
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
           gap: 25px;
           margin: 30px 0;
-          flex-wrap: wrap;
         }
 
         .summary-badge {
           background: white;
-          border: 2px solid;
+          border: 3px solid #2e8b57;
           border-radius: 12px;
           padding: 20px;
           text-align: center;
-          min-width: 200px;
           box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+          transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
 
-        .summary-badge.excelente {
-          border-color: #4caf50;
-          background: linear-gradient(135deg, #e8f5e9 0%, #f1f8e9 100%);
-        }
-
-        .summary-badge.muito-bom {
-          border-color: #2e8b57;
-          background: linear-gradient(135deg, #e0f2e7 0%, #f0f8f2 100%);
+        .summary-badge:hover {
+          transform: translateY(-3px);
+          box-shadow: 0 4px 12px rgba(0,0,0,0.12);
         }
 
         .badge-title {
           font-size: 14px;
           font-weight: 600;
-          color: #333;
+          color: #2e8b57;
+          text-transform: uppercase;
           margin-bottom: 8px;
         }
 
         .badge-percentage {
           font-size: 36px;
-          font-weight: bold;
+          font-weight: 700;
+          color: #2e8b57;
           margin: 8px 0;
         }
-
-        .excelente .badge-percentage { color: #4caf50; }
-        .muito-bom .badge-percentage { color: #2e8b57; }
 
         .badge-description {
           font-size: 11px;
@@ -431,7 +424,26 @@ const AmbienteTrabalho = () => {
           <div className="question-text">
             Agora falando sobre o ambiente de trabalho na Eldorado. Considerando as seguintes frases, o quanto você diria concordar ou discordar em relação a cada uma delas. Utilize a mesma escala de 1 a 5, em que 1 significa que você "discorda totalmente" e 5 significa que você "concorda totalmente".
           </div>
-          
+
+          {/* Badges de resumo - ANTES do gráfico */}
+          <div className="summary-badges">
+            <div className="summary-badge">
+              <div className="badge-title">Colaboradores que concordam</div>
+              <div className="badge-percentage">85%</div>
+              <div className="badge-description">
+                dos colaboradores acreditam que a Eldorado possui um ambiente colaborativo, respeitoso e acolhedor
+              </div>
+            </div>
+
+            <div className="summary-badge">
+              <div className="badge-title">Média Geral</div>
+              <div className="badge-percentage">{mediaGeral}</div>
+              <div className="badge-description">
+                Avaliação muito positiva do ambiente de trabalho na empresa
+              </div>
+            </div>
+          </div>
+
           <div className="chart-section">
             <div className="chart-content">
               {/* Área do Gráfico */}
@@ -574,25 +586,6 @@ const AmbienteTrabalho = () => {
                   <div className="stat-label">Média Geral</div>
                   <div className="stat-value">{mediaGeral}</div>
                 </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Badges de resumo */}
-          <div className="summary-badges">
-            <div className="summary-badge excelente">
-              <div className="badge-title">Colaboradores que concordam</div>
-              <div className="badge-percentage">85%</div>
-              <div className="badge-description">
-                dos colaboradores acreditam que a Eldorado possui um ambiente colaborativo, respeitoso e acolhedor
-              </div>
-            </div>
-
-            <div className="summary-badge muito-bom">
-              <div className="badge-title">Média Geral</div>
-              <div className="badge-percentage">{mediaGeral}</div>
-              <div className="badge-description">
-                Avaliação muito positiva do ambiente de trabalho na empresa
               </div>
             </div>
           </div>

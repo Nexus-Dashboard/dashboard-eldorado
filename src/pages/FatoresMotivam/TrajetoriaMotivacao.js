@@ -209,26 +209,21 @@ const TrajetoriaMotivacao = () => {
         }
 
         .categories-summary {
-          display: flex;
-          justify-content: center;
-          align-items: stretch;
-          flex-wrap: wrap;
-          gap: 30px;
-          margin: 40px 0;
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+          gap: 20px;
+          margin: 30px 0;
           width: 100%;
         }
 
         .category-badge {
           background: white;
-          border: 2px solid;
+          border: 3px solid #2e8b57;
           border-radius: 12px;
           padding: 25px 20px;
           text-align: center;
-          min-width: 280px;
-          max-width: 320px;
-          box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-          transition: transform 0.3s ease;
-          flex: 1;
+          box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+          transition: all 0.3s ease;
           display: flex;
           flex-direction: column;
           justify-content: center;
@@ -236,51 +231,28 @@ const TrajetoriaMotivacao = () => {
         }
 
         .category-badge:hover {
-          transform: translateY(-5px);
-          box-shadow: 0 6px 20px rgba(0,0,0,0.15);
-        }
-
-        .category-badge.alta {
-          border-color: #4caf50;
-          background: linear-gradient(135deg, #e8f5e9 0%, #f1f8e9 100%);
-        }
-
-        .category-badge.alta .category-value {
-          color: #4caf50;
-        }
-
-        .category-badge.analise {
-          border-color: #ff9800;
-          background: linear-gradient(135deg, #fff3e0 0%, #fef7ed 100%);
-        }
-
-        .category-badge.analise .category-value {
-          color: #ff9800;
-        }
-
-        .category-badge.saida {
-          border-color: #d32f2f;
-          background: linear-gradient(135deg, #ffebee 0%, #fce4ec 100%);
-        }
-
-        .category-badge.saida .category-value {
-          color: #d32f2f;
+          transform: translateY(-3px);
+          box-shadow: 0 4px 12px rgba(46, 139, 87, 0.2);
         }
 
         .category-title {
           display: block;
-          font-size: 15px;
+          font-size: 13px;
           font-weight: 600;
           margin-bottom: 12px;
           line-height: 1.3;
-          color: #333;
+          color: #2e8b57;
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
         }
 
         .category-value {
           display: block;
           font-size: 36px;
-          font-weight: bold;
+          font-weight: 700;
           margin-top: 5px;
+          color: #2e8b57;
+          line-height: 1;
         }
 
         .detailed-chart {
@@ -349,30 +321,28 @@ const TrajetoriaMotivacao = () => {
           Pensando no seu momento atual e no seu futuro profissional, como você enxerga a sua trajetória na Eldorado?
         </div>
 
-        
-
-        {/* Gráfico detalhado */}
-        <div className="detailed-chart">
-          <h5 className="chart-title">Distribuição detalhada das respostas</h5>
-          <ChartComponent data={data2025} />
-        </div>
-
-        {/* Cards com percentuais principais */}
+        {/* Cards com percentuais principais - MOVIDOS PARA CIMA */}
         <div className="categories-summary">
           <div className="category-badge alta">
             <span className="category-title">Alta intenção de permanência e desenvolvimento</span>
             <span className="category-value">{data2025.altaIntencao}%</span>
           </div>
-          
+
           <div className="category-badge analise">
             <span className="category-title">Trajetória em análise</span>
             <span className="category-value">{data2025.trajetoriaAnalise}%</span>
           </div>
-          
+
           <div className="category-badge saida">
             <span className="category-title">Intenção de saída</span>
             <span className="category-value">{data2025.intencaoSaida}%</span>
           </div>
+        </div>
+
+        {/* Gráfico detalhado */}
+        <div className="detailed-chart">
+          <h5 className="chart-title">Distribuição detalhada das respostas</h5>
+          <ChartComponent data={data2025} />
         </div>
 
         {/* Insights e Análises */}

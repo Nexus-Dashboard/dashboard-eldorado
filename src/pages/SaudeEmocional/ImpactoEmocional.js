@@ -240,24 +240,20 @@ const ImpactoEmocional = () => {
         }
 
         .summary-boxes {
-          display: flex;
-          justify-content: center;
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
           gap: 30px;
           margin-bottom: 40px;
-          flex-wrap: wrap;
         }
 
         .summary-box {
           background: white;
-          border: 2px solid;
+          border: 3px solid #2e8b57;
           border-radius: 12px;
           padding: 20px;
           text-align: center;
-          min-width: 200px;
-          max-width: 250px;
-          flex: 1;
           box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-          transition: transform 0.3s ease;
+          transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
 
         .summary-box:hover {
@@ -265,37 +261,20 @@ const ImpactoEmocional = () => {
           box-shadow: 0 4px 12px rgba(0,0,0,0.12);
         }
 
-        .summary-box.positivo {
-          border-color: #4caf50;
-          background: linear-gradient(135deg, #e8f5e9 0%, #f1f8e9 100%);
-        }
-
-        .summary-box.neutro {
-          border-color: #ff9800;
-          background: linear-gradient(135deg, #fff3e0 0%, #fef7ed 100%);
-        }
-
-        .summary-box.negativo {
-          border-color: #d32f2f;
-          background: linear-gradient(135deg, #ffebee 0%, #fce4ec 100%);
-        }
-
         .box-title {
           font-size: 14px;
           font-weight: 600;
-          color: #333;
+          color: #2e8b57;
+          text-transform: uppercase;
           margin-bottom: 8px;
         }
 
         .box-percentage {
           font-size: 36px;
-          font-weight: bold;
+          font-weight: 700;
+          color: #2e8b57;
           margin: 10px 0;
         }
-
-        .positivo .box-percentage { color: #4caf50; }
-        .neutro .box-percentage { color: #ff9800; }
-        .negativo .box-percentage { color: #d32f2f; }
 
         .box-description {
           font-size: 11px;
@@ -382,7 +361,32 @@ const ImpactoEmocional = () => {
           De que forma o seu trabalho tem impactado sua saúde emocional?
         </div>
 
-        
+        {/* Cards de resumo - ANTES do gráfico */}
+        <div className="summary-boxes">
+          <div className="summary-box">
+            <div className="box-title">Impacto positivo</div>
+            <div className="box-percentage">{summaryData.impactoPositivo}%</div>
+            <div className="box-description">
+              Principalmente entre os mais escolarizados e quem possui mais tempo de casa (10 anos ou mais)
+            </div>
+          </div>
+
+          <div className="summary-box">
+            <div className="box-title">Não afeta</div>
+            <div className="box-percentage">{summaryData.naoAfeta}%</div>
+            <div className="box-description">
+              Mais entre homens cis do que mulheres cis, entre 55 e 64 anos com escolaridade mais baixa e "recém chegados" na Eldorado
+            </div>
+          </div>
+
+          <div className="summary-box">
+            <div className="box-title">Impacto negativo</div>
+            <div className="box-percentage">{summaryData.impactoNegativo}%</div>
+            <div className="box-description">
+              Mais entre mulheres cis, da localidade de Santos, de escolaridade mais alta e com 4 a 6 anos de atuação na Eldorado
+            </div>
+          </div>
+        </div>
 
         {/* Gráfico detalhado */}
         <div className="chart-section">
@@ -478,33 +482,6 @@ const ImpactoEmocional = () => {
                 )
               ]}
             />
-          </div>
-        </div>
-
-        {/* Boxes de resumo */}
-        <div className="summary-boxes">
-          <div className="summary-box positivo">
-            <div className="box-title">Impacto positivo</div>
-            <div className="box-percentage">{summaryData.impactoPositivo}%</div>
-            <div className="box-description">
-              Principalmente entre os mais escolarizados e quem possui mais tempo de casa (10 anos ou mais)
-            </div>
-          </div>
-
-          <div className="summary-box neutro">
-            <div className="box-title">Não afeta</div>
-            <div className="box-percentage">{summaryData.naoAfeta}%</div>
-            <div className="box-description">
-              Mais entre homens cis do que mulheres cis, entre 55 e 64 anos com escolaridade mais baixa e "recém chegados" na Eldorado
-            </div>
-          </div>
-
-          <div className="summary-box negativo">
-            <div className="box-title">Impacto negativo</div>
-            <div className="box-percentage">{summaryData.impactoNegativo}%</div>
-            <div className="box-description">
-              Mais entre mulheres cis, da localidade de Santos, de escolaridade mais alta e com 4 a 6 anos de atuação na Eldorado
-            </div>
           </div>
         </div>
 

@@ -238,57 +238,41 @@ const InfluenciaFamilia = () => {
         }
 
         .stat-cards {
-          display: flex;
-          justify-content: center;
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
           gap: 20px;
           margin: 30px 0;
-          flex-wrap: wrap;
         }
 
         .stat-card {
           background: white;
-          border: 2px solid;
-          border-radius: 10px;
-          padding: 20px;
+          border: 3px solid #2e8b57;
+          border-radius: 12px;
+          padding: 25px 20px;
           text-align: center;
-          min-width: 180px;
-          flex: 1;
-          max-width: 250px;
           box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-          transition: transform 0.3s ease;
+          transition: all 0.3s ease;
         }
 
         .stat-card:hover {
           transform: translateY(-3px);
-          box-shadow: 0 4px 12px rgba(0,0,0,0.12);
-        }
-
-        .stat-card.influencia {
-          border-color: #2e8b57;
-          background: linear-gradient(135deg, #e8f5e9 0%, #f1f8e9 100%);
-        }
-
-        .stat-card.neutro {
-          border-color: #ff9800;
-          background: linear-gradient(135deg, #fff3e0 0%, #fef7ed 100%);
-        }
-
-        .stat-card.nao-sabe {
-          border-color: #9e9e9e;
-          background: linear-gradient(135deg, #f5f5f5 0%, #fafafa 100%);
+          box-shadow: 0 4px 12px rgba(46, 139, 87, 0.2);
         }
 
         .card-title {
-          font-size: 14px;
+          font-size: 13px;
           font-weight: 600;
-          margin-bottom: 10px;
-          color: #333;
+          margin-bottom: 12px;
+          color: #2e8b57;
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
         }
 
         .card-value {
-          font-size: 28px;
-          font-weight: bold;
-          color: #333;
+          font-size: 36px;
+          font-weight: 700;
+          color: #2e8b57;
+          line-height: 1;
         }
 
         .insights-card {
@@ -385,6 +369,25 @@ const InfluenciaFamilia = () => {
       <div className="influencia-container">
         <div className="question-text">
           A sua família influencia sua decisão de continuar ou sair da empresa?
+        </div>
+
+        {/* Cards de estatísticas - MOVIDOS PARA CIMA */}
+        <div className="stat-cards">
+          <div className="stat-card">
+            <div className="card-title">Influência Total</div>
+            <div className="card-value">{insights.totalInfluencia}%</div>
+            <small style={{ color: "#2e8b57", fontSize: "12px", fontWeight: "600" }}>Muito + Um pouco</small>
+          </div>
+
+          <div className="stat-card">
+            <div className="card-title">Não Influencia</div>
+            <div className="card-value">{insights.naoInfluencia}%</div>
+          </div>
+
+          <div className="stat-card">
+            <div className="card-title">Não Sei Dizer</div>
+            <div className="card-value">{insights.naoSeiDizer}%</div>
+          </div>
         </div>
 
         <div className="chart-section">
@@ -497,25 +500,6 @@ const InfluenciaFamilia = () => {
                 </div>
               </div>
             </div>
-          </div>
-        </div>
-
-        {/* Cards de estatísticas */}
-        <div className="stat-cards">
-          <div className="stat-card influencia">
-            <div className="card-title">Influência Total</div>
-            <div className="card-value">{insights.totalInfluencia}%</div>
-            <small style={{ color: "#666", fontSize: "12px" }}>Muito + Um pouco</small>
-          </div>
-          
-          <div className="stat-card neutro">
-            <div className="card-title">Não Influencia</div>
-            <div className="card-value">{insights.naoInfluencia}%</div>
-          </div>
-          
-          <div className="stat-card nao-sabe">
-            <div className="card-title">Não Sei Dizer</div>
-            <div className="card-value">{insights.naoSeiDizer}%</div>
           </div>
         </div>
 

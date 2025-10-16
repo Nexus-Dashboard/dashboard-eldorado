@@ -15,12 +15,6 @@ const QuestionNavigation = ({ activeQuestion, setActiveQuestion }) => {
       icon: "star"
     },
     {
-      id: "trajetoria",
-      title: "Trajetória na Eldorado",
-      subtitle: "Perspectivas sobre o futuro profissional",
-      icon: "graph-up-arrow"
-    },
-    {
       id: "trajetoria-longa",
       title: "Construção de Trajetória Longa",
       subtitle: "Fatores para permanência na empresa",
