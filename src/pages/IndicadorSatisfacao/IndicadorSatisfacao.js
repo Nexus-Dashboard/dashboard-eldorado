@@ -1,12 +1,13 @@
 import { Container, Row, Col } from "react-bootstrap"
 import Indicadores from "./Indicadores"
 import MediaAtributos from "./MediaAtributos"
+import IndicadorGeral from "./IndicadorGeral"
 import QuestionNavigationIndicador from "./QuestionNavigationIndicador"
 import { useState } from "react"
 
 const IndicadorSatisfacao = () => {
-  const [activeQuestion, setActiveQuestion] = useState("indicadores")
-  
+  const [activeQuestion, setActiveQuestion] = useState("indicador-geral")
+
   return (
     <Container fluid>
       <div className="page-header">
@@ -15,16 +16,21 @@ const IndicadorSatisfacao = () => {
       </div>
 
       {/* Navegação entre perguntas */}
-      <QuestionNavigationIndicador 
-        activeQuestion={activeQuestion} 
-        setActiveQuestion={setActiveQuestion} 
+      <QuestionNavigationIndicador
+        activeQuestion={activeQuestion}
+        setActiveQuestion={setActiveQuestion}
       />
+
+      {/* Seção do Indicador Geral */}
+      {activeQuestion === "indicador-geral" && <IndicadorGeral />}
+
+      {/* Seção de Concordância sobre Benefícios */}
+      {activeQuestion === "indicadores" && <Indicadores />}
 
       {/* Seção de Utilização e Avaliação dos Benefícios */}
       {activeQuestion === "media-atributos" && <MediaAtributos />}
 
-      {/* Seção de Concordância sobre Benefícios */}
-      {activeQuestion === "indicadores" && <Indicadores />}
+      
     </Container>
   )
 }

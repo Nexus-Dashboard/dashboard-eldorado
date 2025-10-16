@@ -3,6 +3,12 @@ import React from "react"
 const QuestionNavigationIndicador = ({ activeQuestion, setActiveQuestion }) => {
   const questions = [
     {
+      id: "indicador-geral",
+      title: "Indicador Geral",
+      subtitle: "Visão geral do Indicador de Satisfação",
+      icon: "speedometer2"
+    },
+    {
       id: "media-atributos",
       title: "Média de Atributos dos Benefícios",
       subtitle: "Pontuação média dos atributos",

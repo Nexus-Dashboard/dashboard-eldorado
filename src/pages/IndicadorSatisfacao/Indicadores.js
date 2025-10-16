@@ -173,19 +173,12 @@ const Indicadores = () => {
     }
   }, [getFilteredData, loading])
 
-  const TermometroComponent = ({ valor, titulo, icone, destaque = false }) => {
+  const TermometroComponent = ({ valor, titulo, icone }) => {
     const classificacao = getClassificacao(valor)
-    
+
     return (
-      <Card className={`termometro-card ${destaque ? 'destaque' : ''}`}>
+      <Card className="termometro-card">
         <Card.Body className="text-center">
-          {destaque && (
-            <div className="indicador-geral-badge">
-              <i className="bi bi-speedometer2"></i>
-              <span>Indicador Geral</span>
-            </div>
-          )}
-          
           <div className="termometro-container">
             <div className="termometro">
               <div 
@@ -291,24 +284,6 @@ const Indicadores = () => {
         .termometro-card:hover {
           transform: translateY(-5px);
           box-shadow: 0 8px 25px rgba(0,0,0,0.15);
-        }
-
-        .termometro-card.destaque {
-          background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-          border: 2px solid #ff8c00;
-        }
-
-        .indicador-geral-badge {
-          background: #ff8c00;
-          color: white;
-          padding: 8px 15px;
-          border-radius: 20px;
-          font-size: 0.85rem;
-          font-weight: 600;
-          margin-bottom: 15px;
-          display: inline-flex;
-          align-items: center;
-          gap: 6px;
         }
 
         .termometro-container {
@@ -450,17 +425,9 @@ const Indicadores = () => {
         </div>
       </div>
 
-      
-      <div className="termometros-grid">
-        {/* Indicador Geral - Destaque */}
-        <TermometroComponent 
-          valor={indicadores.GERAL || 86.9}
-          titulo="Indicador Geral"
-          icone="speedometer2"
-          destaque={true}
-        />
 
-        {/* Demais Indicadores */}
+      <div className="termometros-grid">
+        {/* Indicadores por Dimensão */}
         {Object.entries(configuracaoIndicadores).map(([key, config]) => (
           <TermometroComponent
             key={key}
