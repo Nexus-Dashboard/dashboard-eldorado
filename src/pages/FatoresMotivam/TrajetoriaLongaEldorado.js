@@ -253,8 +253,8 @@ const TrajetoriaLongaEldorado = () => {
           background: white;
           border: 3px solid #ff8c00;
           border-radius: 50%;
-          width: 220px;
-          height: 220px;
+          width: 280px;
+          height: 280px;
           display: flex;
           flex-direction: column;
           justify-content: center;
@@ -270,11 +270,11 @@ const TrajetoriaLongaEldorado = () => {
         }
 
         .insight-text {
-          font-size: 13px;
+          font-size: 14px;
           font-weight: 600;
           color: #333;
-          line-height: 1.4;
-          padding: 0 15px;
+          line-height: 1.5;
+          padding: 0 20px;
         }
 
         .legend {
@@ -411,7 +411,7 @@ const TrajetoriaLongaEldorado = () => {
                   keys={['1ª', '2ª']}
                   indexBy="fator"
                   layout="horizontal"
-                  margin={{ top: 20, right: 80, bottom: 20, left: 280 }}
+                  margin={{ top: 20, right: 80, bottom: 20, left: 380 }}
                   padding={0.3}
                   valueScale={{ type: 'linear', min: 0, max: Math.max(...barChartData.map(d => d.total)) + 10 }}
                   colors={['#2e8b57', '#4caf50']}

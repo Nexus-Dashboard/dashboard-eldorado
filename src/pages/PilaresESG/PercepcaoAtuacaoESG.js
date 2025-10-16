@@ -22,7 +22,7 @@ const PercepcaoAtuacaoESG = () => {
     { atributo: "Adota práticas de governança corporativa, priorizando a transparência e a ética", media: 4.6, concordam: 84 },
     { atributo: "Investe na capacitação, treinamento e desenvolvimento dos seus colaboradores", media: 4.5, concordam: 83 },
     { atributo: "Oferece benefícios e vantagens aos funcionários, além da remuneração justa", media: 4.4, concordam: 80 }
-  ]
+  ].sort((a, b) => b.media - a.media)
 
   useEffect(() => {
     const processData = () => {
@@ -34,9 +34,12 @@ const PercepcaoAtuacaoESG = () => {
           return
         }
 
-        // Usar dados de exemplo por enquanto
+        // Usar dados de exemplo por enquanto (já ordenados por média decrescente)
         setChartData2025(dados2025Exemplo)
         setTotalRespondentes(filteredData.length)
+
+        // NOTA: Quando processar dados reais, aplicar ordenação:
+        // processedData.sort((a, b) => b.media - a.media)
 
       } catch (error) {
         console.error("Erro ao processar dados:", error)
@@ -57,7 +60,7 @@ const PercepcaoAtuacaoESG = () => {
         keys={['media']}
         indexBy="atributo"
         layout="horizontal"
-        margin={{ top: 20, right: showPercentages ? 100 : 60, bottom: 20, left: 380 }}
+        margin={{ top: 20, right: showPercentages ? 100 : 60, bottom: 20, left: 450 }}
         padding={0.3}
         valueScale={{ type: 'linear', min: 0, max: 5 }}
         colors='#2e8b57'
@@ -168,7 +171,7 @@ const PercepcaoAtuacaoESG = () => {
         <h5 style={{ color: "#333", fontSize: "1.3rem", marginBottom: "30px" }}>
           Percepção sobre a atuação ESG da Eldorado
         </h5>
-        <ChartComponent data={chartData2025} showPercentages={true} />
+        <ChartComponent data={chartData2025} showPercentages={false} />
       </div>
 
       <Row>

@@ -386,7 +386,7 @@ const PerfilAmostra = () => {
             <Col lg={6}>
               <div className="chart-section">
                 <h5 className="chart-title">Orientação Sexual</h5>
-                <HorizontalBarChart data={chartData.orientacaoSexual} height={300} leftMargin={300} />
+                <HorizontalBarChart data={chartData.orientacaoSexual} height={300} leftMargin={220} />
               </div>
             </Col>
 
@@ -435,7 +435,7 @@ const PerfilAmostra = () => {
           {/* Diretoria */}
           <div className="chart-section">
             <h5 className="chart-title">Diretorias</h5>
-            <HorizontalBarChart data={chartData.diretoria} height={500} leftMargin={250} />
+            <HorizontalBarChart data={chartData.diretoria} height={500} leftMargin={380} />
           </div>
 
           {/* Localidade */}

@@ -474,7 +474,7 @@ const ConcordanciaComunicacao = () => {
                   keys={['media']}
                   indexBy="atributo"
                   layout="horizontal"
-                  margin={{ top: 20, right: 80, bottom: 20, left: 420 }}
+                  margin={{ top: 20, right: 80, bottom: 20, left: 500 }}
                   padding={0.4}
                   valueScale={{ type: 'linear', min: 0, max: 5 }}
                   colors="#4caf50"

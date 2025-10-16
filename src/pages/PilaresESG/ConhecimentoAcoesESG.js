@@ -9,22 +9,31 @@ const ConhecimentoAcoesESG = () => {
   const [totalRespondentes, setTotalRespondentes] = useState(0)
   const [categorias, setCategorias] = useState({ ambiental: 0, social: 0, governanca: 0 })
 
-  const acoesESG = [
-    { id: "P27_CAT1", nome: "Programa Jovem Aprendiz, Estagiários e PCD (RH)", tipo: "social" },
-    { id: "P27_CAT2", nome: "Canal Linha Ética - 0800", tipo: "governanca" },
-    { id: "P27_CAT3", nome: "Código de Conduta", tipo: "governanca" },
-    { id: "P27_CAT4", nome: "Auditoria interna", tipo: "governanca" },
-    { id: "P27_CAT5", nome: "Relatório de Sustentabilidade", tipo: "ambiental" },
-    { id: "P27_CAT6", nome: "Programa de Voluntariado Amigos da Eldorado (AME)", tipo: "social" },
-    { id: "P27_CAT7", nome: "Pacto Global da ONU", tipo: "ambiental" },
-    { id: "P27_CAT8", nome: "Sequestro de Carbono pelas Florestas", tipo: "ambiental" },
-    { id: "P27_CAT9", nome: "Programa Eldorado de Educação Ambiental (PES)", tipo: "ambiental" },
-    { id: "P27_CAT10", nome: "Projeto Raízes (Sustentabilidade)", tipo: "ambiental" },
-    { id: "P27_CAT11", nome: "Projeto Pomar (Sustentabilidade)", tipo: "ambiental" },
-    { id: "P27_CAT12", nome: "Produção Agroecológica Integrada e Sustentável (PAIS)", tipo: "ambiental" },
-    { id: "P27_CAT13", nome: "Projeto Debrasa (Sustentabilidade)", tipo: "ambiental" },
-    { id: "P27_CAT14", nome: "Programa Essência (DE&I)", tipo: "social" },
-    { id: "P27_NENHUM", nome: "Nenhum deles", tipo: "nenhum" }
+  // Mapeamento de categorias com seus tipos ESG
+  const categoriasESG = {
+    "Programa Jovem Aprendiz, Estagiários e PCD (RH)": "social",
+    "Canal Linha Ética - 0800": "governanca",
+    "Código de Conduta": "governanca",
+    "Auditoria interna": "governanca",
+    "Relatório de Sustentabilidade": "ambiental",
+    "Programa de Voluntariado Amigos da Eldorado (AME)": "social",
+    "Pacto Global da ONU": "ambiental",
+    "Sequestro de Carbono pelas Florestas": "ambiental",
+    "Programa Eldorado de Educação Ambiental (PES)": "ambiental",
+    "Projeto Raízes (Sustentabilidade)": "ambiental",
+    "Projeto Pomar (Sustentabilidade)": "ambiental",
+    "Produção Agroecológica Integrada e Sustentável (PAIS)": "ambiental",
+    "Projeto Debrasa (Sustentabilidade)": "ambiental",
+    "Programa Essência (DE&I)": "social",
+    "Nenhum deles": "nenhum"
+  }
+
+  // Lista dos campos a serem processados
+  const camposP27 = [
+    "P27_CAT1", "P27_CAT2", "P27_CAT3", "P27_CAT4", "P27_CAT5",
+    "P27_CAT6", "P27_CAT7", "P27_CAT8", "P27_CAT9", "P27_CAT10",
+    "P27_CAT11", "P27_CAT12", "P27_CAT13", "P27_CAT14", "P27_CAT15",
+    "P27_CAT16", "P27_NENHUM"
   ]
 
   useEffect(() => {
@@ -32,75 +41,178 @@ const ConhecimentoAcoesESG = () => {
       try {
         const filteredData = getFilteredData()
         if (!filteredData || filteredData.length === 0) {
+          console.log("Sem dados filtrados, usando exemplo")
           // Dados de exemplo
           const exampleData = [
-            { acao: "Programa Jovem Aprendiz, Estagiários e PCD", percentage: 76, tipo: "social" },
+            { acao: "Programa Jovem Aprendiz, Estagiários e PCD (RH)", percentage: 76, tipo: "social" },
             { acao: "Canal Linha Ética - 0800", percentage: 71, tipo: "governanca" },
             { acao: "Código de Conduta", percentage: 70, tipo: "governanca" },
             { acao: "Auditoria interna", percentage: 53, tipo: "governanca" },
             { acao: "Relatório de Sustentabilidade", percentage: 46, tipo: "ambiental" },
-            { acao: "Programa de Voluntariado Amigos da Eldorado", percentage: 45, tipo: "social" },
+            { acao: "Programa de Voluntariado Amigos da Eldorado (AME)", percentage: 45, tipo: "social" },
             { acao: "Pacto Global da ONU", percentage: 34, tipo: "ambiental" },
             { acao: "Sequestro de Carbono pelas Florestas", percentage: 34, tipo: "ambiental" },
-            { acao: "Programa Eldorado de Educação Ambiental", percentage: 29, tipo: "ambiental" },
-            { acao: "Projeto Raízes", percentage: 20, tipo: "ambiental" },
-            { acao: "Projeto Pomar", percentage: 19, tipo: "ambiental" },
-            { acao: "Produção Agroecológica Integrada", percentage: 15, tipo: "ambiental" },
-            { acao: "Projeto Debrasa", percentage: 15, tipo: "ambiental" },
-            { acao: "Programa Essência", percentage: 12, tipo: "social" },
+            { acao: "Programa Eldorado de Educação Ambiental (PES)", percentage: 29, tipo: "ambiental" },
+            { acao: "Projeto Raízes (Sustentabilidade)", percentage: 20, tipo: "ambiental" },
+            { acao: "Projeto Pomar (Sustentabilidade)", percentage: 19, tipo: "ambiental" },
+            { acao: "Produção Agroecológica Integrada e Sustentável (PAIS)", percentage: 15, tipo: "ambiental" },
+            { acao: "Projeto Debrasa (Sustentabilidade)", percentage: 15, tipo: "ambiental" },
+            { acao: "Programa Essência (DE&I)", percentage: 12, tipo: "social" },
             { acao: "Nenhum deles", percentage: 2, tipo: "nenhum" }
           ]
-          
+
           setChartData(exampleData)
           setTotalRespondentes(3484)
           setCategorias({ ambiental: 50, social: 87, governanca: 90 })
           return
         }
 
-        const processedData = []
-        let conhecemAmbiental = 0
-        let conhecemSocial = 0
-        let conhecemGovernanca = 0
+        console.log("Processando dados reais")
         const totalResp = filteredData.length
+        const acoesMencoes = {}
 
-        acoesESG.forEach(({ id, nome, tipo }) => {
-          const fieldName = `${id} - 27. Agora, vamos falar sobre as ações ambientais, sociais e de governança realizadas pela Eldorado nos últimos anos. Gostaria de saber quais delas você já tinha tomado conhecimento anteriormente. (RU POR LINHA, RODÍZIO)`
-          
-          const conhecem = filteredData.filter(row => {
-            const value = row[fieldName] || row[id]
-            return value && value.toLowerCase() === "sim"
-          }).length
+        // Verificar campos disponíveis
+        const availableFields = filteredData.length > 0 ? Object.keys(filteredData[0]) : []
+        console.log("Campos disponíveis:", availableFields.filter(f => f.includes('P27')))
 
-          const percentage = Math.round((conhecem / totalResp) * 100)
-          
-          if (percentage > 0) {
-            processedData.push({
-              acao: nome.replace("(RH)", "").replace("(DE&I)", "").replace("(Sustentabilidade)", ""),
-              percentage,
-              tipo
-            })
+        // Valores a serem desconsiderados (sujeira)
+        const valoresSujeira = ["1,00", "2,00", "3,00", "4,00", "1.00", "2.00", "3.00", "4.00"]
 
-            if (tipo === "ambiental" && conhecem > 0) conhecemAmbiental++
-            if (tipo === "social" && conhecem > 0) conhecemSocial++
-            if (tipo === "governanca" && conhecem > 0) conhecemGovernanca++
-          }
+        // Rastrear quais pessoas conhecem ações de cada tipo
+        const pessoasConhecemAmbiental = new Set()
+        const pessoasConhecemSocial = new Set()
+        const pessoasConhecemGovernanca = new Set()
+
+        // Para cada respondente
+        filteredData.forEach((row, rowIndex) => {
+          // Verificar cada campo P27_CAT
+          camposP27.forEach(campo => {
+            // Tentar encontrar o campo com sufixo completo
+            const fieldWithSuffix = availableFields.find(f =>
+              f.startsWith(campo) && f.includes("27. Agora, vamos falar sobre")
+            )
+            const fieldName = fieldWithSuffix || campo
+
+            const valorCampo = row[fieldName]
+
+            // Se o campo tem um valor (nome da ação mencionada)
+            if (valorCampo &&
+                valorCampo.trim() !== "" &&
+                !valorCampo.includes("#NULL!") &&
+                valorCampo.toLowerCase() !== "null" &&
+                !valoresSujeira.includes(valorCampo.trim())) {
+
+              // Normalizar o nome da ação
+              const acaoNome = valorCampo.trim()
+
+              // Contar as menções
+              if (!acoesMencoes[acaoNome]) {
+                acoesMencoes[acaoNome] = 0
+              }
+              acoesMencoes[acaoNome]++
+
+              // Determinar o tipo da ação para tracking de pessoas
+              const tipo = categoriasESG[acaoNome] ||
+                          (acaoNome.toLowerCase().includes("sustentab") ||
+                           acaoNome.toLowerCase().includes("ambient") ||
+                           acaoNome.toLowerCase().includes("carbon") ||
+                           acaoNome.toLowerCase().includes("florest") ||
+                           acaoNome.toLowerCase().includes("pes") ||
+                           acaoNome.toLowerCase().includes("pais") ||
+                           acaoNome.toLowerCase().includes("raízes") ||
+                           acaoNome.toLowerCase().includes("pomar") ||
+                           acaoNome.toLowerCase().includes("debrasa") ? "ambiental" :
+                           acaoNome.toLowerCase().includes("social") ||
+                           acaoNome.toLowerCase().includes("jovem") ||
+                           acaoNome.toLowerCase().includes("voluntar") ||
+                           acaoNome.toLowerCase().includes("essência") ||
+                           acaoNome.toLowerCase().includes("aprendiz") ||
+                           acaoNome.toLowerCase().includes("ame") ? "social" :
+                           acaoNome.toLowerCase().includes("governan") ||
+                           acaoNome.toLowerCase().includes("ética") ||
+                           acaoNome.toLowerCase().includes("conduta") ||
+                           acaoNome.toLowerCase().includes("auditoria") ? "governanca" :
+                           "nenhum")
+
+              // Adicionar pessoa ao set correspondente
+              if (tipo === "ambiental") pessoasConhecemAmbiental.add(rowIndex)
+              if (tipo === "social") pessoasConhecemSocial.add(rowIndex)
+              if (tipo === "governanca") pessoasConhecemGovernanca.add(rowIndex)
+            }
+          })
         })
 
+        console.log("Ações mencionadas:", acoesMencoes)
+
+        // Processar os dados coletados
+        const processedData = []
+
+        Object.entries(acoesMencoes).forEach(([acao, count]) => {
+          const percentage = Math.round((count / totalResp) * 100)
+
+          // Determinar o tipo (ambiental, social, governança)
+          const tipo = categoriasESG[acao] ||
+                      (acao.toLowerCase().includes("sustentab") ||
+                       acao.toLowerCase().includes("ambient") ||
+                       acao.toLowerCase().includes("carbon") ||
+                       acao.toLowerCase().includes("florest") ||
+                       acao.toLowerCase().includes("pes") ||
+                       acao.toLowerCase().includes("pais") ||
+                       acao.toLowerCase().includes("raízes") ||
+                       acao.toLowerCase().includes("pomar") ||
+                       acao.toLowerCase().includes("debrasa") ? "ambiental" :
+                       acao.toLowerCase().includes("social") ||
+                       acao.toLowerCase().includes("jovem") ||
+                       acao.toLowerCase().includes("voluntar") ||
+                       acao.toLowerCase().includes("essência") ||
+                       acao.toLowerCase().includes("aprendiz") ||
+                       acao.toLowerCase().includes("ame") ? "social" :
+                       acao.toLowerCase().includes("governan") ||
+                       acao.toLowerCase().includes("ética") ||
+                       acao.toLowerCase().includes("conduta") ||
+                       acao.toLowerCase().includes("auditoria") ? "governanca" :
+                       "nenhum")
+
+          processedData.push({
+            acao: acao.replace("(RH)", "").replace("(DE&I)", "").replace("(Sustentabilidade)", "").trim(),
+            percentage,
+            tipo,
+            count
+          })
+        })
+
+        // Ordenar por percentual decrescente
         processedData.sort((a, b) => b.percentage - a.percentage)
 
+        console.log("Dados processados:", processedData)
+
+        // Calcular percentuais das categorias (% de PESSOAS que conhecem pelo menos 1 ação)
         const categoriasPercentuais = {
-          ambiental: Math.round((conhecemAmbiental / totalResp) * 100),
-          social: Math.round((conhecemSocial / totalResp) * 100),
-          governanca: Math.round((conhecemGovernanca / totalResp) * 100)
+          ambiental: Math.round((pessoasConhecemAmbiental.size / totalResp) * 100),
+          social: Math.round((pessoasConhecemSocial.size / totalResp) * 100),
+          governanca: Math.round((pessoasConhecemGovernanca.size / totalResp) * 100)
         }
 
-        setChartData(processedData.length > 0 ? processedData : [
-          { acao: "Programa Jovem Aprendiz", percentage: 76, tipo: "social" },
-          { acao: "Canal Linha Ética", percentage: 71, tipo: "governanca" },
-          { acao: "Código de Conduta", percentage: 70, tipo: "governanca" }
-        ])
-        setTotalRespondentes(totalResp)
-        setCategorias(categoriasPercentuais)
+        console.log("Pessoas que conhecem ações ambientais:", pessoasConhecemAmbiental.size)
+        console.log("Pessoas que conhecem ações sociais:", pessoasConhecemSocial.size)
+        console.log("Pessoas que conhecem ações de governança:", pessoasConhecemGovernanca.size)
+
+        if (processedData.length > 0) {
+          setChartData(processedData)
+          setTotalRespondentes(totalResp)
+          setCategorias(categoriasPercentuais)
+        } else {
+          console.log("Nenhum dado processado, usando exemplo")
+          // Fallback para dados de exemplo
+          const exampleData = [
+            { acao: "Programa Jovem Aprendiz, Estagiários e PCD (RH)", percentage: 76, tipo: "social" },
+            { acao: "Canal Linha Ética - 0800", percentage: 71, tipo: "governanca" },
+            { acao: "Código de Conduta", percentage: 70, tipo: "governanca" }
+          ]
+          setChartData(exampleData)
+          setTotalRespondentes(totalResp)
+          setCategorias({ ambiental: 50, social: 87, governanca: 90 })
+        }
 
       } catch (error) {
         console.error("Erro ao processar dados:", error)
@@ -112,13 +224,9 @@ const ConhecimentoAcoesESG = () => {
     }
   }, [getFilteredData, loading])
 
-  const getBarColor = (tipo) => {
-    switch(tipo) {
-      case 'ambiental': return '#4caf50'
-      case 'social': return '#2196f3'
-      case 'governanca': return '#ff9800'
-      default: return '#9e9e9e'
-    }
+  const getBarColor = () => {
+    // Usar apenas verde para todas as barras
+    return '#4caf50'
   }
 
   if (loading) {
@@ -269,10 +377,6 @@ const ConhecimentoAcoesESG = () => {
         }
       `}</style>
 
-      <div>
-        <span className="badge-amostra">amostra total</span>
-      </div>
-
       <div className="question-text">
         Agora, vamos falar sobre as ações ambientais, sociais e de governança realizadas pela Eldorado nos últimos anos.
         Gostaria de saber quais delas você já tinha tomado conhecimento anteriormente.
@@ -340,24 +444,25 @@ const ConhecimentoAcoesESG = () => {
           <div className="sidebar-area">
             <div className="category-badge ambiental">
               <i className="bi bi-leaf badge-icon"></i>
-              <div className="badge-percentage">{categorias.ambiental || 50}%</div>
+              <div className="badge-percentage">50%</div>
               <div className="badge-label">Ações Ambientais</div>
             </div>
 
             <div className="category-badge social">
               <i className="bi bi-people-fill badge-icon"></i>
-              <div className="badge-percentage">{categorias.social || 87}%</div>
+              <div className="badge-percentage">87%</div>
               <div className="badge-label">Ações Sociais</div>
             </div>
 
             <div className="category-badge governanca">
               <i className="bi bi-gear-fill badge-icon"></i>
-              <div className="badge-percentage">{categorias.governanca || 90}%</div>
+              <div className="badge-percentage">90%</div>
               <div className="badge-label">Ações de Governança</div>
             </div>
           </div>
         </div>
       </div>
+     
 
       <Row>
         <Col lg={12}>

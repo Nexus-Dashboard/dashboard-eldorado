@@ -33,15 +33,25 @@ const TrajetoriaEldorado = () => {
           counts[response] = (counts[response] || 0) + 1
         })
 
-        // Criar distribuição ordenada por frequência
-        const distribuicao = Object.entries(counts)
-          .map(([categoria, count]) => ({
+        // Definir ordem específica das categorias
+        const ordemCategorias = [
+          "Vejo como um lugar para construir uma carreira de longo prazo",
+          "Tenho vontade de crescer e evoluir profissionalmente",
+          "Quero continuar na empresa, mas sem grandes expectativas no momento",
+          "Ainda estou refletindo sobre o meu futuro",
+          "Não me vejo na Eldorado no futuro",
+          "Não sei dizer"
+        ]
+
+        // Criar distribuição ordenada conforme padrão
+        const distribuicao = ordemCategorias
+          .map(categoria => ({
             categoria: categoria.length > 50 ? categoria.substring(0, 50) + "..." : categoria,
             categoriaCompleta: categoria,
-            count,
-            percentage: Math.round((count / responses.length) * 100)
+            count: counts[categoria] || 0,
+            percentage: counts[categoria] ? Math.round((counts[categoria] / responses.length) * 100) : 0
           }))
-          .sort((a, b) => b.percentage - a.percentage)
+          .filter(item => item.count > 0)
 
         // Classificar em categorias principais baseado na análise da imagem
         const altaIntencaoKeywords = [
@@ -131,7 +141,7 @@ const TrajetoriaEldorado = () => {
           keys={['percentage']}
           indexBy="categoria"
           layout="horizontal"
-          margin={{ top: 20, right: 80, bottom: 20, left: 200 }}
+          margin={{ top: 20, right: 80, bottom: 20, left: 380 }}
           padding={0.3}
           valueScale={{ type: 'linear', min: 0, max: 50 }}
           colors={(bar) => {

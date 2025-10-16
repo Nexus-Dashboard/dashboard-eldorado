@@ -16,8 +16,8 @@ const UsoLinhaEtica = () => {
         if (!filteredData || filteredData.length === 0) {
           // Dados de exemplo
           const exampleData = [
-            { id: "Não", label: "Não", value: 95, color: "#4caf50" },
-            { id: "Sim", label: "Sim", value: 5, color: "#2e8b57" }
+            { id: "Não", label: "Não", value: 95, color: "#FF0000" },
+            { id: "Sim", label: "Sim", value: 5, color: "#2e7d32" }
           ]
           
           setChartData(exampleData)
@@ -46,8 +46,8 @@ const UsoLinhaEtica = () => {
 
         if (responses.length === 0) {
           const exampleData = [
-            { id: "Não", label: "Não", value: 95, color: "#4caf50" },
-            { id: "Sim", label: "Sim", value: 5, color: "#2e8b57" }
+            { id: "Não", label: "Não", value: 95, color: "#FF0000" },
+            { id: "Sim", label: "Sim", value: 5, color: "#2e7d32" }
           ]
           setChartData(exampleData)
           setTotalRespondentes(filteredData.length)
@@ -71,8 +71,8 @@ const UsoLinhaEtica = () => {
         const percentualNao = Math.round((counts["Não"] / total) * 100)
 
         const processedData = [
-          { id: "Não", label: "Não", value: percentualNao, color: "#4caf50" },
-          { id: "Sim", label: "Sim", value: percentualSim, color: "#2e8b57" }
+          { id: "Não", label: "Não", value: percentualNao, color: "#FF0000" },
+          { id: "Sim", label: "Sim", value: percentualSim, color: "#2e7d32" }
         ]
 
         setChartData(processedData)
@@ -84,8 +84,8 @@ const UsoLinhaEtica = () => {
         
         // Fallback para dados de exemplo
         const exampleData = [
-          { id: "Não", label: "Não", value: 95, color: "#4caf50" },
-          { id: "Sim", label: "Sim", value: 5, color: "#2e8b57" }
+          { id: "Não", label: "Não", value: 95, color: "#FF0000" },
+          { id: "Sim", label: "Sim", value: 5, color: "#2e7d32" }
         ]
         setChartData(exampleData)
         setTotalRespondentes(3484)
@@ -179,7 +179,7 @@ const UsoLinhaEtica = () => {
           background: #e8f5e9;
           padding: 20px;
           border-radius: 10px;
-          border-left: 4px solid #4caf50;
+          border-left: 4px solid #2e8b57;
         }
 
         .insight-title {
@@ -309,11 +309,11 @@ const UsoLinhaEtica = () => {
 
         <div className="legend-custom">
           <div className="legend-item">
-            <div className="legend-color" style={{ background: '#4caf50' }}></div>
+            <div className="legend-color" style={{ background: '#FF0000' }}></div>
             <span>Não utilizaram</span>
           </div>
           <div className="legend-item">
-            <div className="legend-color" style={{ background: '#2e8b57' }}></div>
+            <div className="legend-color" style={{ background: '#2e7d32' }}></div>
             <span>Já utilizaram</span>
           </div>
         </div>

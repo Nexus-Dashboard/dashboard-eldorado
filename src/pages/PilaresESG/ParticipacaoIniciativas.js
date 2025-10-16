@@ -33,12 +33,12 @@ const ParticipacaoIniciativas = () => {
       try {
         const filteredData = getFilteredData()
         if (!filteredData || filteredData.length === 0) {
-          // Dados de exemplo baseados na imagem
+          // Dados de exemplo baseados na imagem (ordenados por conhecimento decrescente)
           const exampleData = [
             { programa: "Programa Jovem Aprendiz", conhecimento: 76, participacao: 15 },
             { programa: "Programa de Voluntariado AME", conhecimento: 45, participacao: 12 },
             { programa: "Programa Essência", conhecimento: 12, participacao: 4 }
-          ]
+          ].sort((a, b) => b.conhecimento - a.conhecimento)
           
           setChartData(exampleData)
           setTotalRespondentes(3484)
@@ -89,11 +89,13 @@ const ParticipacaoIniciativas = () => {
             { programa: "Programa Jovem Aprendiz", conhecimento: 76, participacao: 15 },
             { programa: "Programa de Voluntariado AME", conhecimento: 45, participacao: 12 },
             { programa: "Programa Essência", conhecimento: 12, participacao: 4 }
-          ]
+          ].sort((a, b) => b.conhecimento - a.conhecimento)
           setChartData(exampleData)
           setNenhumaPercentual(72)
           setNaoSeiPercentual(3)
         } else {
+          // Ordenar dados reais por conhecimento decrescente
+          processedData.sort((a, b) => b.conhecimento - a.conhecimento)
           setChartData(processedData)
           setNenhumaPercentual(72) // Valor padrão da imagem
           setNaoSeiPercentual(3)   // Valor padrão da imagem
@@ -103,12 +105,12 @@ const ParticipacaoIniciativas = () => {
 
       } catch (error) {
         console.error("Erro ao processar dados:", error)
-        // Fallback para dados de exemplo
+        // Fallback para dados de exemplo (ordenados por conhecimento decrescente)
         const exampleData = [
           { programa: "Programa Jovem Aprendiz", conhecimento: 76, participacao: 15 },
           { programa: "Programa de Voluntariado AME", conhecimento: 45, participacao: 12 },
           { programa: "Programa Essência", conhecimento: 12, participacao: 4 }
-        ]
+        ].sort((a, b) => b.conhecimento - a.conhecimento)
         setChartData(exampleData)
         setTotalRespondentes(3484)
         setNenhumaPercentual(72)
