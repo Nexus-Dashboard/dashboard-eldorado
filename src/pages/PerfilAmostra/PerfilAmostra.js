@@ -81,8 +81,8 @@ const PerfilAmostra = () => {
                 }
             })
 
-          // Ordenar por percentual decrescente, exceto se skipSort for true
-          return skipSort ? result : result.sort((a, b) => b.percentage - a.percentage)
+          // Ordenar por percentual crescente, exceto se skipSort for true
+          return skipSort ? result : result.sort((a, b) => a.percentage - b.percentage)
         }
         
         setChartData({

@@ -145,8 +145,8 @@ const ReconhecimentoMotivacao = () => {
 
         // Só atualizar o estado se temos dados válidos
         if (processedData.length > 0) {
-          // Ordenar por maior concordância
-          processedData.sort((a, b) => b.concordam - a.concordam)
+          // Ordenar por menor concordância (ordem crescente)
+          processedData.sort((a, b) => a.concordam - b.concordam)
 
           setChartData(processedData)
           setInsights(insightsData)
@@ -471,29 +471,18 @@ const ReconhecimentoMotivacao = () => {
                 'bars',
                 ({ bars }) => (
                     <g>
-                    {/* Mostrar percentual de concordância e média */}
+                    {/* Mostrar apenas a média */}
                     {stackedChartData.map((item, index) => {
                         const barGroup = bars.filter(bar => bar.data.indexValue === item.atributo)
                         if (barGroup.length === 0) return null
-                        
+
                         const lastBar = barGroup[barGroup.length - 1]
                         return (
                         <g key={`stats-${index}`}>
+                            {/* Média com destaque */}
                             <text
                             x={lastBar.x + lastBar.width + 10}
-                            y={lastBar.y + (lastBar.height / 2) - 12}
-                            textAnchor="start"
-                            dominantBaseline="central"
-                            fontSize="14"
-                            fontWeight="600"
-                            fill="#2e7d32"
-                            >
-                            {item.concordam}%
-                            </text>
-                            {/* Média com destaque maior */}
-                            <text
-                            x={lastBar.x + lastBar.width + 10}
-                            y={lastBar.y + (lastBar.height / 2) + 8}
+                            y={lastBar.y + (lastBar.height / 2)}
                             textAnchor="start"
                             dominantBaseline="central"
                             fontSize="16"
