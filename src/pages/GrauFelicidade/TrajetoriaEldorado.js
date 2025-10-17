@@ -33,26 +33,25 @@ const TrajetoriaEldorado = () => {
           counts[response] = (counts[response] || 0) + 1
         })
 
-        // Definir ordem específica das categorias
+        // Definir ordem específica das categorias (da menor para maior conforme o print)
         const ordemCategorias = [
-          "Vejo como um lugar para construir uma carreira de longo prazo",
-          "Tenho vontade de crescer e evoluir profissionalmente",
-          "Quero continuar na empresa, mas sem grandes expectativas no momento",
-          "Ainda estou refletindo sobre o meu futuro",
+          "Não sei dizer",
           "Não me vejo na Eldorado no futuro",
-          "Não sei dizer"
+          "Ainda estou refletindo sobre o meu futuro",
+          "Quero continuar na empresa, mas sem grandes expectativas no momento",          
+          "Tenho vontade de crescer e evoluir profissionalmente",
+          "Vejo como um lugar para construir uma carreira de longo prazo"
         ]
 
-        // Criar distribuição ordenada por percentual crescente
+        // Criar distribuição mantendo a ordem definida (sem ordenar por percentual)
         const distribuicao = ordemCategorias
           .map(categoria => ({
-            categoria: categoria.length > 50 ? categoria.substring(0, 50) + "..." : categoria,
+            categoria: categoria,
             categoriaCompleta: categoria,
             count: counts[categoria] || 0,
             percentage: counts[categoria] ? Math.round((counts[categoria] / responses.length) * 100) : 0
           }))
           .filter(item => item.count > 0)
-          .sort((a, b) => a.percentage - b.percentage)
 
         // Classificar em categorias principais baseado na análise da imagem
         const altaIntencaoKeywords = [
@@ -136,14 +135,14 @@ const TrajetoriaEldorado = () => {
     }))
 
     return (
-      <div style={{ height: "400px" }}>
+      <div style={{ height: "450px" }}>
         <ResponsiveBar
           data={chartData}
           keys={['percentage']}
           indexBy="categoria"
           layout="horizontal"
-          margin={{ top: 20, right: 80, bottom: 20, left: 380 }}
-          padding={0.3}
+          margin={{ top: 20, right: 100, bottom: 20, left: 450 }}
+          padding={0.35}
           valueScale={{ type: 'linear', min: 0, max: 50 }}
           colors={(bar) => {
             const categoria = bar.data.categoriaCompleta.toLowerCase()
@@ -169,14 +168,52 @@ const TrajetoriaEldorado = () => {
           }}
           axisLeft={{
             tickSize: 0,
-            tickPadding: 8,
-            tickRotation: 0
+            tickPadding: 12,
+            tickRotation: 0,
+            renderTick: tick => {
+              const words = tick.value.split(' ')
+              const lines = []
+              let currentLine = []
+
+              words.forEach(word => {
+                currentLine.push(word)
+                const testLine = currentLine.join(' ')
+                if (testLine.length > 50 && currentLine.length > 1) {
+                  currentLine.pop()
+                  lines.push(currentLine.join(' '))
+                  currentLine = [word]
+                }
+              })
+              if (currentLine.length > 0) {
+                lines.push(currentLine.join(' '))
+              }
+
+              return (
+                <g transform={`translate(${tick.x},${tick.y})`}>
+                  {lines.map((line, i) => (
+                    <text
+                      key={i}
+                      x={-12}
+                      y={i * 14 - ((lines.length - 1) * 7)}
+                      textAnchor="end"
+                      dominantBaseline="middle"
+                      style={{
+                        fontSize: 11,
+                        fill: '#666'
+                      }}
+                    >
+                      {line}
+                    </text>
+                  ))}
+                </g>
+              )
+            }
           }}
           enableLabel={true}
           label={d => d.value > 0 ? `${d.value}%` : ''}
           labelSkipWidth={12}
           labelSkipHeight={12}
-          labelTextColor="#333"
+          labelTextColor="#ffffff"
           theme={{
             grid: {
               line: {
