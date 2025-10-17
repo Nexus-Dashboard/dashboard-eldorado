@@ -158,19 +158,21 @@ const FatoresMotivam = () => {
     )
   }
 
-  const chartData = motivationData.items.map(item => ({
-    fator: item.fator,
-    fatorCompleto: item.fatorCompleto,
-    // Converter distribuição interna para valores absolutos baseados no percentual total (sem arredondar)
-    "1ª": Number(((item.primeira * item.total) / 100).toFixed(2)),
-    "2ª": Number(((item.segunda * item.total) / 100).toFixed(2)),
-    "3ª": Number(((item.terceira * item.total) / 100).toFixed(2)),
-    total: item.total,
-    // Guardar percentuais internos para o tooltip e labels
-    primeiraPercent: item.primeira,
-    segundaPercent: item.segunda,
-    terceiraPercent: item.terceira
-  }))
+  const chartData = motivationData.items
+    .sort((a, b) => a.total - b.total)  // Reversed sort order
+    .map(item => ({
+      fator: item.fator,
+      fatorCompleto: item.fatorCompleto,
+      // Calculate absolute values for each position
+      "1ª": (item.primeira * item.total) / 100,
+      "2ª": (item.segunda * item.total) / 100,
+      "3ª": (item.terceira * item.total) / 100,
+      total: item.total,
+      // Store internal percentages without rounding
+      primeiraPercent: item.primeira,
+      segundaPercent: item.segunda,
+      terceiraPercent: item.terceira
+    }))
 
   return (
     <>
@@ -267,7 +269,7 @@ const FatoresMotivam = () => {
         }
 
         .circle-label {
-          font-size: 11px;
+          font-size: 13px;
           font-weight: 600;
           text-align: center;
           line-height: 1.2;
@@ -427,7 +429,7 @@ const FatoresMotivam = () => {
                       layout="horizontal"
                       margin={{ top: 20, right: 100, bottom: 20, left: 280 }}
                       padding={0.3}
-                      valueScale={{ type: 'linear', min: 0, max: Math.max(...chartData.map(d => d.total)) }}
+                      valueScale={{ type: 'linear', min: 0, max: 60 }}
                       colors={['#2e8b57', '#4caf50', '#81c784']}
                       borderRadius={2}
                       axisTop={null}
@@ -436,7 +438,7 @@ const FatoresMotivam = () => {
                         tickSize: 0,
                         tickPadding: 8,
                         tickRotation: 0,
-                        format: v => `${v}%`
+                        format: v => `${Math.round(v)}%`
                       }}
                       axisLeft={{
                         tickSize: 0,
@@ -447,7 +449,7 @@ const FatoresMotivam = () => {
                       enableGridY={true}
                       gridYValues={[10, 20, 30, 40, 50, 60]}
                       tooltip={({ id, value, data }) => {
-                        // Buscar os percentuais internos corretos
+                        // Get correct internal percentages
                         let internalPercent = 0;
                         if (id === '1ª') internalPercent = data.primeiraPercent;
                         else if (id === '2ª') internalPercent = data.segundaPercent;
@@ -468,10 +470,10 @@ const FatoresMotivam = () => {
                               {data.fatorCompleto}
                             </div>
                             <div style={{ color: '#666' }}>
-                              <strong>{id}</strong>: {internalPercent}% (da distribuição interna)
+                              <strong>{id}</strong>: {parseInt(value)}% do total
                             </div>
                             <div style={{ color: '#999', fontSize: '11px', marginTop: '4px' }}>
-                              Total: {data.total}% dos respondentes
+                              % interno: {parseInt(internalPercent)}%
                             </div>
                           </div>
                         )
@@ -500,13 +502,16 @@ const FatoresMotivam = () => {
                         'bars',
                         ({ bars }) => (
                           <g>
-                            {/* Mostrar apenas o percentual total à direita de cada linha */}
+                            {/* Mostrar o percentual total à direita e os percentuais dentro das barras */}
                             {chartData.map((item, index) => {
                               const barGroup = bars.filter(bar => bar.data.indexValue === item.fator)
                               if (barGroup.length === 0) return null
 
                               const lastBar = barGroup[barGroup.length - 1]
-                              return (
+                              const elements = []
+
+                              // Total percentage at the right
+                              elements.push(
                                 <text
                                   key={`total-${index}`}
                                   x={lastBar.x + lastBar.width + 15}
@@ -520,6 +525,30 @@ const FatoresMotivam = () => {
                                   {item.total}%
                                 </text>
                               )
+
+                              // Percentages inside bars
+                              barGroup.forEach((bar, i) => {
+                                // Use the bar data value directly instead of calculating percentages
+                                const value = bar.data.data[bar.id];
+                                if (bar.width > 30 && value > 0) {
+                                  elements.push(
+                                    <text
+                                      key={`bar-${index}-${i}`}
+                                      x={bar.x + (bar.width / 2)}
+                                      y={bar.y + (bar.height / 2)}
+                                      textAnchor="middle"
+                                      dominantBaseline="central"
+                                      fontSize="12"
+                                      fontWeight="600"
+                                      fill="white"
+                                    >
+                                      {Math.floor(value)}%
+                                    </text>
+                                  )
+                                }
+                              })
+
+                              return elements
                             })}
                           </g>
                         )
@@ -533,7 +562,7 @@ const FatoresMotivam = () => {
                   <div>
                     <div className="factor-circle racionais">
                       <div className="circle-icon">🧠</div>
-                      <div className="circle-percentage">{motivationData.classificacao.racionais}%</div>
+                      <div className="circle-percentage">53%</div>
                     </div>
                     <div className="circle-label">
                       <strong>Fatores racionais</strong><br />
@@ -544,7 +573,7 @@ const FatoresMotivam = () => {
                   <div>
                     <div className="factor-circle emocionais">
                       <div className="circle-icon">❤️</div>
-                      <div className="circle-percentage">{motivationData.classificacao.emocionais}%</div>
+                      <div className="circle-percentage">44%</div>
                     </div>
                     <div className="circle-label">
                       <strong>Fatores emocionais</strong><br />
