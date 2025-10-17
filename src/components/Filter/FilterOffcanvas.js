@@ -280,7 +280,7 @@ const FilterOffcanvas = ({ show, handleClose }) => {
           color: #2e8b57;
           background: white;
           font-weight: 700;
-        }
+        }        
 
         .filter-tabs .nav-link:hover:not(.active) {
           border-bottom-color: #ff8c00;
@@ -326,7 +326,7 @@ const FilterOffcanvas = ({ show, handleClose }) => {
 
         .filter-section {
           margin-bottom: 25px;
-          border-bottom: 1px solid #e9ecef;
+          border-bottom: 1px solid #212529;
           padding-bottom: 20px;
         }
 

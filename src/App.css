@@ -56,7 +56,6 @@
 
 .nav-link.active {
   background-color: var(--eldorado-orange);
-  color: white !important;
   border-left: 4px solid var(--eldorado-green);
   font-weight: 600;
 }
