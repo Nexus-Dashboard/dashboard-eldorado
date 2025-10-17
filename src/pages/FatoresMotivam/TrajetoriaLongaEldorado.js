@@ -135,12 +135,12 @@ const TrajetoriaLongaEldorado = () => {
         const processedData = Object.entries(fatoresMencoes)
           .map(([fator, dados]) => {
             const totalMencoes = dados.posicoes.primeira + dados.posicoes.segunda
-            const percentualTotal = Math.round((totalMencoes / totalRespondentesCount) * 100)
-            
+            const percentualTotal = (totalMencoes / totalRespondentesCount) * 100
+
             // Calcular distribuição interna
-            const primeiraPercent = totalMencoes > 0 ? Math.round((dados.posicoes.primeira / totalMencoes) * 100) : 0
-            const segundaPercent = totalMencoes > 0 ? Math.round((dados.posicoes.segunda / totalMencoes) * 100) : 0
-            
+            const primeiraPercent = totalMencoes > 0 ? (dados.posicoes.primeira / totalMencoes) * 100 : 0
+            const segundaPercent = totalMencoes > 0 ? (dados.posicoes.segunda / totalMencoes) * 100 : 0
+
             return {
               fator: fator.length > 50 ? fator.substring(0, 50) + "..." : fator,
               fatorCompleto: fator,
@@ -190,14 +190,19 @@ const TrajetoriaLongaEldorado = () => {
   }
 
   // Preparar dados para o gráfico
-  const barChartData = chartData.map(item => ({
-    fator: item.fator,
-    fatorCompleto: item.fatorCompleto,
-    "1ª": item.primeira || 0,
-    "2ª": item.segunda || 0,
-    total: item.total,
-    totalMencoes: item.totalMencoes
-  }))
+  const barChartData = chartData
+    .sort((a, b) => a.total - b.total)  // Reversed sort order
+    .map(item => ({
+      fator: item.fator,
+      fatorCompleto: item.fatorCompleto,
+      // Calculate absolute values for each position
+      "1ª": (item.primeira * item.total) / 100,
+      "2ª": (item.segunda * item.total) / 100,
+      total: item.total,
+      // Store internal percentages without rounding
+      primeiraPercent: item.primeira,
+      segundaPercent: item.segunda
+    }))
 
   return (
     <>
@@ -411,9 +416,9 @@ const TrajetoriaLongaEldorado = () => {
                   keys={['1ª', '2ª']}
                   indexBy="fator"
                   layout="horizontal"
-                  margin={{ top: 20, right: 80, bottom: 20, left: 380 }}
+                  margin={{ top: 20, right: 100, bottom: 20, left: 380 }}
                   padding={0.3}
-                  valueScale={{ type: 'linear', min: 0, max: Math.max(...barChartData.map(d => d.total)) + 10 }}
+                  valueScale={{ type: 'linear', min: 0, max: 60 }}
                   colors={['#2e8b57', '#4caf50']}
                   borderRadius={2}
                   axisTop={null}
@@ -422,7 +427,7 @@ const TrajetoriaLongaEldorado = () => {
                     tickSize: 0,
                     tickPadding: 8,
                     tickRotation: 0,
-                    format: v => `${v}%`
+                    format: v => `${Math.round(v)}%`
                   }}
                   axisLeft={{
                     tickSize: 0,
@@ -432,28 +437,35 @@ const TrajetoriaLongaEldorado = () => {
                   enableLabel={false}
                   enableGridY={true}
                   gridYValues={[10, 20, 30, 40, 50, 60]}
-                  tooltip={({ id, value, data }) => (
-                    <div
-                      style={{
-                        background: 'white',
-                        padding: '9px 12px',
-                        border: '1px solid #ccc',
-                        borderRadius: '4px',
-                        fontSize: '12px',
-                        boxShadow: '0 2px 8px rgba(0,0,0,0.15)'
-                      }}
-                    >
-                      <div style={{ fontWeight: '600', marginBottom: '4px' }}>
-                        {data.fatorCompleto}
+                  tooltip={({ id, value, data }) => {
+                    // Get correct internal percentages
+                    let internalPercent = 0;
+                    if (id === '1ª') internalPercent = data.primeiraPercent;
+                    else if (id === '2ª') internalPercent = data.segundaPercent;
+
+                    return (
+                      <div
+                        style={{
+                          background: 'white',
+                          padding: '9px 12px',
+                          border: '1px solid #ccc',
+                          borderRadius: '4px',
+                          fontSize: '12px',
+                          boxShadow: '0 2px 8px rgba(0,0,0,0.15)'
+                        }}
+                      >
+                        <div style={{ fontWeight: '600', marginBottom: '4px' }}>
+                          {data.fatorCompleto}
+                        </div>
+                        <div style={{ color: '#666' }}>
+                          <strong>{id}</strong>: {value.toFixed(1)}% do total
+                        </div>
+                        <div style={{ color: '#999', fontSize: '11px', marginTop: '4px' }}>
+                          % interno: {internalPercent.toFixed(1)}%
+                        </div>
                       </div>
-                      <div style={{ color: '#666' }}>
-                        <strong>{id}</strong>: {value}% (da distribuição interna)
-                      </div>
-                      <div style={{ color: '#999', fontSize: '11px', marginTop: '4px' }}>
-                        Total: {data.total}% dos respondentes
-                      </div>
-                    </div>
-                  )}
+                    )
+                  }}
                   theme={{
                     grid: {
                       line: {
@@ -478,13 +490,16 @@ const TrajetoriaLongaEldorado = () => {
                     'bars',
                     ({ bars }) => (
                       <g>
-                        {/* Mostrar percentual total */}
+                        {/* Mostrar o percentual total à direita e os percentuais dentro das barras */}
                         {barChartData.map((item, index) => {
                           const barGroup = bars.filter(bar => bar.data.indexValue === item.fator)
                           if (barGroup.length === 0) return null
-                          
+
                           const lastBar = barGroup[barGroup.length - 1]
-                          return (
+                          const elements = []
+
+                          // Total percentage at the right
+                          elements.push(
                             <text
                               key={`total-${index}`}
                               x={lastBar.x + lastBar.width + 15}
@@ -495,9 +510,33 @@ const TrajetoriaLongaEldorado = () => {
                               fontWeight="600"
                               fill="#333"
                             >
-                              {item.total}%
+                              {item.total.toFixed(1)}%
                             </text>
                           )
+
+                          // Percentages inside bars
+                          barGroup.forEach((bar, i) => {
+                            // Use the bar data value directly instead of calculating percentages
+                            const value = bar.data.data[bar.id];
+                            if (bar.width > 30 && value > 0) {
+                              elements.push(
+                                <text
+                                  key={`bar-${index}-${i}`}
+                                  x={bar.x + (bar.width / 2)}
+                                  y={bar.y + (bar.height / 2)}
+                                  textAnchor="middle"
+                                  dominantBaseline="central"
+                                  fontSize="12"
+                                  fontWeight="600"
+                                  fill="white"
+                                >
+                                  {value.toFixed(1)}%
+                                </text>
+                              )
+                            }
+                          })
+
+                          return elements
                         })}
                       </g>
                     )
@@ -527,7 +566,7 @@ const TrajetoriaLongaEldorado = () => {
                   <h6>Fator Principal</h6>
                   {principalFator && (
                     <div className="metric-highlight">
-                      <strong>{principalFator.fatorCompleto}</strong>: {principalFator.total}% dos respondentes mencionaram este fator
+                      <strong>{principalFator.fatorCompleto}</strong>: {principalFator.total.toFixed(1)}% dos respondentes mencionaram este fator
                     </div>
                   )}
                   <p>
@@ -539,7 +578,7 @@ const TrajetoriaLongaEldorado = () => {
                   <h6>Fatores Complementares</h6>
                   {chartData.slice(1, 3).map(item => (
                     <div key={item.fator} className="metric-highlight">
-                      <strong>{item.fator}</strong>: {item.total}%
+                      <strong>{item.fator}</strong>: {item.total.toFixed(1)}%
                     </div>
                   ))}
                   <p>
@@ -551,7 +590,7 @@ const TrajetoriaLongaEldorado = () => {
                   <h6>Ambiente e Propósito</h6>
                   {chartData.slice(3, 5).map(item => (
                     <div key={item.fator} className="metric-highlight">
-                      <strong>{item.fator}</strong>: {item.total}%
+                      <strong>{item.fator}</strong>: {item.total.toFixed(1)}%
                     </div>
                   ))}
                   <p>
