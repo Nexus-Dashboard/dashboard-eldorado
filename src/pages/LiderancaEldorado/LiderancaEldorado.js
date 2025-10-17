@@ -24,27 +24,27 @@ const LiderancaEldorado = () => {
           {
             field: "T_P22_1",
             label: "Demonstra transparência na relação comigo",
-            shortLabel: "Transparência na relação"
+            shortLabel: "Demonstra transparência na relação comigo"
           },
           {
             field: "T_P22_2", 
             label: "Me deixa à vontade para conversar abertamente",
-            shortLabel: "Abertura para diálogo"
+            shortLabel: "Me deixa à vontade para conversar abertamente"
           },
           {
             field: "T_P22_3",
             label: "Dá feedbacks construtivos",
-            shortLabel: "Feedbacks construtivos"
+            shortLabel: "Dá feedbacks construtivos"
           },
           {
             field: "T_P22_4",
             label: "Confia no meu trabalho e me dá autonomia",
-            shortLabel: "Confiança e autonomia"
+            shortLabel: "Confia no meu trabalho e me dá autonomia"
           },
           {
             field: "T_P22_5",
             label: "Se importa com o bem-estar da equipe",
-            shortLabel: "Cuidado com bem-estar"
+            shortLabel: "Se importa com o bem-estar da equipe"
           }
         ]
 
@@ -509,7 +509,7 @@ const LiderancaEldorado = () => {
           <div className="summary-badges">
             <div className="summary-badge">
               <div className="badge-title">Bem-estar da equipe</div>
-              <div className="badge-percentage">88%</div>
+              <div className="badge-percentage">82%</div>
               <div className="badge-description">
                 dos colaboradores concordam que a liderança se importa com o bem-estar da equipe
               </div>
@@ -539,7 +539,7 @@ const LiderancaEldorado = () => {
                     keys={['media']}
                     indexBy="atributo"
                     layout="horizontal"
-                    margin={{ top: 20, right: 80, bottom: 20, left: 220 }}
+                    margin={{ top: 20, right: 80, bottom: 20, left: 350 }}
                     padding={0.3}
                     valueScale={{ type: 'linear', min: 0, max: 5 }}
                     colors="#2e8b57"
@@ -656,7 +656,7 @@ const LiderancaEldorado = () => {
               {/* Área Lateral com Insights */}
               <div className="sidebar-area">
                 <div className="main-insight">
-                  <div className="insight-percentage">88%</div>
+                  <div className="insight-percentage">82%</div>
                   <div className="insight-text">
                     dos colaboradores concordam que a liderança se importa com o bem-estar da equipe
                   </div>

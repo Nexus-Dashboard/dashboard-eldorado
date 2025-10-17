@@ -40,27 +40,27 @@ const ReconhecimentoMotivacao = () => {
           {
             field: findField("T_P16_1") || "T_P16_1",
             label: "Me sinto reconhecido(a) pelo meu trabalho",
-            shortLabel: "Reconhecimento pelo trabalho"
+            shortLabel: "Me sinto reconhecido(a) pelo meu trabalho"
           },
           {
             field: findField("T_P16_2") || "T_P16_2", 
             label: "Me sinto parte de algo relevante",
-            shortLabel: "Parte de algo relevante"
+            shortLabel: "Me sinto parte de algo relevante"
           },
           {
             field: findField("T_P16_3") || "T_P16_3",
             label: "É um lugar motivador para se trabalhar",
-            shortLabel: "Lugar motivador"
+            shortLabel: "É um lugar motivador para se trabalhar"
           },
           {
             field: findField("T_P16_4") || "T_P16_4",
             label: "Tenho oportunidades reais de desenvolvimento",
-            shortLabel: "Oportunidades de desenvolvimento"
+            shortLabel: "Tenho oportunidades reais de desenvolvimento"
           },
           {
             field: findField("T_P16_5") || "T_P16_5",
             label: "Tenho oportunidade de utilizar minhas habilidades e talentos",
-            shortLabel: "Utilização de habilidades e talentos"
+            shortLabel: "Tenho oportunidade de utilizar minhas habilidades e talentos"
           }
         ]
 
@@ -403,7 +403,7 @@ const ReconhecimentoMotivacao = () => {
               keys={['1', '2', '3', '4', '5']}
               indexBy="atributo"
               layout="horizontal"
-              margin={{ top: 20, right: 100, bottom: 20, left: 250 }}
+              margin={{ top: 20, right: 130, bottom: 20, left: 350 }}
               padding={0.3}
               valueScale={{ type: 'linear', min: 0, max: 100 }}
               colors={['#d32f2f', '#ff5722', '#ff9800', '#4caf50', '#2e7d32']}
