@@ -43,7 +43,7 @@ const TrajetoriaEldorado = () => {
           "Não sei dizer"
         ]
 
-        // Criar distribuição ordenada por percentual decrescente
+        // Criar distribuição ordenada por percentual crescente
         const distribuicao = ordemCategorias
           .map(categoria => ({
             categoria: categoria.length > 50 ? categoria.substring(0, 50) + "..." : categoria,
@@ -52,7 +52,7 @@ const TrajetoriaEldorado = () => {
             percentage: counts[categoria] ? Math.round((counts[categoria] / responses.length) * 100) : 0
           }))
           .filter(item => item.count > 0)
-          .sort((a, b) => b.percentage - a.percentage)
+          .sort((a, b) => a.percentage - b.percentage)
 
         // Classificar em categorias principais baseado na análise da imagem
         const altaIntencaoKeywords = [

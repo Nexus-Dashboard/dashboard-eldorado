@@ -181,8 +181,8 @@ const ConhecimentoAcoesESG = () => {
           })
         })
 
-        // Ordenar por percentual decrescente
-        processedData.sort((a, b) => b.percentage - a.percentage)
+        // Ordenar por percentual crescente
+        processedData.sort((a, b) => a.percentage - b.percentage)
 
         console.log("Dados processados:", processedData)
 

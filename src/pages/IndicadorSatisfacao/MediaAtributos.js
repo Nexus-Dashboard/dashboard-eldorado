@@ -116,7 +116,7 @@ const MediaAtributos = () => {
           setChartData(exampleData)
         } else {
           // Ordenar por maior média
-          processedData.sort((a, b) => b.media - a.media)
+          processedData.sort((a, b) => a.media - b.media)
           setChartData(processedData)
         }
 

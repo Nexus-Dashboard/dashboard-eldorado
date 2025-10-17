@@ -77,14 +77,14 @@ const ImpactoEmocional = () => {
 
         if (p14Responses.length === 0 && impactoResponses.length === 0) {
           console.log("Nenhum dado encontrado, usando dados de exemplo")
-          // Usar dados de exemplo baseados na imagem
+          // Usar dados de exemplo baseados na imagem (ordem invertida)
           const exampleData = [
-            { categoria: "Afeta muito positivamente", percentage: 7, color: "#2e7d32" },
-            { categoria: "Afeta positivamente", percentage: 32, color: "#4caf50" },
-            { categoria: "Não afeta", percentage: 43, color: "#ff9800" },
-            { categoria: "Afeta negativamente", percentage: 9, color: "#d32f2f" },
+            { categoria: "Não sei dizer", percentage: 8, color: "#9e9e9e" },
             { categoria: "Afeta muito negativamente", percentage: 1, color: "#b71c1c" },
-            { categoria: "Não sei dizer", percentage: 8, color: "#9e9e9e" }
+            { categoria: "Afeta negativamente", percentage: 9, color: "#d32f2f" },
+            { categoria: "Não afeta", percentage: 43, color: "#ff9800" },
+            { categoria: "Afeta positivamente", percentage: 32, color: "#4caf50" },
+            { categoria: "Afeta muito positivamente", percentage: 7, color: "#2e7d32" }
           ]
 
           setChartData(exampleData)
@@ -105,14 +105,14 @@ const ImpactoEmocional = () => {
 
         console.log("Contagem P14:", p14Counts)
 
-        // Mapear e calcular percentuais para o gráfico
+        // Mapear e calcular percentuais para o gráfico (ordem invertida)
         const categorias = [
-          { label: "Afeta muito positivamente", color: "#2e7d32" },
-          { label: "Afeta positivamente", color: "#4caf50" },
-          { label: "Não afeta", color: "#ff9800" },
-          { label: "Afeta negativamente", color: "#d32f2f" },
+          { label: "Não sei dizer", color: "#9e9e9e" },
           { label: "Afeta muito negativamente", color: "#b71c1c" },
-          { label: "Não sei dizer", color: "#9e9e9e" }
+          { label: "Afeta negativamente", color: "#d32f2f" },
+          { label: "Não afeta", color: "#ff9800" },
+          { label: "Afeta positivamente", color: "#4caf50" },
+          { label: "Afeta muito positivamente", color: "#2e7d32" }
         ]
 
         const processedData = categorias.map(cat => {
@@ -169,14 +169,14 @@ const ImpactoEmocional = () => {
 
       } catch (error) {
         console.error("Erro ao processar dados P14:", error)
-        // Usar dados de exemplo em caso de erro
+        // Usar dados de exemplo em caso de erro (ordem invertida)
         const exampleData = [
-          { categoria: "Afeta muito positivamente", percentage: 7, color: "#2e7d32" },
-          { categoria: "Afeta positivamente", percentage: 32, color: "#4caf50" },
-          { categoria: "Não afeta", percentage: 43, color: "#ff9800" },
-          { categoria: "Afeta negativamente", percentage: 9, color: "#d32f2f" },
+          { categoria: "Não sei dizer", percentage: 8, color: "#9e9e9e" },
           { categoria: "Afeta muito negativamente", percentage: 1, color: "#b71c1c" },
-          { categoria: "Não sei dizer", percentage: 8, color: "#9e9e9e" }
+          { categoria: "Afeta negativamente", percentage: 9, color: "#d32f2f" },
+          { categoria: "Não afeta", percentage: 43, color: "#ff9800" },
+          { categoria: "Afeta positivamente", percentage: 32, color: "#4caf50" },
+          { categoria: "Afeta muito positivamente", percentage: 7, color: "#2e7d32" }
         ]
 
         setChartData(exampleData)

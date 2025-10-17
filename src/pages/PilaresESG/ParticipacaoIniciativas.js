@@ -33,13 +33,13 @@ const ParticipacaoIniciativas = () => {
       try {
         const filteredData = getFilteredData()
         if (!filteredData || filteredData.length === 0) {
-          // Dados de exemplo baseados na imagem (ordenados por conhecimento decrescente)
+          // Dados de exemplo baseados na imagem (ordenados por conhecimento crescente)
           const exampleData = [
-            { programa: "Programa Jovem Aprendiz", conhecimento: 76, participacao: 15 },
+            { programa: "Programa Essência", conhecimento: 12, participacao: 4 },
             { programa: "Programa de Voluntariado AME", conhecimento: 45, participacao: 12 },
-            { programa: "Programa Essência", conhecimento: 12, participacao: 4 }
-          ].sort((a, b) => b.conhecimento - a.conhecimento)
-          
+            { programa: "Programa Jovem Aprendiz", conhecimento: 76, participacao: 15 }
+          ].sort((a, b) => a.conhecimento - b.conhecimento)
+
           setChartData(exampleData)
           setTotalRespondentes(3484)
           setNenhumaPercentual(72)
@@ -86,16 +86,16 @@ const ParticipacaoIniciativas = () => {
         // Se não encontrou dados reais, usar dados de exemplo
         if (processedData.length === 0) {
           const exampleData = [
-            { programa: "Programa Jovem Aprendiz", conhecimento: 76, participacao: 15 },
+            { programa: "Programa Essência", conhecimento: 12, participacao: 4 },
             { programa: "Programa de Voluntariado AME", conhecimento: 45, participacao: 12 },
-            { programa: "Programa Essência", conhecimento: 12, participacao: 4 }
-          ].sort((a, b) => b.conhecimento - a.conhecimento)
+            { programa: "Programa Jovem Aprendiz", conhecimento: 76, participacao: 15 }
+          ].sort((a, b) => a.conhecimento - b.conhecimento) // Ordenar do menor para maior
           setChartData(exampleData)
           setNenhumaPercentual(72)
           setNaoSeiPercentual(3)
         } else {
-          // Ordenar dados reais por conhecimento decrescente
-          processedData.sort((a, b) => b.conhecimento - a.conhecimento)
+          // Ordenar dados reais por conhecimento crescente (menor para maior)
+          processedData.sort((a, b) => a.conhecimento - b.conhecimento)
           setChartData(processedData)
           setNenhumaPercentual(72) // Valor padrão da imagem
           setNaoSeiPercentual(3)   // Valor padrão da imagem
@@ -105,12 +105,12 @@ const ParticipacaoIniciativas = () => {
 
       } catch (error) {
         console.error("Erro ao processar dados:", error)
-        // Fallback para dados de exemplo (ordenados por conhecimento decrescente)
+        // Fallback para dados de exemplo (ordenados por conhecimento crescente)
         const exampleData = [
-          { programa: "Programa Jovem Aprendiz", conhecimento: 76, participacao: 15 },
+          { programa: "Programa Essência", conhecimento: 12, participacao: 4 },
           { programa: "Programa de Voluntariado AME", conhecimento: 45, participacao: 12 },
-          { programa: "Programa Essência", conhecimento: 12, participacao: 4 }
-        ].sort((a, b) => b.conhecimento - a.conhecimento)
+          { programa: "Programa Jovem Aprendiz", conhecimento: 76, participacao: 15 }
+        ].sort((a, b) => a.conhecimento - b.conhecimento)
         setChartData(exampleData)
         setTotalRespondentes(3484)
         setNenhumaPercentual(72)
@@ -285,20 +285,35 @@ const ParticipacaoIniciativas = () => {
               'bars',
               ({ bars }) => (
                 <g>
-                  {bars.map((bar, index) => (
-                    <text
-                      key={index}
-                      x={bar.x + bar.width + 10}
-                      y={bar.y + (bar.height / 2)}
-                      textAnchor="start"
-                      dominantBaseline="central"
-                      fontSize="14"
-                      fontWeight="600"
-                      fill={bar.data.id === 'conhecimento' ? '#4caf50' : '#2e8b57'}
-                    >
-                      {bar.data.value}%
-                    </text>
-                  ))}
+                  {chartData.map((item, index) => {
+                    const barGroup = bars.filter(bar => bar.data.indexValue === item.programa)
+                    if (barGroup.length === 0) return null
+
+                    const elements = []
+
+                    // Valores dentro das barras
+                    barGroup.forEach((bar, i) => {
+                      const value = bar.data.value
+                      if (bar.width > 30 && value > 0) {
+                        elements.push(
+                          <text
+                            key={`bar-${index}-${i}`}
+                            x={bar.x + (bar.width / 2)}
+                            y={bar.y + (bar.height / 2)}
+                            textAnchor="middle"
+                            dominantBaseline="central"
+                            fontSize="12"
+                            fontWeight="600"
+                            fill="white"
+                          >
+                            {value}%
+                          </text>
+                        )
+                      }
+                    })
+
+                    return elements
+                  })}
                 </g>
               )
             ]}

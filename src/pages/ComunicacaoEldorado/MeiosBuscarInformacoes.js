@@ -71,7 +71,7 @@ const MeiosBuscarInformacoes = () => {
 
         if (p24Fields.length === 0) {
           console.log("Nenhum campo P24 encontrado, usando dados de exemplo")
-          // Dados de exemplo baseados na imagem fornecida
+          // Dados de exemplo baseados na imagem fornecida (ordenados do maior para o menor)
           const exampleData = [
             { meio: "Eldorado Conecta, nossa intranet", percentage: 58 },
             { meio: "Redes Sociais Eldorado", percentage: 43 },
@@ -85,8 +85,8 @@ const MeiosBuscarInformacoes = () => {
             { meio: "Murais/Quadros físicos", percentage: 18 },
             { meio: "Eldcast", percentage: 10 },
             { meio: "Jornais/TV", percentage: 9 },
-            { meio: "Nenhum desses", percentage: 0 },
-            { meio: "Não sei dizer", percentage: 1 }
+            { meio: "Não sei dizer", percentage: 1 },
+            { meio: "Nenhum desses", percentage: 0 }
           ]
 
           setChartData(exampleData)
@@ -224,7 +224,7 @@ const MeiosBuscarInformacoes = () => {
             count: count
           }))
           .filter(item => item.percentage > 0) // Remover itens com 0%
-          .sort((a, b) => b.percentage - a.percentage)
+          .sort((a, b) => b.percentage - a.percentage) // Ordenar do maior para o menor
 
         console.log("Dados finais processados:", finalData)
         
@@ -244,8 +244,8 @@ const MeiosBuscarInformacoes = () => {
             { meio: "Murais/Quadros físicos", percentage: 18 },
             { meio: "Eldcast", percentage: 10 },
             { meio: "Jornais/TV", percentage: 9 },
-            { meio: "Nenhum desses", percentage: 0 },
-            { meio: "Não sei dizer", percentage: 1 }
+            { meio: "Não sei dizer", percentage: 1 },
+            { meio: "Nenhum desses", percentage: 0 }
           ]
 
           setChartData(exampleData)
@@ -260,8 +260,8 @@ const MeiosBuscarInformacoes = () => {
 
       } catch (error) {
         console.error("Erro ao processar dados P24:", error)
-        
-        // Dados de exemplo em caso de erro
+
+        // Dados de exemplo em caso de erro (ordenados do maior para o menor)
         const exampleData = [
           { meio: "Eldorado Conecta, nossa intranet", percentage: 58 },
           { meio: "Redes Sociais Eldorado", percentage: 43 },

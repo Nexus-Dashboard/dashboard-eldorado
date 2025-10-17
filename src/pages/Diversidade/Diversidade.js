@@ -155,8 +155,8 @@ const Diversidade = () => {
         // Calcular média geral
         const mediaGeralCalculada = processedData.length > 0 ? (somaMedias / processedData.length).toFixed(1) : 0
 
-        // Ordenar por maior média (seguindo ordem da imagem)
-        processedData.sort((a, b) => b.media - a.media)
+        // Ordenar por menor média (ordem inversa)
+        processedData.sort((a, b) => a.media - b.media)
 
         console.log("=== RESULTADO FINAL ===")
         console.log("Usando dados reais:", usingRealData)

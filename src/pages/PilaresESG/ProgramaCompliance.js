@@ -16,7 +16,7 @@ const ProgramaCompliance = () => {
       shortLabel: "Canal seguro e confidencial"
     },
     {
-      field: "T_P30_2", 
+      field: "T_P30_2",
       label: "Os líderes da Eldorado estão preparados para lidar com casos de desvios de conduta, incluindo assédios",
       shortLabel: "Líderes preparados"
     },
@@ -32,14 +32,8 @@ const ProgramaCompliance = () => {
       try {
         const filteredData = getFilteredData()
         if (!filteredData || filteredData.length === 0) {
-          // Dados de exemplo baseados na imagem
+          // Dados de exemplo baseados na imagem (ordem inversa: menor para maior)
           const exampleData = [
-            {
-              atributo: "Canal seguro e confidencial",
-              atributoCompleto: "A Linha Ética é um canal seguro, anônimo e confidencial",
-              media: 4.5,
-              concordam: 85
-            },
             {
               atributo: "Líderes preparados",
               atributoCompleto: "Os líderes da Eldorado estão preparados para lidar com casos de desvios de conduta",
@@ -51,6 +45,12 @@ const ProgramaCompliance = () => {
               atributoCompleto: "Funciona na prática",
               media: 4.2,
               concordam: 75
+            },
+            {
+              atributo: "Canal seguro e confidencial",
+              atributoCompleto: "A Linha Ética é um canal seguro, anônimo e confidencial",
+              media: 4.5,
+              concordam: 85
             }
           ]
           
@@ -61,20 +61,34 @@ const ProgramaCompliance = () => {
         }
 
         const availableFields = filteredData.length > 0 ? Object.keys(filteredData[0]) : []
-        
+        console.log("=== PROGRAMA COMPLIANCE - DEBUG ===")
+        console.log("Total de registros filtrados:", filteredData.length)
+        console.log("Campos disponíveis no dataset:", availableFields.filter(f => f.includes('P30')))
+
         const findBestField = (targetField) => {
-          if (availableFields.includes(targetField)) return targetField
-          
-          const variations = [
-            targetField,
-            availableFields.find(f => f.includes('P30') && f.includes(targetField.split('_')[2]))
-          ]
-          
-          for (const variation of variations) {
-            if (variation && availableFields.includes(variation)) {
-              return variation
-            }
+          // Buscar campo exato primeiro
+          if (availableFields.includes(targetField)) {
+            console.log(`Campo encontrado exato: ${targetField}`)
+            return targetField
           }
+
+          // Buscar por variações do campo
+          const fieldNumber = targetField.split('_')[1] // Ex: "P30"
+          const fieldIndex = targetField.split('_')[2]  // Ex: "1", "2", "3"
+
+          // Tentar encontrar campo que contenha o número da pergunta
+          const found = availableFields.find(f => {
+            const fUpper = f.toUpperCase()
+            return fUpper.includes(fieldNumber) &&
+                   (fieldIndex ? fUpper.includes(`_${fieldIndex}`) || fUpper.startsWith(`T_${fieldNumber}_${fieldIndex}`) : true)
+          })
+
+          if (found) {
+            console.log(`Campo encontrado por variação: ${targetField} -> ${found}`)
+            return found
+          }
+
+          console.log(`Campo NÃO encontrado: ${targetField}`)
           return null
         }
 
@@ -84,13 +98,14 @@ const ProgramaCompliance = () => {
 
         questionFields.forEach(({ field, label, shortLabel }) => {
           const actualField = findBestField(field)
-          
+
           if (!actualField) {
+            console.log(`⚠️ Campo ${field} não encontrado, usando dados de exemplo`)
             // Usar dados de exemplo se campo não encontrado
             let exampleData
-            if (field === "T_P30_1") {
+            if (field.includes("P30_1")) {
               exampleData = { media: 4.5, concordam: 85 }
-            } else if (field === "T_P30_2") {
+            } else if (field.includes("P30_2")) {
               exampleData = { media: 4.2, concordam: 72 }
             } else {
               exampleData = { media: 4.2, concordam: 75 }
@@ -107,6 +122,8 @@ const ProgramaCompliance = () => {
             return
           }
 
+          console.log(`✓ Processando campo: ${actualField}`)
+
           const validResponses = filteredData
             .map(row => {
               const value = row[actualField]
@@ -115,7 +132,12 @@ const ProgramaCompliance = () => {
             })
             .filter(score => score !== null)
 
-          if (validResponses.length === 0) return
+          console.log(`  - Respostas válidas: ${validResponses.length}`)
+
+          if (validResponses.length === 0) {
+            console.log(`  - ⚠️ Nenhuma resposta válida encontrada para ${shortLabel}`)
+            return
+          }
 
           if (totalRespondentesCount === 0) {
             totalRespondentesCount = validResponses.length
@@ -125,6 +147,8 @@ const ProgramaCompliance = () => {
           const media = soma / validResponses.length
           const concordam = validResponses.filter(s => s >= 4).length
           const percentConcordam = Math.round((concordam / validResponses.length) * 100)
+
+          console.log(`  - Média: ${media.toFixed(1)} | Concordam (4-5): ${percentConcordam}%`)
 
           processedData.push({
             atributo: shortLabel,
@@ -137,30 +161,41 @@ const ProgramaCompliance = () => {
           somaMedias += media
         })
 
-        // Ordenar por maior média
-        processedData.sort((a, b) => b.media - a.media)
+        // Ordenar por menor média (ordem inversa)
+        processedData.sort((a, b) => a.media - b.media)
+
+        console.log("=== DADOS PROCESSADOS ===")
+        console.log("Total de itens processados:", processedData.length)
+        console.log("Dados:", processedData)
+
+        if (processedData.length === 0) {
+          console.log("⚠️ Nenhum dado processado, usando dados de exemplo")
+        }
 
         setChartData(processedData.length > 0 ? processedData : [
-          { atributo: "Canal seguro e confidencial", media: 4.5, concordam: 85 },
           { atributo: "Líderes preparados", media: 4.2, concordam: 72 },
-          { atributo: "Funciona na prática", media: 4.2, concordam: 75 }
+          { atributo: "Funciona na prática", media: 4.2, concordam: 75 },
+          { atributo: "Canal seguro e confidencial", media: 4.5, concordam: 85 }
         ])
-        
+
         setTotalRespondentes(totalRespondentesCount || filteredData.length)
-        
+
         // Insight principal: % que concordam que líderes estão preparados
         const lideresPreparados = processedData.find(item => item.atributo === "Líderes preparados")
         setPrincipalInsight(lideresPreparados ? lideresPreparados.concordam : 72)
 
+        console.log("Total respondentes:", totalRespondentesCount || filteredData.length)
+        console.log("Insight principal (Líderes preparados):", lideresPreparados ? lideresPreparados.concordam : 72)
+
       } catch (error) {
         console.error("Erro ao processar dados:", error)
-        
+
         const exampleData = [
-          { atributo: "Canal seguro e confidencial", media: 4.5, concordam: 85 },
           { atributo: "Líderes preparados", media: 4.2, concordam: 72 },
-          { atributo: "Funciona na prática", media: 4.2, concordam: 75 }
+          { atributo: "Funciona na prática", media: 4.2, concordam: 75 },
+          { atributo: "Canal seguro e confidencial", media: 4.5, concordam: 85 }
         ]
-        
+
         setChartData(exampleData)
         setTotalRespondentes(3484)
         setPrincipalInsight(72)
@@ -430,29 +465,29 @@ const ProgramaCompliance = () => {
             <Row>
               <Col lg={4}>
                 <h6 style={{ fontWeight: 600, marginBottom: "10px", color: "#2e8b57" }}>
-                  Canal Linha Ética ({chartData[0]?.concordam}% concordam)
+                  Preparo da Liderança ({chartData[0]?.concordam}% concordam)
                 </h6>
                 <p style={{ color: "#666", lineHeight: 1.6, fontSize: "0.95rem" }}>
-                  A avaliação do canal como seguro, anônimo e confidencial obteve a maior pontuação (média {chartData[0]?.media}), 
-                  demonstrando confiança dos colaboradores no sistema de denúncias.
-                </p>
-              </Col>
-              <Col lg={4}>
-                <h6 style={{ fontWeight: 600, marginBottom: "10px", color: "#2e8b57" }}>
-                  Preparo da Liderança ({principalInsight}% concordam)
-                </h6>
-                <p style={{ color: "#666", lineHeight: 1.6, fontSize: "0.95rem" }}>
-                  A percepção sobre o preparo dos líderes para lidar com desvios de conduta mantém-se positiva, 
+                  A percepção sobre o preparo dos líderes para lidar com desvios de conduta mantém-se positiva,
                   indicando confiança na capacidade de gestão de situações sensíveis.
                 </p>
               </Col>
               <Col lg={4}>
                 <h6 style={{ fontWeight: 600, marginBottom: "10px", color: "#2e8b57" }}>
-                  Efetividade Prática ({chartData[2]?.concordam}% concordam)
+                  Efetividade Prática ({chartData[1]?.concordam}% concordam)
                 </h6>
                 <p style={{ color: "#666", lineHeight: 1.6, fontSize: "0.95rem" }}>
-                  A avaliação sobre o funcionamento prático do programa reflete a percepção dos colaboradores 
+                  A avaliação sobre o funcionamento prático do programa reflete a percepção dos colaboradores
                   sobre a efetividade real das políticas de compliance implementadas.
+                </p>
+              </Col>
+              <Col lg={4}>
+                <h6 style={{ fontWeight: 600, marginBottom: "10px", color: "#2e8b57" }}>
+                  Canal Linha Ética ({chartData[2]?.concordam}% concordam)
+                </h6>
+                <p style={{ color: "#666", lineHeight: 1.6, fontSize: "0.95rem" }}>
+                  A avaliação do canal como seguro, anônimo e confidencial obteve a maior pontuação (média {chartData[2]?.media}),
+                  demonstrando confiança dos colaboradores no sistema de denúncias.
                 </p>
               </Col>
             </Row>

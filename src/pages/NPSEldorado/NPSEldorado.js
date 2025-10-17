@@ -245,17 +245,17 @@ const NPSEldorado = () => {
 
         .baixa-line {
           left: 50px;
-          width: calc(60% - 50px);
+          width: calc((100% - 80px) * 6.25 / 10);
         }
 
         .media-line {
-          left: 60%;
-          width: 10%;
+          left: calc(50px + (100% - 80px) * 6.40 / 10);
+          width: calc((100% - 80px) * 1.6 / 10);
         }
 
         .alta-line {
-          left: 70%;
-          width: calc(100% - 70% - 50px);
+          left: calc(50px + (100% - 80px) * 8.2 / 10);
+          width: calc(100% - 30px - (50px + (100% - 80px) * 8.45 / 10));
         }
 
         .line-segment {
@@ -614,11 +614,8 @@ const NPSEldorado = () => {
                 </div>
               </div>
               
-              <div className="media-badge">
-                <div className="media-label">Média</div>
-                <div className="media-value">{npsMetrics.media}</div>
-              </div>
-            </div>
+              
+            </div>            
 
             {/* Gráfico de distribuição */}
             <div style={{ height: "350px", backgroundColor: "#f0f0f0", position: "relative" }}>
@@ -685,10 +682,17 @@ const NPSEldorado = () => {
                 motionConfig="gentle"
               />
               
-              {/* Linhas divisórias verticais */}
-              <div className="vertical-divider" style={{ left: "calc(50px + ((100% - 80px) * 0.6))" }}></div>
-              <div className="vertical-divider" style={{ left: "calc(50px + ((100% - 80px) * 0.8))" }}></div>
+              {/* Linhas divisórias verticais - Entre 6-7 e entre 8-9 */}
+              <div className="vertical-divider" style={{ left: "calc(50px + (100% - 80px) * 6.35 / 10)" }}></div>
+              <div className="vertical-divider" style={{ left: "calc(50px + (100% - 80px) * 8.1 / 10)" }}></div>
             </div>
+
+            < br/>
+
+            <div className="media-badge">
+                <div className="media-label">Média</div>
+                <div className="media-value">{npsMetrics.media}</div>
+              </div>
           </div>
 
           {/* Badges de resumo NPS */}

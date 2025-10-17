@@ -193,9 +193,9 @@ const GrauFelicidade = () => {
             animate={true}
             motionConfig="gentle"
           />
-          {/* Linhas divisórias verticais - Ajustadas para posições corretas */}
-          <div className="vertical-divider" style={{ left: "calc(50px + ((100% - 80px) * 0.5))" }}></div>
-          <div className="vertical-divider" style={{ left: "calc(50px + ((100% - 80px) * 0.7))" }}></div>
+          {/* Linhas divisórias verticais - Entre 5-6 e entre 7-8 */}
+          <div className="vertical-divider" style={{ left: "calc(50px + (100% - 80px) * 5.5 / 10)" }}></div>
+          <div className="vertical-divider" style={{ left: "calc(50px + (100% - 80px) * 7.5 / 10)" }}></div>
         </div>
       </div>
     )
@@ -241,17 +241,17 @@ const GrauFelicidade = () => {
 
         .baixa-line {
           left: 50px;
-          width: calc(45.5% - 50px);
+          width: calc((100% - 80px) * 5.5 / 10);
         }
 
         .media-line {
-          left: 45.5%;
-          width: 20%;
+          left: calc(50px + (100% - 80px) * 5.5 / 10);
+          width: calc((100% - 80px) * 2 / 10);
         }
 
         .alta-line {
-          left: 65.5%;
-          width: calc(100% - 65.5% - 50px);
+          left: calc(50px + (100% - 80px) * 7.5 / 10);
+          width: calc(100% - 30px - (50px + (100% - 80px) * 7.5 / 10));
         }
 
         .line-segment {

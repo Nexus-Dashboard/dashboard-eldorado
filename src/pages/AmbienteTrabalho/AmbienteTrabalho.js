@@ -126,8 +126,8 @@ const AmbienteTrabalho = () => {
         // Calcular média geral
         const mediaGeralCalculada = processedData.length > 0 ? (somaMedias / processedData.length).toFixed(1) : 0
 
-        // Ordenar por maior concordância
-        processedData.sort((a, b) => b.concordam - a.concordam)
+        // Ordenar por menor concordância (ordem crescente)
+        processedData.sort((a, b) => a.concordam - b.concordam)
 
         setChartData(processedData)
         setInsights(insightsTemp)

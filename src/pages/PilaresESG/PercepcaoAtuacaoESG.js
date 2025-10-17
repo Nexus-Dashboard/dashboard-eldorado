@@ -22,7 +22,7 @@ const PercepcaoAtuacaoESG = () => {
     { atributo: "Adota práticas de governança corporativa, priorizando a transparência e a ética", media: 4.6, concordam: 84 },
     { atributo: "Investe na capacitação, treinamento e desenvolvimento dos seus colaboradores", media: 4.5, concordam: 83 },
     { atributo: "Oferece benefícios e vantagens aos funcionários, além da remuneração justa", media: 4.4, concordam: 80 }
-  ].sort((a, b) => b.media - a.media)
+  ].sort((a, b) => a.media - b.media)
 
   useEffect(() => {
     const processData = () => {
@@ -39,7 +39,7 @@ const PercepcaoAtuacaoESG = () => {
         setTotalRespondentes(filteredData.length)
 
         // NOTA: Quando processar dados reais, aplicar ordenação:
-        // processedData.sort((a, b) => b.media - a.media)
+        // processedData.sort((a, b) => a.media - b.media)
 
       } catch (error) {
         console.error("Erro ao processar dados:", error)

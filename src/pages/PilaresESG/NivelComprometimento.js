@@ -9,12 +9,12 @@ const NivelComprometimento = () => {
   const [totalRespondentes, setTotalRespondentes] = useState(0)
 
   const dados2025Exemplo = [
-    { nivel: "Muito alto", percentage: 39, color: "#2e7d32" },
-    { nivel: "Alto", percentage: 43, color: "#4caf50" },
-    { nivel: "Médio", percentage: 12, color: "#ff9800" },
-    { nivel: "Baixo", percentage: 1, color: "#f44336" },
+    { nivel: "Não sei dizer", percentage: 4, color: "#9e9e9e" },
     { nivel: "Muito baixo", percentage: 1, color: "#d32f2f" },
-    { nivel: "Não sei dizer", percentage: 4, color: "#9e9e9e" }
+    { nivel: "Baixo", percentage: 1, color: "#f44336" },
+    { nivel: "Médio", percentage: 12, color: "#ff9800" },
+    { nivel: "Alto", percentage: 43, color: "#4caf50" },
+    { nivel: "Muito alto", percentage: 39, color: "#2e7d32" }
   ]
 
   useEffect(() => {
@@ -45,12 +45,12 @@ const NivelComprometimento = () => {
         })
 
         const processedData = [
-          { nivel: "Muito alto", percentage: Math.round(((counts["Muito alto"] || 0) / responses.length) * 100), color: "#2e7d32" },
-          { nivel: "Alto", percentage: Math.round(((counts["Alto"] || 0) / responses.length) * 100), color: "#4caf50" },
-          { nivel: "Médio", percentage: Math.round(((counts["Médio"] || 0) / responses.length) * 100), color: "#ff9800" },
-          { nivel: "Baixo", percentage: Math.round(((counts["Baixo"] || 0) / responses.length) * 100), color: "#f44336" },
+          { nivel: "Não sei dizer", percentage: Math.round(((counts["Não sei dizer"] || 0) / responses.length) * 100), color: "#9e9e9e" },
           { nivel: "Muito baixo", percentage: Math.round(((counts["Muito baixo"] || 0) / responses.length) * 100), color: "#d32f2f" },
-          { nivel: "Não sei dizer", percentage: Math.round(((counts["Não sei dizer"] || 0) / responses.length) * 100), color: "#9e9e9e" }
+          { nivel: "Baixo", percentage: Math.round(((counts["Baixo"] || 0) / responses.length) * 100), color: "#f44336" },
+          { nivel: "Médio", percentage: Math.round(((counts["Médio"] || 0) / responses.length) * 100), color: "#ff9800" },
+          { nivel: "Alto", percentage: Math.round(((counts["Alto"] || 0) / responses.length) * 100), color: "#4caf50" },
+          { nivel: "Muito alto", percentage: Math.round(((counts["Muito alto"] || 0) / responses.length) * 100), color: "#2e7d32" }
         ]
 
         setChartData2025(processedData.length > 0 ? processedData : dados2025Exemplo)
@@ -133,7 +133,7 @@ const NivelComprometimento = () => {
     )
   }
 
-  const percentualAltoMuito2025 = chartData2025[0]?.percentage + chartData2025[1]?.percentage || 82
+  const percentualAltoMuito2025 = chartData2025[4]?.percentage + chartData2025[5]?.percentage || 82
 
   return (
     <>
