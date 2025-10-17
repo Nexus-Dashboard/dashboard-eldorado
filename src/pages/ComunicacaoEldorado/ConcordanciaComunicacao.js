@@ -22,12 +22,12 @@ const ConcordanciaComunicacao = () => {
         // Campos das 2 frases da pergunta P23
         const questionFields = [
           {
-            field: "T_P23_1",
+            field: "T_P23_1 - 23. Agora, passaremos a tratar sobre comunicação. Utilizando a mesma escala de 1 a 5, em que 1 significa que você “discorda totalmente” e 5 significa que você “concorda totalmente.”, o quanto você diria concordar ou discordar com cada uma das frases. (RU POR LINHA, RODÍZIO) [ME SINTO BEM INFORMADO(A) SOBRE A ELDORADO]",
             label: "Me sinto bem informado(a) sobre a Eldorado",
             shortLabel: "Me sinto bem informado(a) sobre a Eldorado"
           },
           {
-            field: "T_P23_2", 
+            field: "T_P23_2 - 23. Agora, passaremos a tratar sobre comunicação. Utilizando a mesma escala de 1 a 5, em que 1 significa que você “discorda totalmente” e 5 significa que você “concorda totalmente.”, o quanto você diria concordar ou discordar com cada uma das frases. (RU POR LINHA, RODÍZIO) [AS INFORMAÇÕES QUE EU RECEBO DA EMPRESA SÃO ÚTEIS/RELEVANTES NO MEU DIA A DIA]", 
             label: "As informações que eu recebo da empresa são úteis/relevantes no meu dia a dia",
             shortLabel: "As informações que eu recebo da empresa são úteis/relevantes no meu dia a dia"
           }

@@ -19,51 +19,41 @@ const ConcordanciaBeneficios = () => {
         console.log("=== DEBUG CONCORDÂNCIA SOBRE BENEFÍCIOS ===")
         console.log("Total de registros filtrados:", filteredData.length)
 
-        // Campos das 3 perguntas P32
+        // Campos das 3 perguntas P32 - usando nomes exatos da base
         const questionFields = [
           {
-            field: "T_P32_1",
+            field: 'T_P32_1 - 32.        Agora falando sobre remuneração e benefícios. Considerando as seguintes frases, o quanto você diria concordar ou discordar em relação a cada uma delas. Utilize a mesma escala de 1 a 5, em que 1 significa que você “discorda totalmente” e 5 significa que você “concorda totalmente.”. (RU POR LINHA, RODÍZIO) [TENHO CLAREZA SOBRE OS BENEFÍCIOS OFERECIDOS PELA EMPRESA]',
             label: "Tenho clareza sobre os benefícios oferecidos pela empresa",
             shortLabel: "Tenho clareza sobre os benefícios oferecidos pela empresa"
           },
           {
-            field: "T_P32_2",
+            field: 'T_P32_2 - 32.        Agora falando sobre remuneração e benefícios. Considerando as seguintes frases, o quanto você diria concordar ou discordar em relação a cada uma delas. Utilize a mesma escala de 1 a 5, em que 1 significa que você “discorda totalmente” e 5 significa que você “concorda totalmente.”. (RU POR LINHA, RODÍZIO) [ME SINTO BEM INFORMADO(A) SOBRE OS BENEFÍCIOS DISPONÍVEIS PARA MIM]',
             label: "Me sinto bem informado(a) sobre os benefícios disponíveis para mim",
             shortLabel: "Me sinto bem informado(a) sobre os benefícios disponíveis para mim"
           },
           {
-            field: "T_P32_3",
+            field: 'T_P32_3 - 32.        Agora falando sobre remuneração e benefícios. Considerando as seguintes frases, o quanto você diria concordar ou discordar em relação a cada uma delas. Utilize a mesma escala de 1 a 5, em que 1 significa que você “discorda totalmente” e 5 significa que você “concorda totalmente.”. (RU POR LINHA, RODÍZIO) [ESTOU SATISFEITO(A) COM OS BENEFÍCIOS OFERECIDOS PELA EMPRESA]',
             label: "Estou satisfeito(a) com os benefícios oferecidos pela empresa",
             shortLabel: "Estou satisfeito(a) com os benefícios oferecidos pela empresa"
           }
         ]
 
         const availableFields = filteredData.length > 0 ? Object.keys(filteredData[0]) : []
-        console.log("Campos P32 disponíveis:", availableFields.filter(f => f.includes('P32') || f.includes('T_P32')))
+        console.log("Campos P32 disponíveis:", availableFields.filter(f => f.includes('P32')))
 
         const processedData = []
         const insightsTemp = {}
         let totalRespondentesCount = 0
         let somaMedias = 0
 
-        // Vamos tentar encontrar os campos corretos
+        // Buscar campos exatos na base
         const findBestField = (targetField) => {
-          if (availableFields.includes(targetField)) return targetField
-          
-          const variations = [
-            targetField,
-            targetField.replace('T_P32_', 'P32_'),
-            targetField + ' - 32. Agora falando sobre remuneração e benefícios',
-            availableFields.find(f => f.includes(targetField.replace('T_P32_', '')) && f.includes('32') && f.includes('benefícios'))
-          ]
-          
-          for (const variation of variations) {
-            if (variation && availableFields.includes(variation)) {
-              console.log(`Campo encontrado: ${targetField} -> ${variation}`)
-              return variation
-            }
+          if (availableFields.includes(targetField)) {
+            console.log(`✅ Campo encontrado exato: ${targetField}`)
+            return targetField
           }
-          
+
+          console.log(`❌ Campo não encontrado: ${targetField}`)
           return null
         }
 
@@ -103,11 +93,24 @@ const ConcordanciaBeneficios = () => {
           console.log(`✅ Processando campo real: ${actualField}`)
           usingRealData = true
 
-          // Processar dados reais
+          // Processar dados reais - extrair número da escala de 1 a 5
           const validResponses = filteredData
             .map(row => {
               const value = row[actualField]
-              const numValue = parseInt(value)
+              if (!value) return null
+
+              // Converter para string e extrair o primeiro número
+              const valueStr = String(value).trim()
+
+              // Tentar extrair o número no início da string (ex: "1 - Discorda Totalmente" -> 1)
+              const match = valueStr.match(/^(\d+)/)
+              if (match) {
+                const numValue = parseInt(match[1])
+                return (numValue >= 1 && numValue <= 5) ? numValue : null
+              }
+
+              // Se for apenas um número sem texto
+              const numValue = parseInt(valueStr)
               return (!isNaN(numValue) && numValue >= 1 && numValue <= 5) ? numValue : null
             })
             .filter(score => score !== null)
@@ -411,7 +414,7 @@ const ConcordanciaBeneficios = () => {
                   keys={['media']}
                   indexBy="atributo"
                   layout="horizontal"
-                  margin={{ top: 20, right: 80, bottom: 20, left: 320 }}
+                  margin={{ top: 20, right: 80, bottom: 20, left: 380 }}
                   padding={0.4}
                   valueScale={{ type: 'linear', min: 0, max: 5 }}
                   colors="#4caf50"

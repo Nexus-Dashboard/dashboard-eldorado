@@ -8,6 +8,49 @@ const UtilizacaoAvaliacaoBeneficios = () => {
   const [chartData, setChartData] = useState([])
   const [totalRespondentes, setTotalRespondentes] = useState(0)
   const [principalInsight, setPrincipalInsight] = useState("")
+  const [viewMode, setViewMode] = useState("amostra_total") // "amostra_total" ou "entre_quem_utiliza"
+  const [rawData, setRawData] = useState([]) // Guardar dados brutos para recalcular
+
+  // useEffect para recalcular dados quando viewMode mudar
+  useEffect(() => {
+    if (rawData.length === 0) return
+
+    if (viewMode === "entre_quem_utiliza") {
+      // Recalcular percentuais apenas entre quem utiliza
+      const recalculatedData = rawData.map(item => {
+        const totalUtilizadores = item.countSatisfeito + item.countMedio + item.countInsatisfeito
+
+        if (totalUtilizadores === 0) {
+          return {
+            ...item,
+            satisfeito: 0,
+            medio: 0,
+            insatisfeito: 0,
+            conhecoNaoUtilizei: 0,
+            naoConheco: 0
+          }
+        }
+
+        return {
+          ...item,
+          satisfeito: Number(((item.countSatisfeito / totalUtilizadores) * 100).toFixed(2)),
+          medio: Number(((item.countMedio / totalUtilizadores) * 100).toFixed(2)),
+          insatisfeito: Number(((item.countInsatisfeito / totalUtilizadores) * 100).toFixed(2)),
+          conhecoNaoUtilizei: 0,
+          naoConheco: 0
+        }
+      })
+
+      // Ordenar por utilização (que permanece a mesma)
+      recalculatedData.sort((a, b) => a.utilizacao - b.utilizacao)
+      setChartData(recalculatedData)
+    } else {
+      // Voltar aos dados originais
+      const originalData = [...rawData]
+      originalData.sort((a, b) => a.utilizacao - b.utilizacao)
+      setChartData(originalData)
+    }
+  }, [viewMode, rawData])
 
   useEffect(() => {
     const processData = () => {
@@ -100,7 +143,13 @@ const UtilizacaoAvaliacaoBeneficios = () => {
               conhecoNaoUtilizei: percentConhecoNaoUtilizei,
               naoConheco: percentNaoConheco,
               utilizacao: utilizacao,
-              totalRespostas: total
+              totalRespostas: total,
+              // Guardar contagens absolutas para recalcular depois
+              countSatisfeito: satisfeito,
+              countMedio: medio,
+              countInsatisfeito: insatisfeito,
+              countConhecoNaoUtilizei: conhecoNaoUtilizei,
+              countNaoConheco: naoConheco
             })
           }
         })
@@ -113,24 +162,25 @@ const UtilizacaoAvaliacaoBeneficios = () => {
           console.log("Usando dados de exemplo baseados na imagem")
           
           const exampleData = [
-            { beneficio: "Cesta de final de ano", satisfeito: 75.6, medio: 6.95, insatisfeito: 2.45, conhecoNaoUtilizei: 11.02, naoConheco: 3.98, utilizacao: 85 },
-            { beneficio: "Plano de Saúde", satisfeito: 61.57, medio: 18.77, insatisfeito: 6.03, conhecoNaoUtilizei: 12.34, naoConheco: 1.29, utilizacao: 86.37 },
-            { beneficio: "Campanhas de vacinação", satisfeito: 73.54, medio: 4.32, insatisfeito: 3.14, conhecoNaoUtilizei: 15.44, naoConheco: 3.56, utilizacao: 81 },
-            { beneficio: "Atividade física - Wellhub", satisfeito: 38.38, medio: 5.11, insatisfeito: 0.51, conhecoNaoUtilizei: 35.42, naoConheco: 19.66, utilizacao: 44 },
-            { beneficio: "Plano Odontológico", satisfeito: 23.48, medio: 11.19, insatisfeito: 9.16, conhecoNaoUtilizei: 51.46, naoConheco: 4.71, utilizacao: 43.83 },
-            { beneficio: "Crédito consignado", satisfeito: 21.35, medio: 8.41, insatisfeito: 4.59, conhecoNaoUtilizei: 42.48, naoConheco: 23.13, utilizacao: 34.35 },
-            { beneficio: "Benefícios do Seu Jeito!", satisfeito: 19.95, medio: 5.74, insatisfeito: 1.31, conhecoNaoUtilizei: 25.49, naoConheco: 49.43, utilizacao: 27 },
-            { beneficio: "Eldorado Prev", satisfeito: 20.32, medio: 3.82, insatisfeito: 1.18, conhecoNaoUtilizei: 47.62, naoConheco: 27.61, utilizacao: 25.32 },
-            { beneficio: "Parcerias de descontos em farmácias", satisfeito: 17.71, medio: 5.65, insatisfeito: 1.93, conhecoNaoUtilizei: 40.36, naoConheco: 33.9, utilizacao: 25.29 },
-            { beneficio: "Estação de Saúde Eldorado", satisfeito: 19.17, medio: 3.39, insatisfeito: 2.44, conhecoNaoUtilizei: 45.55, naoConheco: 29.99, utilizacao: 25 },
-            { beneficio: "Parcerias e descontos educacionais", satisfeito: 17.39, medio: 4.55, insatisfeito: 2.06, conhecoNaoUtilizei: 53.9, naoConheco: 22.16, utilizacao: 24 },
-            { beneficio: "Programa Gerar / Saúde do Bebê", satisfeito: 6.52, medio: 1.93, insatisfeito: 0.55, conhecoNaoUtilizei: 49.71, naoConheco: 41.62, utilizacao: 9 },
-            { beneficio: "Descontos em Auto-escola", satisfeito: 5.99, medio: 0.61, insatisfeito: 1.4, conhecoNaoUtilizei: 39.32, naoConheco: 55.42, utilizacao: 8 }
+            { beneficio: "Cesta de final de ano", satisfeito: 75.6, medio: 6.95, insatisfeito: 2.45, conhecoNaoUtilizei: 11.02, naoConheco: 3.98, utilizacao: 85, countSatisfeito: 263, countMedio: 24, countInsatisfeito: 8, countConhecoNaoUtilizei: 38, countNaoConheco: 14 },
+            { beneficio: "Plano de Saúde", satisfeito: 61.57, medio: 18.77, insatisfeito: 6.03, conhecoNaoUtilizei: 12.34, naoConheco: 1.29, utilizacao: 86.37, countSatisfeito: 214, countMedio: 65, countInsatisfeito: 21, countConhecoNaoUtilizei: 43, countNaoConheco: 5 },
+            { beneficio: "Campanhas de vacinação", satisfeito: 73.54, medio: 4.32, insatisfeito: 3.14, conhecoNaoUtilizei: 15.44, naoConheco: 3.56, utilizacao: 81, countSatisfeito: 256, countMedio: 15, countInsatisfeito: 11, countConhecoNaoUtilizei: 54, countNaoConheco: 12 },
+            { beneficio: "Atividade física - Wellhub", satisfeito: 38.38, medio: 5.11, insatisfeito: 0.51, conhecoNaoUtilizei: 35.42, naoConheco: 19.66, utilizacao: 44, countSatisfeito: 133, countMedio: 18, countInsatisfeito: 2, countConhecoNaoUtilizei: 123, countNaoConheco: 68 },
+            { beneficio: "Plano Odontológico", satisfeito: 23.48, medio: 11.19, insatisfeito: 9.16, conhecoNaoUtilizei: 51.46, naoConheco: 4.71, utilizacao: 43.83, countSatisfeito: 82, countMedio: 39, countInsatisfeito: 32, countConhecoNaoUtilizei: 179, countNaoConheco: 16 },
+            { beneficio: "Crédito consignado", satisfeito: 21.35, medio: 8.41, insatisfeito: 4.59, conhecoNaoUtilizei: 42.48, naoConheco: 23.13, utilizacao: 34.35, countSatisfeito: 74, countMedio: 29, countInsatisfeito: 16, countConhecoNaoUtilizei: 147, countNaoConheco: 80 },
+            { beneficio: "Benefícios do Seu Jeito!", satisfeito: 19.95, medio: 5.74, insatisfeito: 1.31, conhecoNaoUtilizei: 25.49, naoConheco: 49.43, utilizacao: 27, countSatisfeito: 69, countMedio: 20, countInsatisfeito: 5, countConhecoNaoUtilizei: 88, countNaoConheco: 171 },
+            { beneficio: "Eldorado Prev", satisfeito: 20.32, medio: 3.82, insatisfeito: 1.18, conhecoNaoUtilizei: 47.62, naoConheco: 27.61, utilizacao: 25.32, countSatisfeito: 71, countMedio: 13, countInsatisfeito: 4, countConhecoNaoUtilizei: 166, countNaoConheco: 96 },
+            { beneficio: "Parcerias de descontos em farmácias", satisfeito: 17.71, medio: 5.65, insatisfeito: 1.93, conhecoNaoUtilizei: 40.36, naoConheco: 33.9, utilizacao: 25.29, countSatisfeito: 62, countMedio: 20, countInsatisfeito: 7, countConhecoNaoUtilizei: 141, countNaoConheco: 118 },
+            { beneficio: "Estação de Saúde Eldorado", satisfeito: 19.17, medio: 3.39, insatisfeito: 2.44, conhecoNaoUtilizei: 45.55, naoConheco: 29.99, utilizacao: 25, countSatisfeito: 67, countMedio: 12, countInsatisfeito: 9, countConhecoNaoUtilizei: 159, countNaoConheco: 105 },
+            { beneficio: "Parcerias e descontos educacionais", satisfeito: 17.39, medio: 4.55, insatisfeito: 2.06, conhecoNaoUtilizei: 53.9, naoConheco: 22.16, utilizacao: 24, countSatisfeito: 61, countMedio: 16, countInsatisfeito: 7, countConhecoNaoUtilizei: 188, countNaoConheco: 77 },
+            { beneficio: "Programa Gerar / Saúde do Bebê", satisfeito: 6.52, medio: 1.93, insatisfeito: 0.55, conhecoNaoUtilizei: 49.71, naoConheco: 41.62, utilizacao: 9, countSatisfeito: 23, countMedio: 7, countInsatisfeito: 2, countConhecoNaoUtilizei: 173, countNaoConheco: 145 },
+            { beneficio: "Descontos em Auto-escola", satisfeito: 5.99, medio: 0.61, insatisfeito: 1.4, conhecoNaoUtilizei: 39.32, naoConheco: 55.42, utilizacao: 8, countSatisfeito: 21, countMedio: 2, countInsatisfeito: 5, countConhecoNaoUtilizei: 137, countNaoConheco: 193 }
           ]
 
           // Ordenar por utilização crescente (ResponsiveBar exibe de baixo para cima)
           exampleData.sort((a, b) => a.utilizacao - b.utilizacao)
 
+          setRawData(exampleData)
           setChartData(exampleData)
           setTotalRespondentes(filteredData.length)
           setPrincipalInsight("92% dos colaboradores estão satisfeitos com as Campanhas de vacinação")
@@ -142,9 +192,11 @@ const UtilizacaoAvaliacaoBeneficios = () => {
 
         console.log("Dados finais processados:", processedData)
 
+        // Guardar dados brutos
+        setRawData(processedData)
         setChartData(processedData)
         setTotalRespondentes(filteredData.length)
-        
+
         if (processedData.length > 0) {
           setPrincipalInsight(`${processedData[0].satisfeito}% dos colaboradores estão satisfeitos com ${processedData[0].beneficio}`)
         }
@@ -242,6 +294,37 @@ const UtilizacaoAvaliacaoBeneficios = () => {
         .color-conheco { background: #757575; }
         .color-nao-conheco { background: #333333; }
 
+        .view-toggle {
+          display: flex;
+          gap: 0;
+          background: #f0f0f0;
+          border-radius: 8px;
+          padding: 4px;
+        }
+
+        .toggle-btn {
+          padding: 10px 20px;
+          border: none;
+          background: transparent;
+          color: #666;
+          font-size: 14px;
+          font-weight: 500;
+          cursor: pointer;
+          border-radius: 6px;
+          transition: all 0.3s ease;
+        }
+
+        .toggle-btn:hover {
+          background: rgba(255, 140, 0, 0.1);
+          color: #ff8c00;
+        }
+
+        .toggle-btn.active {
+          background: #ff8c00;
+          color: white;
+          font-weight: 600;
+        }
+
         .highlight-text {
           background: #e8f5e9;
           border-left: 4px solid #4caf50;
@@ -321,6 +404,24 @@ const UtilizacaoAvaliacaoBeneficios = () => {
        
 
         <div className="chart-section">
+          {/* Botões de alternância */}
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
+            <div className="view-toggle">
+              <button
+                className={`toggle-btn ${viewMode === "amostra_total" ? "active" : ""}`}
+                onClick={() => setViewMode("amostra_total")}
+              >
+                Amostra total
+              </button>
+              <button
+                className={`toggle-btn ${viewMode === "entre_quem_utiliza" ? "active" : ""}`}
+                onClick={() => setViewMode("entre_quem_utiliza")}
+              >
+                Entre quem utiliza cada
+              </button>
+            </div>
+          </div>
+
           <h5 className="section-title">
             Utilização e avaliação dos benefícios da Eldorado
           </h5>
@@ -339,29 +440,39 @@ const UtilizacaoAvaliacaoBeneficios = () => {
               <div className="legend-color color-insatisfeito"></div>
               <span>Utilizo e estou insatisfeito(a)</span>
             </div>
-            <div className="legend-item">
-              <div className="legend-color color-conheco"></div>
-              <span>Conheço, mas nunca utilizei</span>
-            </div>
-            <div className="legend-item">
-              <div className="legend-color color-nao-conheco"></div>
-              <span>Não conheço</span>
-            </div>
+            {viewMode === "amostra_total" && (
+              <>
+                <div className="legend-item">
+                  <div className="legend-color color-conheco"></div>
+                  <span>Conheço, mas nunca utilizei</span>
+                </div>
+                <div className="legend-item">
+                  <div className="legend-color color-nao-conheco"></div>
+                  <span>Não conheço</span>
+                </div>
+              </>
+            )}
           </div>
 
           {/* Gráfico e Porcentagens de Utilização */}
           <Row>
-            <Col lg={10}>
+            <Col lg={viewMode === "entre_quem_utiliza" ? 12 : 10}>
               <div style={{ height: "600px" }}>
                 <ResponsiveBar
                   data={chartData}
-                  keys={['satisfeito', 'medio', 'insatisfeito', 'conhecoNaoUtilizei', 'naoConheco']}
+                  keys={viewMode === "entre_quem_utiliza"
+                    ? ['satisfeito', 'medio', 'insatisfeito']
+                    : ['satisfeito', 'medio', 'insatisfeito', 'conhecoNaoUtilizei', 'naoConheco']
+                  }
                   indexBy="beneficio"
                   layout="horizontal"
                   margin={{ top: 20, right: 20, bottom: 20, left: 280 }}
                   padding={0.3}
                   valueScale={{ type: 'linear', min: 0, max: 100 }}
-                  colors={['#4caf50', '#ff9800', '#d32f2f', '#757575', '#333333']}
+                  colors={viewMode === "entre_quem_utiliza"
+                    ? ['#4caf50', '#ff9800', '#d32f2f']
+                    : ['#4caf50', '#ff9800', '#d32f2f', '#757575', '#333333']
+                  }
                   borderRadius={2}
                   axisTop={null}
                   axisRight={null}
@@ -434,28 +545,30 @@ const UtilizacaoAvaliacaoBeneficios = () => {
               </div>
             </Col>
 
-            <Col lg={2}>
-              <div style={{ height: "600px", display: "flex", flexDirection: "column", justifyContent: "space-around", paddingBottom: "20px" }}>
-                <div style={{ textAlign: "center", fontWeight: "600", fontSize: "14px", marginBottom: "10px", color: "#333" }}>
-                  % Utilização
-                </div>
-                {/* A mágica acontece aqui! */}
-                {[...chartData].reverse().map((item, index) => (
-                  <div
-                    key={`utilizacao-${index}`}
-                    style={{
-                      textAlign: "center",
-                      fontSize: "14px",
-                      fontWeight: "600",
-                      color: "#333",
-                      padding: "8px 0"
-                    }}
-                  >
-                    {item.utilizacao}%
+            {viewMode === "amostra_total" && (
+              <Col lg={2}>
+                <div style={{ height: "600px", display: "flex", flexDirection: "column", justifyContent: "space-around", paddingBottom: "20px" }}>
+                  <div style={{ textAlign: "center", fontWeight: "600", fontSize: "14px", marginBottom: "10px", color: "#333" }}>
+                    % Utilização
                   </div>
-                ))}
-              </div>
-            </Col>
+                  {/* A mágica acontece aqui! */}
+                  {[...chartData].reverse().map((item, index) => (
+                    <div
+                      key={`utilizacao-${index}`}
+                      style={{
+                        textAlign: "center",
+                        fontSize: "14px",
+                        fontWeight: "600",
+                        color: "#333",
+                        padding: "8px 0"
+                      }}
+                    >
+                      {item.utilizacao}%
+                    </div>
+                  ))}
+                </div>
+              </Col>
+            )}
           </Row>
         </div>
 
