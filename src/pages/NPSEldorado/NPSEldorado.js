@@ -245,17 +245,17 @@ const NPSEldorado = () => {
 
         .baixa-line {
           left: 50px;
-          width: calc((100% - 80px) * 6.25 / 10);
+          width: calc((100% - 80px) * 6.3 / 10);
         }
 
         .media-line {
-          left: calc(50px + (100% - 80px) * 6.40 / 10);
-          width: calc((100% - 80px) * 1.6 / 10);
+          left: calc(50px + (100% - 80px) * 6.30 / 10);
+          width: calc((100% - 80px) * 1.7 / 10);
         }
 
         .alta-line {
-          left: calc(50px + (100% - 80px) * 8.2 / 10);
-          width: calc(100% - 30px - (50px + (100% - 80px) * 8.45 / 10));
+          left: calc(50px + (100% - 80px) * 8.0 / 10);
+          width: calc(100% - 30px - (50px + (100% - 80px) * 8.3 / 10));
         }
 
         .line-segment {
@@ -683,8 +683,8 @@ const NPSEldorado = () => {
               />
               
               {/* Linhas divisórias verticais - Entre 6-7 e entre 8-9 */}
-              <div className="vertical-divider" style={{ left: "calc(50px + (100% - 80px) * 6.35 / 10)" }}></div>
-              <div className="vertical-divider" style={{ left: "calc(50px + (100% - 80px) * 8.1 / 10)" }}></div>
+              <div className="vertical-divider" style={{ left: "calc(50px + (100% - 80px) * 6.30 / 10)" }}></div>
+              <div className="vertical-divider" style={{ left: "calc(50px + (100% - 80px) * 8.0 / 10)" }}></div>
             </div>
 
             < br/>
