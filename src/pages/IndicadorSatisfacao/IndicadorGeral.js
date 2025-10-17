@@ -11,11 +11,7 @@ const IndicadorGeral = () => {
     SAUDE_EMOCIONAL: {
       nome: "Saúde Emocional",
       campos: ["T_P13_1", "T_P13_2"]
-    },
-    RECONHECE_MOTIVACAO: {
-      nome: "Reconhecimento & Motivação",
-      campos: ["T_P16_1", "T_P16_2", "T_P16_3", "T_P16_4", "T_P16_5"]
-    },
+    },    
     AMBIENTE_TRABALHO: {
       nome: "Ambiente de Trabalho",
       campos: ["T_P20_1", "T_P20_2", "T_P20_3"]
@@ -39,6 +35,11 @@ const IndicadorGeral = () => {
     BENEFICIOS: {
       nome: "Benefícios",
       campos: ["T_P32_2", "T_P32_3"]
+    },
+    VALORIZACAO_DESENVOLVIMENTO: {
+      nome: "Valorização e Desenvolvimento",
+      campos: ["T_P16_1", "T_P16_2", "T_P16_3", "T_P16_4", "T_P16_5"],
+      icone: "gift"
     }
   }
 
@@ -54,17 +55,27 @@ const IndicadorGeral = () => {
     const processData = () => {
       try {
         const filteredData = getFilteredData()
+        console.log("=== DEBUG INDICADOR GERAL ===")
+        console.log("Total de registros:", filteredData?.length)
+
         if (!filteredData || filteredData.length === 0) {
+          console.log("❌ Sem dados filtrados, usando dados de exemplo")
           setIndicadorGeral(86.9)
           setTotalRespondentes(132)
           return
         }
 
         const availableFields = filteredData.length > 0 ? Object.keys(filteredData[0]) : []
+        console.log("📋 Campos disponíveis no dataset:", availableFields.length)
+        console.log("📋 Campos que começam com 'T_P':", availableFields.filter(f => f.startsWith('T_P')))
+
         const resultados = {}
 
         // Calcular cada indicador
         Object.entries(configuracaoIndicadores).forEach(([key, config]) => {
+          console.log(`\n🔍 Processando dimensão: ${config.nome} (${key})`)
+          console.log(`   Campos esperados: ${config.campos.join(', ')}`)
+
           let pontuacaoTotal = 0
           let respostasValidas = 0
 
@@ -74,24 +85,56 @@ const IndicadorGeral = () => {
               f.includes(campo) || f.includes(campo.replace('T_', ''))
             ) || campo
 
+            console.log(`   📌 Buscando campo: ${campo}`)
+            console.log(`      ➜ Campo encontrado: ${actualField}`)
+            console.log(`      ➜ Campo existe no dataset: ${availableFields.includes(actualField) ? '✅ SIM' : '❌ NÃO'}`)
+
             const responses = filteredData
               .map(row => {
                 const value = row[actualField]
-                const numValue = parseInt(value)
+                if (!value) return null
+
+                // Converter para string e extrair o primeiro número
+                const valueStr = String(value).trim()
+
+                // Tentar extrair o número no início da string (ex: "1 - Discorda Totalmente" -> 1)
+                const match = valueStr.match(/^(\d+)/)
+                if (match) {
+                  const numValue = parseInt(match[1])
+                  return (numValue >= 1 && numValue <= 5) ? numValue : null
+                }
+
+                // Se for apenas um número sem texto
+                const numValue = parseInt(valueStr)
                 return (!isNaN(numValue) && numValue >= 1 && numValue <= 5) ? numValue : null
               })
               .filter(score => score !== null)
 
+            console.log(`      ➜ Respostas válidas encontradas: ${responses.length}`)
+
             if (responses.length > 0) {
+              const amostra = responses.slice(0, 5)
+              console.log(`      ➜ Amostra de valores: ${amostra.join(', ')}`)
+
+              let pontos4ou5 = 0
+              let pontos3 = 0
+              let pontos1ou2 = 0
+
               responses.forEach(score => {
                 if (score >= 4) {
                   pontuacaoTotal += 10 // Nota 4 ou 5 = 10 pontos
+                  pontos4ou5++
                 } else if (score === 3) {
                   pontuacaoTotal += 5  // Nota 3 = 5 pontos
+                  pontos3++
+                } else {
+                  pontos1ou2++
                 }
                 // Nota 1 ou 2 = 0 pontos
                 respostasValidas++
               })
+
+              console.log(`      ➜ Distribuição: 4-5=${pontos4ou5}, 3=${pontos3}, 1-2=${pontos1ou2}`)
             }
           })
 
@@ -99,10 +142,17 @@ const IndicadorGeral = () => {
           const pontuacaoMaxima = respostasValidas * 10
           const indicador = pontuacaoMaxima > 0 ? (pontuacaoTotal / pontuacaoMaxima) * 100 : 0
           resultados[key] = Math.round(indicador * 100) / 100
+
+          console.log(`   ✅ Indicador ${config.nome}: ${resultados[key].toFixed(2)}`)
+          console.log(`      Total respostas: ${respostasValidas}, Pontuação: ${pontuacaoTotal}/${pontuacaoMaxima}`)
         })
+
+        console.log("\n📊 RESULTADOS FINAIS:")
+        console.log(resultados)
 
         // Se não encontrou dados suficientes, usar exemplo
         if (Object.values(resultados).every(val => val === 0)) {
+          console.log("⚠️ Todos os indicadores estão zerados, usando dados de exemplo")
           setIndicadorGeral(86.9)
         } else {
           // Calcular indicador geral (média dos outros)
@@ -110,6 +160,7 @@ const IndicadorGeral = () => {
           const indicadorGeralCalc = valoresIndicadores.length > 0
             ? valoresIndicadores.reduce((a, b) => a + b, 0) / valoresIndicadores.length
             : 0
+          console.log(`\n🎯 INDICADOR GERAL: ${indicadorGeralCalc.toFixed(2)}`)
           setIndicadorGeral(Math.round(indicadorGeralCalc * 100) / 100)
         }
 
