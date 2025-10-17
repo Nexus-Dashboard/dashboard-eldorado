@@ -78,14 +78,28 @@ const UtilizacaoAvaliacaoBeneficios = () => {
           const satisfeito = (counts["Utilizo e estou satisfeito(a)"] || 0)
           const medio = (counts["Utilizo e estou mais ou menos satisfeito(a)"] || 0)
           const insatisfeito = (counts["Utilizo e estou insatisfeito(a)"] || 0)
-          const total = satisfeito + medio + insatisfeito
+          const conhecoNaoUtilizei = (counts["Conheço, mas nunca utilizei"] || 0)
+          const naoConheco = (counts["Não conheço"] || 0)
+          const total = satisfeito + medio + insatisfeito + conhecoNaoUtilizei + naoConheco
 
           if (total > 0) {
+            const percentSatisfeito = Number(((satisfeito / total) * 100).toFixed(2))
+            const percentMedio = Number(((medio / total) * 100).toFixed(2))
+            const percentInsatisfeito = Number(((insatisfeito / total) * 100).toFixed(2))
+            const percentConhecoNaoUtilizei = Number(((conhecoNaoUtilizei / total) * 100).toFixed(2))
+            const percentNaoConheco = Number(((naoConheco / total) * 100).toFixed(2))
+
+            // Calcular % de utilização (soma de satisfeito + médio + insatisfeito)
+            const utilizacao = Number((percentSatisfeito + percentMedio + percentInsatisfeito).toFixed(2))
+
             processedData.push({
               beneficio: shortLabel,
-              satisfeito: Math.round((satisfeito / total) * 100),
-              medio: Math.round((medio / total) * 100),
-              insatisfeito: Math.round((insatisfeito / total) * 100),
+              satisfeito: percentSatisfeito,
+              medio: percentMedio,
+              insatisfeito: percentInsatisfeito,
+              conhecoNaoUtilizei: percentConhecoNaoUtilizei,
+              naoConheco: percentNaoConheco,
+              utilizacao: utilizacao,
               totalRespostas: total
             })
           }
@@ -99,20 +113,23 @@ const UtilizacaoAvaliacaoBeneficios = () => {
           console.log("Usando dados de exemplo baseados na imagem")
           
           const exampleData = [
-            { beneficio: "Campanhas de vacinação", satisfeito: 92, medio: 6, insatisfeito: 2 },
-            { beneficio: "Cesta de final de ano", satisfeito: 89, medio: 8, insatisfeito: 3 },
-            { beneficio: "Atividade física - Wellhub", satisfeito: 85, medio: 11, insatisfeito: 3 },
-            { beneficio: "Eldorado Prev", satisfeito: 82, medio: 14, insatisfeito: 4 },
-            { beneficio: "Benefícios do Seu Jeito!", satisfeito: 80, medio: 16, insatisfeito: 5 },
-            { beneficio: "Estação de Saúde Eldorado", satisfeito: 78, medio: 15, insatisfeito: 7 },
-            { beneficio: "Descontos em Auto-escola", satisfeito: 76, medio: 14, insatisfeito: 10 },
-            { beneficio: "Programa Gerar / Saúde do Bebê", satisfeito: 75, medio: 14, insatisfeito: 11 },
-            { beneficio: "Parcerias e descontos educacionais", satisfeito: 73, medio: 20, insatisfeito: 7 },
-            { beneficio: "Plano de Saúde", satisfeito: 71, medio: 22, insatisfeito: 7 },
-            { beneficio: "Parcerias de descontos em farmácias", satisfeito: 69, medio: 22, insatisfeito: 9 },
-            { beneficio: "Crédito consignado", satisfeito: 62, medio: 24, insatisfeito: 13 },
-            { beneficio: "Plano Odontológico", satisfeito: 54, medio: 26, insatisfeito: 21 }
+            { beneficio: "Cesta de final de ano", satisfeito: 75.6, medio: 6.95, insatisfeito: 2.45, conhecoNaoUtilizei: 11.02, naoConheco: 3.98, utilizacao: 85 },
+            { beneficio: "Plano de Saúde", satisfeito: 61.57, medio: 18.77, insatisfeito: 6.03, conhecoNaoUtilizei: 12.34, naoConheco: 1.29, utilizacao: 86.37 },
+            { beneficio: "Campanhas de vacinação", satisfeito: 73.54, medio: 4.32, insatisfeito: 3.14, conhecoNaoUtilizei: 15.44, naoConheco: 3.56, utilizacao: 81 },
+            { beneficio: "Atividade física - Wellhub", satisfeito: 38.38, medio: 5.11, insatisfeito: 0.51, conhecoNaoUtilizei: 35.42, naoConheco: 19.66, utilizacao: 44 },
+            { beneficio: "Plano Odontológico", satisfeito: 23.48, medio: 11.19, insatisfeito: 9.16, conhecoNaoUtilizei: 51.46, naoConheco: 4.71, utilizacao: 43.83 },
+            { beneficio: "Crédito consignado", satisfeito: 21.35, medio: 8.41, insatisfeito: 4.59, conhecoNaoUtilizei: 42.48, naoConheco: 23.13, utilizacao: 34.35 },
+            { beneficio: "Benefícios do Seu Jeito!", satisfeito: 19.95, medio: 5.74, insatisfeito: 1.31, conhecoNaoUtilizei: 25.49, naoConheco: 49.43, utilizacao: 27 },
+            { beneficio: "Eldorado Prev", satisfeito: 20.32, medio: 3.82, insatisfeito: 1.18, conhecoNaoUtilizei: 47.62, naoConheco: 27.61, utilizacao: 25.32 },
+            { beneficio: "Parcerias de descontos em farmácias", satisfeito: 17.71, medio: 5.65, insatisfeito: 1.93, conhecoNaoUtilizei: 40.36, naoConheco: 33.9, utilizacao: 25.29 },
+            { beneficio: "Estação de Saúde Eldorado", satisfeito: 19.17, medio: 3.39, insatisfeito: 2.44, conhecoNaoUtilizei: 45.55, naoConheco: 29.99, utilizacao: 25 },
+            { beneficio: "Parcerias e descontos educacionais", satisfeito: 17.39, medio: 4.55, insatisfeito: 2.06, conhecoNaoUtilizei: 53.9, naoConheco: 22.16, utilizacao: 24 },
+            { beneficio: "Programa Gerar / Saúde do Bebê", satisfeito: 6.52, medio: 1.93, insatisfeito: 0.55, conhecoNaoUtilizei: 49.71, naoConheco: 41.62, utilizacao: 9 },
+            { beneficio: "Descontos em Auto-escola", satisfeito: 5.99, medio: 0.61, insatisfeito: 1.4, conhecoNaoUtilizei: 39.32, naoConheco: 55.42, utilizacao: 8 }
           ]
+
+          // Ordenar por utilização crescente (ResponsiveBar exibe de baixo para cima)
+          exampleData.sort((a, b) => a.utilizacao - b.utilizacao)
 
           setChartData(exampleData)
           setTotalRespondentes(filteredData.length)
@@ -120,8 +137,8 @@ const UtilizacaoAvaliacaoBeneficios = () => {
           return
         }
 
-        // Ordenar por satisfação decrescente
-        processedData.sort((a, b) => b.satisfeito - a.satisfeito)
+        // Ordenar por utilização crescente (ResponsiveBar exibe de baixo para cima, então invertemos)
+        processedData.sort((a, b) => a.utilizacao - b.utilizacao)
 
         console.log("Dados finais processados:", processedData)
 
@@ -135,11 +152,13 @@ const UtilizacaoAvaliacaoBeneficios = () => {
       } catch (error) {
         console.error("Erro ao processar dados P33:", error)
         // Fallback para dados de exemplo em caso de erro
-        setChartData([
-          { beneficio: "Campanhas de vacinação", satisfeito: 92, medio: 6, insatisfeito: 2 },
-          { beneficio: "Cesta de final de ano", satisfeito: 89, medio: 8, insatisfeito: 3 },
-          { beneficio: "Atividade física - Wellhub", satisfeito: 85, medio: 11, insatisfeito: 3 }
-        ])
+        const fallbackData = [
+          { beneficio: "Plano de Saúde", satisfeito: 61.57, medio: 18.77, insatisfeito: 6.03, conhecoNaoUtilizei: 12.34, naoConheco: 1.29, utilizacao: 86.37 },
+          { beneficio: "Cesta de final de ano", satisfeito: 75.6, medio: 6.95, insatisfeito: 2.45, conhecoNaoUtilizei: 11.02, naoConheco: 3.98, utilizacao: 85 },
+          { beneficio: "Campanhas de vacinação", satisfeito: 73.54, medio: 4.32, insatisfeito: 3.14, conhecoNaoUtilizei: 15.44, naoConheco: 3.56, utilizacao: 81 }
+        ]
+        fallbackData.sort((a, b) => a.utilizacao - b.utilizacao)
+        setChartData(fallbackData)
         setTotalRespondentes(3484)
         setPrincipalInsight("92% dos colaboradores estão satisfeitos com as Campanhas de vacinação")
       }
@@ -220,6 +239,8 @@ const UtilizacaoAvaliacaoBeneficios = () => {
         .color-satisfeito { background: #4caf50; }
         .color-medio { background: #ff9800; }
         .color-insatisfeito { background: #d32f2f; }
+        .color-conheco { background: #757575; }
+        .color-nao-conheco { background: #333333; }
 
         .highlight-text {
           background: #e8f5e9;
@@ -318,113 +339,124 @@ const UtilizacaoAvaliacaoBeneficios = () => {
               <div className="legend-color color-insatisfeito"></div>
               <span>Utilizo e estou insatisfeito(a)</span>
             </div>
+            <div className="legend-item">
+              <div className="legend-color color-conheco"></div>
+              <span>Conheço, mas nunca utilizei</span>
+            </div>
+            <div className="legend-item">
+              <div className="legend-color color-nao-conheco"></div>
+              <span>Não conheço</span>
+            </div>
           </div>
 
-          {/* Gráfico */}
-          <div style={{ height: "600px" }}>
-            <ResponsiveBar
-              data={chartData}
-              keys={['satisfeito', 'medio', 'insatisfeito']}
-              indexBy="beneficio"
-              layout="horizontal"
-              margin={{ top: 20, right: 120, bottom: 20, left: 280 }}
-              padding={0.3}
-              valueScale={{ type: 'linear', min: 0, max: 100 }}
-              colors={['#4caf50', '#ff9800', '#d32f2f']}
-              borderRadius={2}
-              axisTop={null}
-              axisRight={null}
-              axisBottom={{
-                tickSize: 0,
-                tickPadding: 8,
-                tickRotation: 0,
-                format: v => `${v}%`,
-                tickValues: [0, 20, 40, 60, 80, 100]
-              }}
-              axisLeft={{
-                tickSize: 0,
-                tickPadding: 12,
-                tickRotation: 0
-              }}
-              enableLabel={true}
-              label={d => d.value > 5 ? `${d.value}%` : ''}
-              labelSkipWidth={12}
-              labelSkipHeight={12}
-              labelTextColor="#ffffff"
-              enableGridY={true}
-              gridYValues={[20, 40, 60, 80, 100]}
-              tooltip={({ id, value, data }) => (
-                <div
-                  style={{
-                    background: 'white',
-                    padding: '9px 12px',
-                    border: '1px solid #ccc',
-                    borderRadius: '4px',
-                    fontSize: '12px',
-                    boxShadow: '0 2px 8px rgba(0,0,0,0.15)'
+          {/* Gráfico e Porcentagens de Utilização */}
+          <Row>
+            <Col lg={10}>
+              <div style={{ height: "600px" }}>
+                <ResponsiveBar
+                  data={chartData}
+                  keys={['satisfeito', 'medio', 'insatisfeito', 'conhecoNaoUtilizei', 'naoConheco']}
+                  indexBy="beneficio"
+                  layout="horizontal"
+                  margin={{ top: 20, right: 20, bottom: 20, left: 280 }}
+                  padding={0.3}
+                  valueScale={{ type: 'linear', min: 0, max: 100 }}
+                  colors={['#4caf50', '#ff9800', '#d32f2f', '#757575', '#333333']}
+                  borderRadius={2}
+                  axisTop={null}
+                  axisRight={null}
+                  axisBottom={{
+                    tickSize: 0,
+                    tickPadding: 8,
+                    tickRotation: 0,
+                    format: v => `${v}%`,
+                    tickValues: [0, 20, 40, 60, 80, 100]
                   }}
-                >
-                  <div style={{ fontWeight: '600', marginBottom: '4px' }}>
-                    {data.beneficio}
-                  </div>
-                  <div style={{ color: '#666' }}>
-                    <strong>{id}:</strong> {value}%
-                  </div>
-                </div>
-              )}
-              theme={{
-                grid: {
-                  line: {
-                    stroke: "#e0e0e0",
-                    strokeWidth: 1
-                  }
-                },
-                axis: {
-                  ticks: {
-                    text: {
-                      fontSize: 12,
-                      fill: "#666"
+                  axisLeft={{
+                    tickSize: 0,
+                    tickPadding: 12,
+                    tickRotation: 0
+                  }}
+                  enableLabel={true}
+                  label={d => d.value > 5 ? `${d.value}%` : ''}
+                  labelSkipWidth={12}
+                  labelSkipHeight={12}
+                  labelTextColor="#ffffff"
+                  enableGridY={true}
+                  gridYValues={[20, 40, 60, 80, 100]}
+                  tooltip={({ id, value, data }) => {
+                    const labelMap = {
+                      'satisfeito': 'Utilizo e estou satisfeito(a)',
+                      'medio': 'Utilizo e estou mais ou menos satisfeito(a)',
+                      'insatisfeito': 'Utilizo e estou insatisfeito(a)',
+                      'conhecoNaoUtilizei': 'Conheço, mas nunca utilizei',
+                      'naoConheco': 'Não conheço'
                     }
-                  }
-                }
-              }}
-              animate={true}
-              motionConfig="gentle"
-              layers={[
-                'grid',
-                'axes',
-                'bars',
-                'labels',
-                ({ bars }) => (
-                  <g>
-                    {/* Mostrar percentual de satisfação alinhado à direita */}
-                    {chartData.map((item, index) => {
-                      const barGroup = bars.filter(bar => bar.data.indexValue === item.beneficio)
-                      if (barGroup.length === 0) return null
-                      
-                      // Calcular posição fixa à direita para alinhamento
-                      const rightPosition = bars[0] ? bars[0].x + bars[0].width + bars[0].width * 0.3 : 0
-                      
-                      return (
-                        <text
-                          key={`satisfeito-${index}`}
-                          x={rightPosition}
-                          y={barGroup[0] ? barGroup[0].y + (barGroup[0].height / 2) : 0}
-                          textAnchor="start"
-                          dominantBaseline="central"
-                          fontSize="14"
-                          fontWeight="600"
-                          fill="#4caf50"
-                        >
-                          {item.satisfeito}%
-                        </text>
-                      )
-                    })}
-                  </g>
-                )
-              ]}
-            />
-          </div>
+                    return (
+                      <div
+                        style={{
+                          background: 'white',
+                          padding: '9px 12px',
+                          border: '1px solid #ccc',
+                          borderRadius: '4px',
+                          fontSize: '12px',
+                          boxShadow: '0 2px 8px rgba(0,0,0,0.15)'
+                        }}
+                      >
+                        <div style={{ fontWeight: '600', marginBottom: '4px' }}>
+                          {data.beneficio}
+                        </div>
+                        <div style={{ color: '#666' }}>
+                          <strong>{labelMap[id]}:</strong> {value}%
+                        </div>
+                      </div>
+                    )
+                  }}
+                  theme={{
+                    grid: {
+                      line: {
+                        stroke: "#e0e0e0",
+                        strokeWidth: 1
+                      }
+                    },
+                    axis: {
+                      ticks: {
+                        text: {
+                          fontSize: 12,
+                          fill: "#666"
+                        }
+                      }
+                    }
+                  }}
+                  animate={true}
+                  motionConfig="gentle"
+                />
+              </div>
+            </Col>
+
+            <Col lg={2}>
+              <div style={{ height: "600px", display: "flex", flexDirection: "column", justifyContent: "space-around", paddingBottom: "20px" }}>
+                <div style={{ textAlign: "center", fontWeight: "600", fontSize: "14px", marginBottom: "10px", color: "#333" }}>
+                  % Utilização
+                </div>
+                {/* A mágica acontece aqui! */}
+                {[...chartData].reverse().map((item, index) => (
+                  <div
+                    key={`utilizacao-${index}`}
+                    style={{
+                      textAlign: "center",
+                      fontSize: "14px",
+                      fontWeight: "600",
+                      color: "#333",
+                      padding: "8px 0"
+                    }}
+                  >
+                    {item.utilizacao}%
+                  </div>
+                ))}
+              </div>
+            </Col>
+          </Row>
         </div>
 
         {/* Destaque principal */}

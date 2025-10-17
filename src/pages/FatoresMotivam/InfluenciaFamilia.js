@@ -119,8 +119,8 @@ const InfluenciaFamilia = () => {
           })
         })
 
-        // Ordenar por ordem predefinida
-        processedData.sort((a, b) => a.ordem - b.ordem)
+        // Ordenar por percentual decrescente
+        processedData.sort((a, b) => b.percentage - a.percentage)
 
         setChartData(processedData)
         setTotalRespondentes(responses.length)

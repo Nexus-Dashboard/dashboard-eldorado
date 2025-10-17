@@ -57,18 +57,18 @@ const FatoresMotivam = () => {
           })
         })
 
-        // Calcular percentuais corretos
+        // Calcular percentuais corretos com 2 casas decimais
         const totalRespondentes = filteredData.length
         const motivationItems = Object.entries(fatoresMencoes)
           .map(([fator, dados]) => {
             const totalMencoes = dados.posicoes.primeira + dados.posicoes.segunda + dados.posicoes.terceira
-            const percentualTotal = Math.round((totalMencoes / totalRespondentes) * 100)
-            
+            const percentualTotal = Number(((totalMencoes / totalRespondentes) * 100).toFixed(2))
+
             // Calcular distribuição interna (como % do total de menções deste fator)
-            const primeiraPercent = totalMencoes > 0 ? Math.round((dados.posicoes.primeira / totalMencoes) * 100) : 0
-            const segundaPercent = totalMencoes > 0 ? Math.round((dados.posicoes.segunda / totalMencoes) * 100) : 0
-            const terceiraPercent = totalMencoes > 0 ? Math.round((dados.posicoes.terceira / totalMencoes) * 100) : 0
-            
+            const primeiraPercent = totalMencoes > 0 ? Number(((dados.posicoes.primeira / totalMencoes) * 100).toFixed(2)) : 0
+            const segundaPercent = totalMencoes > 0 ? Number(((dados.posicoes.segunda / totalMencoes) * 100).toFixed(2)) : 0
+            const terceiraPercent = totalMencoes > 0 ? Number(((dados.posicoes.terceira / totalMencoes) * 100).toFixed(2)) : 0
+
             return {
               fator: fator.length > 45 ? fator.substring(0, 45) + "..." : fator,
               fatorCompleto: fator,
@@ -114,8 +114,8 @@ const FatoresMotivam = () => {
         })
 
         const totalClassificadas = racionaisTotal + emocionaisTotal
-        const racionaisPercentual = totalClassificadas > 0 ? Math.round((racionaisTotal / totalClassificadas) * 100) : 0
-        const emocionaisPercentual = totalClassificadas > 0 ? Math.round((emocionaisTotal / totalClassificadas) * 100) : 0
+        const racionaisPercentual = totalClassificadas > 0 ? Number(((racionaisTotal / totalClassificadas) * 100).toFixed(2)) : 0
+        const emocionaisPercentual = totalClassificadas > 0 ? Number(((emocionaisTotal / totalClassificadas) * 100).toFixed(2)) : 0
 
         // Encontrar o fator principal (maior percentual total)
         const fatorPrincipal = motivationItems.reduce((prev, current) => 
@@ -161,12 +161,12 @@ const FatoresMotivam = () => {
   const chartData = motivationData.items.map(item => ({
     fator: item.fator,
     fatorCompleto: item.fatorCompleto,
-    // Converter distribuição interna para valores absolutos baseados no percentual total
-    "1ª": Math.round((item.primeira * item.total) / 100),
-    "2ª": Math.round((item.segunda * item.total) / 100), 
-    "3ª": Math.round((item.terceira * item.total) / 100),
+    // Converter distribuição interna para valores absolutos baseados no percentual total (sem arredondar)
+    "1ª": Number(((item.primeira * item.total) / 100).toFixed(2)),
+    "2ª": Number(((item.segunda * item.total) / 100).toFixed(2)),
+    "3ª": Number(((item.terceira * item.total) / 100).toFixed(2)),
     total: item.total,
-    // Guardar percentuais internos para o tooltip
+    // Guardar percentuais internos para o tooltip e labels
     primeiraPercent: item.primeira,
     segundaPercent: item.segunda,
     terceiraPercent: item.terceira
@@ -500,11 +500,11 @@ const FatoresMotivam = () => {
                         'bars',
                         ({ bars }) => (
                           <g>
-                            {/* Mostrar apenas o percentual total de cada fator */}
+                            {/* Mostrar apenas o percentual total à direita de cada linha */}
                             {chartData.map((item, index) => {
                               const barGroup = bars.filter(bar => bar.data.indexValue === item.fator)
                               if (barGroup.length === 0) return null
-                              
+
                               const lastBar = barGroup[barGroup.length - 1]
                               return (
                                 <text

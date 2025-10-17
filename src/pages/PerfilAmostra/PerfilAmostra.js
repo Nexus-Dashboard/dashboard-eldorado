@@ -29,38 +29,66 @@ const PerfilAmostra = () => {
             return row ? row[fieldName] || "" : ""
         }
 
-        const calculatePercentages = (data, fieldName) => {
+        const calculatePercentages = (data, fieldName, skipSort = false) => {
           const counts = {}
-          
-          const validData = data.filter(row => {
-            const value = getFieldValue(row, fieldName)
-            return value && 
-                   value.toString().trim() !== "" && 
-                   !value.toString().includes("#NULL!") &&
-                   value.toString().toLowerCase() !== "null"
-          })
+          // CORREÇÃO FINAL: O denominador para o cálculo da porcentagem
+          // será sempre o número total de respondentes no filtro atual.
+          const totalRespondentesNoFiltro = data.length
 
-          validData.forEach(row => {
-            const value = getFieldValue(row, fieldName)
-            if (value) {
-              counts[value] = (counts[value] || 0) + 1
+          const mapOrientacaoSexual = (value) => {
+            if (typeof value !== 'string') return value
+            const lowerCaseValue = value.toLowerCase()
+            if (lowerCaseValue.startsWith('heterossexual')) return 'Heterossexual'
+            if (lowerCaseValue.startsWith('homossexual')) return 'Homossexual'
+            if (lowerCaseValue.startsWith('bissexual')) return 'Bissexual'
+            if (lowerCaseValue.startsWith('assexual')) return 'Assexual'
+            if (lowerCaseValue.startsWith('pansexual')) return 'Pansexual'
+            return value
+          }
+
+          data.forEach(row => {
+            let value = getFieldValue(row, fieldName)
+
+            // A contagem ainda ignora valores nulos ou inválidos para não poluírem o gráfico.
+            if (!value ||
+                value.toString().trim() === "" ||
+                value.toString().includes("#NULL!") ||
+                value.toString().toLowerCase() === "null") {
+              return
             }
+
+            if (fieldName === 'PF8 - Qual a sua orientação sexual?') {
+                value = mapOrientacaoSexual(value.toString())
+            } else {
+                if (value.toString().includes(':')) {
+                    value = value.toString().split(':')[0].trim()
+                }
+            }
+
+            const finalValue = value.toString()
+            counts[finalValue] = (counts[finalValue] || 0) + 1
           })
 
-          const total = validData.length
-          return Object.entries(counts)
-            .map(([key, count]) => ({
-              categoria: key,
-              valor: count,
-              percentage: total > 0 ? Math.round((count / total) * 100) : 0
-            }))
-            .sort((a, b) => b.percentage - a.percentage)
+          const result = Object.entries(counts)
+            .map(([key, count]) => {
+                // A porcentagem é calculada dividindo a contagem da categoria pelo
+                // número total de respondentes do filtro, como solicitado.
+                const percentage = totalRespondentesNoFiltro > 0 ? (count / totalRespondentesNoFiltro) * 100 : 0
+                return {
+                    categoria: key,
+                    valor: count,
+                    percentage: parseFloat(percentage.toFixed(1))
+                }
+            })
+
+          // Ordenar por percentual decrescente, exceto se skipSort for true
+          return skipSort ? result : result.sort((a, b) => b.percentage - a.percentage)
         }
         
         setChartData({
           genero: calculatePercentages(filteredData, 'GENERO'),
           orientacaoSexual: calculatePercentages(filteredData, 'PF8 - Qual a sua orientação sexual?'),
-          faixaEtaria: calculatePercentages(filteredData, 'FAIXA_ETARIA'),
+          faixaEtaria: calculatePercentages(filteredData, 'FAIXA_ETARIA', true), // skipSort = true
           escolaridade: calculatePercentages(filteredData, 'ESCOLARIDADE_0'),
           racaCor: calculatePercentages(filteredData, 'RACA_COR'),
           tempoEldorado: calculatePercentages(filteredData, 'TEMPO_ELDORADO'),
@@ -80,7 +108,7 @@ const PerfilAmostra = () => {
   
   const HorizontalBarChart = ({ data, height = 400, maxValue = null, leftMargin = 180 }) => {
     const maxVal = maxValue || Math.max(...data.map(d => d.percentage))
-    const roundedMax = Math.ceil(maxVal / 25) * 25 // Arredonda para múltiplo de 25
+    const roundedMax = Math.ceil(maxVal / 25) * 25
     
     return (
       <div style={{ height }}>
@@ -91,7 +119,7 @@ const PerfilAmostra = () => {
           layout="horizontal"
           margin={{ top: 20, right: 80, bottom: 40, left: leftMargin }}
           padding={0.3}
-          valueScale={{ type: 'linear', min: 0, max: roundedMax }}
+          valueScale={{ type: 'linear', min: 0, max: roundedMax > 100 ? 100 : roundedMax }}
           colors="#2e8b57"
           borderRadius={3}
           axisTop={null}
@@ -126,7 +154,7 @@ const PerfilAmostra = () => {
                 {data.categoria}
               </div>
               <div style={{ color: '#666' }}>
-                <strong>{value}%</strong> ({data.valor.toLocaleString()} respondentes)
+                <strong>{Number(value).toFixed(1)}%</strong> ({data.valor.toLocaleString()} respondentes)
               </div>
             </div>
           )}
@@ -165,7 +193,7 @@ const PerfilAmostra = () => {
                     fontWeight="600"
                     fill="#333"
                   >
-                    {bar.data.data.percentage}%
+                    {bar.data.data.percentage.toFixed(1)}%
                   </text>
                 ))}
               </g>
@@ -386,7 +414,7 @@ const PerfilAmostra = () => {
             <Col lg={6}>
               <div className="chart-section">
                 <h5 className="chart-title">Orientação Sexual</h5>
-                <HorizontalBarChart data={chartData.orientacaoSexual} height={300} leftMargin={220} />
+                <HorizontalBarChart data={chartData.orientacaoSexual} height={300} leftMargin={180} />
               </div>
             </Col>
 
