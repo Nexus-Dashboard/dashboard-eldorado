@@ -3,51 +3,22 @@ import { Row, Col, Card } from "react-bootstrap"
 import { useData } from "../../context/DataContext"
 
 const Indicadores = () => {
-  const { getFilteredData, loading } = useData()
+  // O hook useData é mantido, mas seus dados não serão usados neste modo de exibição
+  const { loading } = useData()
   const [indicadores, setIndicadores] = useState({})
   const [totalRespondentes, setTotalRespondentes] = useState(0)
 
-  const configuracaoIndicadores = {
-    SAUDE_EMOCIONAL: {
-      nome: "Saúde Emocional",
-      campos: ["T_P13_1", "T_P13_2"],
-      icone: "heart-pulse"
-    },
-    AMBIENTE_TRABALHO: {
-      nome: "Ambiente de Trabalho",
-      campos: ["T_P20_1", "T_P20_2", "T_P20_3"],
-      icone: "building"
-    },
-    CULTURA_ORGANIZACIONAL: {
-      nome: "Cultura Organizacional",
-      campos: ["T_P21_2", "T_P21_3"],
-      icone: "people"
-    },
-    LIDERANCA: {
-      nome: "Liderança",
-      campos: ["T_P22_1", "T_P22_2", "T_P22_3", "T_P22_4", "T_P22_5"],
-      icone: "person-check"
-    },
-    COMUNICACAO_INTERNA: {
-      nome: "Comunicação Interna",
-      campos: ["T_P23_1", "T_P23_2"],
-      icone: "chat-dots"
-    },
-    DIVERSIDADE: {
-      nome: "Diversidade & Inclusão",
-      campos: ["T_P31_1", "T_P31_2"],
-      icone: "people-fill"
-    },
-    BENEFICIOS: {
-      nome: "Benefícios",
-      campos: ["T_P32_2", "T_P32_3"],
-      icone: "gift"
-    },
-    VALORIZACAO_DESENVOLVIMENTO: {
-      nome: "Valorização e Desenvolvimento",
-      campos: ["T_P16_1", "T_P16_2", "T_P16_3", "T_P16_4", "T_P16_5"],
-      icone: "gift"
-    },
+  // Mapeamento para nomes mais amigáveis
+  const nomesDiretorias = {
+    INDUSTRIAL: "Industrial",
+    RH_SUSTENTABILIDADE_E_COMUNICACAO: "RH, Sustentabilidade e Comunicação",
+    JURIDICA: "Jurídica",
+    TI: "TI",
+    FLORESTAL: "Florestal",
+    FINANCEIRA: "Financeira",
+    COMERCIAL_E_LOGISTICA: "Comercial e Logística",
+    TRANSPORTADORA: "Transportadora",
+    PRESIDENCIA: "Presidência"
   }
 
   const getClassificacao = (pontuacao) => {
@@ -59,170 +30,27 @@ const Indicadores = () => {
   }
 
   useEffect(() => {
-    const processData = () => {
-      try {
-        const filteredData = getFilteredData()
-        console.log("=== DEBUG INDICADORES ===")
-        console.log("Total de registros:", filteredData?.length)
-
-        if (!filteredData || filteredData.length === 0) {
-          console.log("❌ Sem dados filtrados, usando dados de exemplo")
-          // Dados de exemplo baseados na imagem 3
-          const exampleData = {
-            GERAL: 86.9,
-            SAUDE_EMOCIONAL: 84.1,
-            RECONHECE_MOTIVACAO: 84.8,
-            AMBIENTE_TRABALHO: 90.5,
-            CULTURA_ORGANIZACIONAL: 90.7,
-            LIDERANCA: 86.1,
-            COMUNICACAO_INTERNA: 90.3,
-            DIVERSIDADE: 84.7,
-            BENEFICIOS: 86.8,
-            VALORIZACAO_DESENVOLVIMENTO: 84.0
-          }
-
-          setIndicadores(exampleData)
-          setTotalRespondentes(3484)
-          return
-        }
-
-        const availableFields = filteredData.length > 0 ? Object.keys(filteredData[0]) : []
-        console.log("📋 Campos disponíveis no dataset:", availableFields.length)
-        console.log("📋 Campos que começam com 'T_P':", availableFields.filter(f => f.startsWith('T_P')))
-
-        const resultados = {}
-
-        // Calcular cada indicador
-        Object.entries(configuracaoIndicadores).forEach(([key, config]) => {
-          console.log(`\n🔍 Processando dimensão: ${config.nome} (${key})`)
-          console.log(`   Campos esperados: ${config.campos.join(', ')}`)
-
-          let pontuacaoTotal = 0
-          let respostasValidas = 0
-
-          config.campos.forEach(campo => {
-            // Buscar campo exato ou variação
-            const actualField = availableFields.find(f =>
-              f.includes(campo) || f.includes(campo.replace('T_', ''))
-            ) || campo
-
-            console.log(`   📌 Buscando campo: ${campo}`)
-            console.log(`      ➜ Campo encontrado: ${actualField}`)
-            console.log(`      ➜ Campo existe no dataset: ${availableFields.includes(actualField) ? '✅ SIM' : '❌ NÃO'}`)
-
-            const responses = filteredData
-              .map(row => {
-                const value = row[actualField]
-                if (!value) return null
-
-                // Converter para string e extrair o primeiro número
-                const valueStr = String(value).trim()
-
-                // Tentar extrair o número no início da string (ex: "1 - Discorda Totalmente" -> 1)
-                const match = valueStr.match(/^(\d+)/)
-                if (match) {
-                  const numValue = parseInt(match[1])
-                  return (numValue >= 1 && numValue <= 5) ? numValue : null
-                }
-
-                // Se for apenas um número sem texto
-                const numValue = parseInt(valueStr)
-                return (!isNaN(numValue) && numValue >= 1 && numValue <= 5) ? numValue : null
-              })
-              .filter(score => score !== null)
-
-            console.log(`      ➜ Respostas válidas encontradas: ${responses.length}`)
-
-            if (responses.length > 0) {
-              const amostra = responses.slice(0, 5)
-              console.log(`      ➜ Amostra de valores: ${amostra.join(', ')}`)
-
-              let pontos4ou5 = 0
-              let pontos3 = 0
-              let pontos1ou2 = 0
-
-              responses.forEach(score => {
-                if (score >= 4) {
-                  pontuacaoTotal += 10 // Nota 4 ou 5 = 10 pontos
-                  pontos4ou5++
-                } else if (score === 3) {
-                  pontuacaoTotal += 5  // Nota 3 = 5 pontos
-                  pontos3++
-                } else {
-                  pontos1ou2++
-                }
-                // Nota 1 ou 2 = 0 pontos
-                respostasValidas++
-              })
-
-              console.log(`      ➜ Distribuição: 4-5=${pontos4ou5}, 3=${pontos3}, 1-2=${pontos1ou2}`)
-            }
-          })
-
-          // Calcular pontuação final (0-100)
-          const pontuacaoMaxima = respostasValidas * 10
-          const indicador = pontuacaoMaxima > 0 ? (pontuacaoTotal / pontuacaoMaxima) * 100 : 0
-          resultados[key] = Math.round(indicador * 100) / 100 // Arredondar para 2 casas decimais
-
-          console.log(`   ✅ Indicador ${config.nome}: ${resultados[key].toFixed(2)}`)
-          console.log(`      Total respostas: ${respostasValidas}, Pontuação: ${pontuacaoTotal}/${pontuacaoMaxima}`)
-        })
-
-        console.log("\n📊 RESULTADOS FINAIS:")
-        console.log(resultados)
-
-        // Se não encontrou dados suficientes, usar exemplo
-        if (Object.values(resultados).every(val => val === 0)) {
-          console.log("⚠️ Todos os indicadores estão zerados, usando dados de exemplo")
-          const exampleData = {
-            GERAL: 86.9,
-            SAUDE_EMOCIONAL: 85.2,
-            RECONHECE_MOTIVACAO: 84.8,
-            AMBIENTE_TRABALHO: 89.1,
-            CULTURA_ORGANIZACIONAL: 87.4,
-            LIDERANCA: 88.3,
-            COMUNICACAO_INTERNA: 87.8,
-            DIVERSIDADE: 85.6,
-            BENEFICIOS: 82.4
-          }
-          setIndicadores(exampleData)
-        } else {
-          // Calcular indicador geral (média dos outros)
-          const valoresIndicadores = Object.values(resultados)
-          const indicadorGeral = valoresIndicadores.length > 0
-            ? valoresIndicadores.reduce((a, b) => a + b, 0) / valoresIndicadores.length
-            : 0
-
-          resultados.GERAL = Math.round(indicadorGeral * 100) / 100 // Arredondar para 2 casas decimais
-          console.log(`\n🎯 INDICADOR GERAL: ${resultados.GERAL.toFixed(2)}`)
-          setIndicadores(resultados)
-        }
-
-        setTotalRespondentes(filteredData.length)
-
-      } catch (error) {
-        console.error("Erro ao processar dados:", error)
-        
-        const exampleData = {
-          GERAL: 86.9,
-          SAUDE_EMOCIONAL: 85.2,
-          RECONHECE_MOTIVACAO: 84.8,
-          AMBIENTE_TRABALHO: 89.1,
-          CULTURA_ORGANIZACIONAL: 87.4,
-          LIDERANCA: 88.3,
-          COMUNICACAO_INTERNA: 87.8,
-          DIVERSIDADE: 85.6,
-          BENEFICIOS: 82.4
-        }
-        setIndicadores(exampleData)
-        setTotalRespondentes(3484)
+    // Utiliza diretamente os dados de exemplo baseados na imagem, como solicitado.
+    console.log("📊 Usando dados de exemplo para as diretorias Eldorado.")
+    
+    const eldoradoData = {
+      GERAL: 86.9,
+      DIRETORIAS: {
+        INDUSTRIAL: 90.9,
+        RH_SUSTENTABILIDADE_E_COMUNICACAO: 90.3,
+        JURIDICA: 87.7,
+        TI: 87.1,
+        FLORESTAL: 86.9,
+        FINANCEIRA: 85.6,
+        COMERCIAL_E_LOGISTICA: 85.3,
+        TRANSPORTADORA: 75.3,
+        PRESIDENCIA: 74.6
       }
-    }
+    };
 
-    if (!loading) {
-      processData()
-    }
-  }, [getFilteredData, loading])
+    setIndicadores(eldoradoData);
+    setTotalRespondentes(134); // Valor de exemplo, pode ser ajustado se necessário
+  }, []) // O array vazio [] faz com que o efeito rode apenas uma vez.
 
   const TermometroComponent = ({ valor, titulo, icone }) => {
     const classificacao = getClassificacao(valor)
@@ -252,7 +80,7 @@ const Indicadores = () => {
                 className="valor-principal"
                 style={{ color: classificacao.cor }}
               >
-                {typeof valor === 'number' ? valor.toFixed(2) : valor}
+                {typeof valor === 'number' ? valor.toFixed(1) : valor}
               </div>
               <div 
                 className="classificacao"
@@ -471,20 +299,19 @@ const Indicadores = () => {
         <div className="page-title-text">
           <h2>Indicador de Satisfação & Bem-Estar Eldorado</h2>
           <p className="page-subtitle">
-            Sistema de indicadores baseado nas dimensões de satisfação e bem-estar organizacional
+            Total e por Diretorias Eldorado
           </p>
         </div>
       </div>
 
-
       <div className="termometros-grid">
-        {/* Indicadores por Dimensão */}
-        {Object.entries(configuracaoIndicadores).map(([key, config]) => (
+        {/* Indicadores por Diretoria (usando dados de exemplo) */}
+        {indicadores.DIRETORIAS && Object.entries(indicadores.DIRETORIAS).map(([key, valor]) => (
           <TermometroComponent
             key={key}
-            valor={indicadores[key] || 85.0}
-            titulo={config.nome}
-            icone={config.icone}
+            valor={valor}
+            titulo={nomesDiretorias[key] || key}
+            icone={"building-gear"} // Ícone genérico para diretorias
           />
         ))}
       </div>
@@ -517,6 +344,7 @@ const Indicadores = () => {
         </div>
       </div>
 
+      {/* A seção de metodologia pode ser mantida ou removida, conforme sua necessidade */}
       <Row>
         <Col lg={12}>
           <Card style={{ background: "#f8f9fa", padding: "25px", borderRadius: "12px" }}>
@@ -525,22 +353,13 @@ const Indicadores = () => {
             </h6>
             <p style={{ color: "#666", lineHeight: 1.6, fontSize: "0.95rem", marginBottom: "15px" }}>
               O Indicador de Satisfação & Bem-Estar Eldorado foi construído a partir da análise das respostas 
-              aos atributos relacionados às dimensões de saúde emocional, reconhecimento e motivação, ambiente 
-              de trabalho, cultura organizacional, liderança, diversidade, benefícios e comunicação interna.
+              da pesquisa "Nossa Gente Eldorado".
             </p>
-            <p style={{ color: "#666", lineHeight: 1.6, fontSize: "0.95rem", marginBottom: "15px" }}>
-              <strong>Cálculo:</strong> Cada atributo avaliado com <strong>nota 4 ou 5</strong> pontua <strong>10 pontos</strong>, 
-              enquanto aqueles com <strong>nota 3</strong> pontuam <strong>5 pontos</strong>. A soma dessas pontuações compõe 
-              um score individual que varia de <strong>0 a 100 pontos</strong>.
-            </p>
-            
             <div className="text-muted mt-3" style={{ fontSize: "0.9rem", borderTop: "2px solid #ff8c00", paddingTop: "10px" }}>
               <strong>Base | {totalRespondentes.toLocaleString()} respondentes</strong>
               <br />
               <small>
-                Foi realizada uma modelagem estatística para identificar o peso relativo de cada dimensão 
-                na composição geral do indicador, mensurando o impacto de cada uma delas na percepção de 
-                satisfação e bem-estar dentro da organização.
+                Pesquisa Nossa Gente Eldorado.
               </small>
             </div>
           </Card>
